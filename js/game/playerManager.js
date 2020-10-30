@@ -1,0 +1,34 @@
+
+var actionPointsPerTurn = 3;
+
+class PlayerManager {
+    constructor(unitGroups, index) {
+        this.players = [];
+        for (let i = 0; i < unitGroups.length; i++) {
+            var pl = new Player();
+            pl.unitGroup = unitGroups[i];
+            this.players.push(pl);
+        }
+        this.index = typeof index == "undefined" ? 0 : index;
+    }
+
+    getActivePlayer() {
+        return this.players[this.index];
+    }
+
+    endTurn() {
+        this.getActivePlayer().clearDisabledActions();
+        this.getActivePlayer().actionPoints += actionPointsPerTurn;
+
+        this.index++;
+        if (this.index >= this.players.length) this.index = 0;
+    }
+
+    draw(offset, index) {
+        if (typeof index == "undefined") {
+            for (let i = 0; i < this.players.length; i++) {
+                this.players[i].draw(offset);
+            }
+        }
+    }
+}
