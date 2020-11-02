@@ -5,7 +5,7 @@ class Unit {
         this.position = typeof pos == "undefined" ? vec2(0, 0) : pos;
 
         //Unit Properties START
-        this.movement = 2;
+        this.movement = 4;
         //Unit Properties END
     }
 

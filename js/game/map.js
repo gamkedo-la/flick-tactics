@@ -1,6 +1,10 @@
 var maxDisplayTilesPerRow = 16;
 var gridBlackLinesFixFactor = 0.02;
 
+const PLAINS_TILE = 0;
+const SAND_TILE = 1;
+const SEA_TILE = 2;
+
 var map1 =
     "01.01.01.01.01.02.02.02.01.01.01.01.01.01.01.01." +
     "01.01.01.00.02.02.02.02.00.00.00.00.01.01.01.01." +
@@ -31,16 +35,28 @@ function drawSheet(index, pos, sc, tileSize) {
 
 class GameMap {
     constructor(mapString, totalCols, totalRows) {
-        this.indexes = mapString.split('.');
         this.cols = totalCols;
         this.rows = totalRows;
+
+        this.indexes = [];
+        var tindexes = mapString.split('.');
+        for (let y = 0; y < this.rows; y++) {
+            for (let x = 0; x < this.cols; x++) {
+                this.indexes.push(parseInt(tindexes[x + (y * this.rows)]));
+            }
+        }
+
         this.cursorTile = vec2(0, 0);
+    }
+
+    getTileTypeFromPosition(pos) {
+        return this.indexes[pos.x + (pos.y * this.rows)];
     }
 
     draw(offset) {
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.cols; x++) {
-                var index = (parseInt(this.indexes[x + (y * this.rows)]));
+                var index = this.getTileTypeFromPosition(vec2(x, y));
 
                 var pos = vec2(Math.floor(offset.x + (x * (gameWidth / maxDisplayTilesPerRow))),
                     Math.floor(offset.y + (y * (gameWidth / maxDisplayTilesPerRow))));
@@ -65,11 +81,14 @@ class GameMap {
             for (let x = -mapUnit.unit.movement; x <= mapUnit.unit.movement; x++) {
 
                 if (Math.abs(x) + Math.abs(y) > mapUnit.unit.movement
-                    || (x == 0 && y == 0))
+                    || (x == 0 && y == 0)
+                    || manager.getPlayerAndUnitIndexOnTile(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y))[0] != -1
+                    || this.getTileTypeFromPosition(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y)) == SEA_TILE)
                     continue;
 
                 var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * (gameWidth / maxDisplayTilesPerRow))),
                     Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * (gameWidth / maxDisplayTilesPerRow))));
+
                 drawRect(spritesRenderer, posi.subtract(vec2(gameWidth / maxDisplayTilesPerRow, gameWidth / maxDisplayTilesPerRow).divide(vec2(2, 2))),
                     vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)), true,
                     (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#00FF0088" : "#FFFF0044");
@@ -87,8 +106,10 @@ class GameMap {
                         || (x == 0 && y == 0))
                         continue;
 
-                    if (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y
-                        && manager.getPlayerAndUnitIndexOnTile(this.cursorTile)[0] == -1) {
+                    if (this.cursorTile.x == mapUnit.mapPosition.x + x
+                        && this.cursorTile.y == mapUnit.mapPosition.y + y
+                        && manager.getPlayerAndUnitIndexOnTile(this.cursorTile)[0] == -1
+                        && this.getTileTypeFromPosition(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y)) != SEA_TILE) {
                         mapUnit.mapPosition = mapUnit.mapPosition.add(vec2(x, y));
                         mapUnit.up = -1;
                         return true;
