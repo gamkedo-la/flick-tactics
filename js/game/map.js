@@ -54,6 +54,7 @@ class GameMap {
             (touchPos[0].y - offset.y - ((gameWidth / maxDisplayTilesPerRow) / 2)) / (gameWidth / maxDisplayTilesPerRow));
         this.cursorTile.x = Math.floor(this.cursorTile.x + 1);
         this.cursorTile.y = Math.floor(this.cursorTile.y + 1);
+
         /*drawRect(spritesRenderer, vec2(Math.floor((offset.x + (this.cursorTile.x * (gameWidth / maxDisplayTilesPerRow)) - ((gameWidth / maxDisplayTilesPerRow) / 2))),
             Math.floor((offset.y + (this.cursorTile.y * (gameWidth / maxDisplayTilesPerRow)) - ((gameWidth / maxDisplayTilesPerRow) / 2)))),
             vec2(gameWidth / maxDisplayTilesPerRow, gameWidth / maxDisplayTilesPerRow), true, "#FFFFFF44");*/
@@ -86,7 +87,8 @@ class GameMap {
                         || (x == 0 && y == 0))
                         continue;
 
-                    if (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) {
+                    if (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y
+                        && manager.getPlayerAndUnitIndexOnTile(this.cursorTile)[0] == -1) {
                         mapUnit.mapPosition = mapUnit.mapPosition.add(vec2(x, y));
                         mapUnit.up = -1;
                         return true;

@@ -16,6 +16,14 @@ class PlayerManager {
         return this.players[this.index];
     }
 
+    getPlayerAndUnitIndexOnTile(tilePos) {
+        for (let i = 0; i < this.players.length; i++) {
+            var tIndex = this.players[i].getUnitIndexOnTile(tilePos);
+            if (tIndex > -1) return [i, tIndex];
+        }
+        return [-1, -1];
+    }
+
     endTurn() {
         this.getActivePlayer().clearDisabledActions();
         this.getActivePlayer().actionPoints += actionPointsPerTurn;

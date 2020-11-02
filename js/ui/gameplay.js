@@ -81,10 +81,10 @@ function gameplayDraw(deltaTime) {
 }
 
 function gameplayUpdate(deltaTime) {
+
     cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.1);
 
     // Disabling Unit Action Buttons and Left/Right Unit Buttons START
-
     unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled =
         (cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize);
 
@@ -97,12 +97,17 @@ function gameplayUpdate(deltaTime) {
         leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
     }
 
-    if (unitUpBtn.output != UIOUTPUT_SELECT) unitUpBtn.output = getPlayer().getSelectedMapUnit().up == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (unitLeftBtn.output != UIOUTPUT_SELECT) unitLeftBtn.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (unitDownBtn.output != UIOUTPUT_SELECT) unitDownBtn.output = getPlayer().getSelectedMapUnit().down == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (unitRightBtn.output != UIOUTPUT_SELECT) unitRightBtn.output = getPlayer().getSelectedMapUnit().right == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (getPlayer().actionPoints <= 0) unitUpBtn.output = unitLeftBtn.output = unitDownBtn.output = unitRightBtn.output = UIOUTPUT_DISABLED;
+    if (unitUpBtn.output != UIOUTPUT_SELECT)
+        unitUpBtn.output = getPlayer().getSelectedMapUnit().up == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (unitLeftBtn.output != UIOUTPUT_SELECT)
+        unitLeftBtn.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (unitDownBtn.output != UIOUTPUT_SELECT)
+        unitDownBtn.output = getPlayer().getSelectedMapUnit().down == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (unitRightBtn.output != UIOUTPUT_SELECT)
+        unitRightBtn.output = getPlayer().getSelectedMapUnit().right == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
 
+    if (getPlayer().actionPoints <= 0)
+        unitUpBtn.output = unitLeftBtn.output = unitDownBtn.output = unitRightBtn.output = UIOUTPUT_DISABLED;
     // Disabling Unit Action Buttons and Left/Right Unit Buttons END
 }
 

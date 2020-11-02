@@ -18,6 +18,15 @@ class Player {
         this.unitGroup.clearDisabledActions();
     }
 
+    getUnitIndexOnTile(tilePos) {
+        for (let i = 0; i < this.unitGroup.mapUnits.length; i++) {
+            if (this.unitGroup.mapUnits[i].mapPosition.x == tilePos.x
+                && this.unitGroup.mapUnits[i].mapPosition.y == tilePos.y)
+                return i;
+        }
+        return -1;
+    }
+
     draw(cam) {
         this.unitGroup.draw(cam);
     }
