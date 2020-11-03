@@ -1,4 +1,8 @@
 
+//Unit class represents the base unit and not the one that is to be rendered on the map
+//Map Unit class consists of Unit and its purpose is to deploy and render units on the map
+//Map Unit Group class is a group of Map Units
+
 class Unit {
     constructor(index, pos) {
         this.index = index;

@@ -5,9 +5,14 @@ const PLAINS_TILE = 0;
 const SAND_TILE = 1;
 const SEA_TILE = 2;
 
+const FOREST_TILE = 3;
+const MOUNTAIN_TILE = 4;
+
+const TOXIC_TILE = 5;
+
 var map1 =
     "01.01.01.01.01.02.02.02.01.01.01.01.01.01.01.01." +
-    "01.01.01.00.02.02.02.02.00.00.00.00.01.01.01.01." +
+    "01.01.03.00.02.02.02.02.00.00.00.00.01.01.01.01." +
     "01.00.00.00.00.02.02.02.02.00.00.00.00.01.01.01." +
     "01.00.00.00.00.00.02.02.02.02.02.00.00.00.00.01." +
     "01.01.00.00.00.00.02.02.02.00.00.01.01.01.02.02." +
@@ -30,7 +35,12 @@ function drawSheet(index, pos, sc, tileSize) {
 
     gameSheet.transform.position = pos;
     gameSheet.transform.scale = sc;
-    gameSheet.drawScIn(vec2((index % cols) * 64, Math.floor(index / rows) * 64), tileSize);
+
+    if (index == 120) {
+        console.log(Math.floor(index / cols));
+    }
+
+    gameSheet.drawScIn(vec2(index % cols, Math.floor(index / cols)).multiply(vec2(64, 64)), tileSize);
 }
 
 class GameMap {

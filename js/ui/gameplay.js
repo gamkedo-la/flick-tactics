@@ -8,19 +8,7 @@ function gameplayReset() {
 
 }
 
-function gameplaySetup() {
-    map = new GameMap(map1, 16, 16);
-    manager = new PlayerManager([
-        new MapUnitGroup([new MapUnit(96, vec2(4, 4)), new MapUnit(96, vec2(7, 5)), new MapUnit(96, vec2(9, 5))]),
-        new MapUnitGroup([new MapUnit(97, vec2(12, 9)), new MapUnit(97, vec2(11, 7)), new MapUnit(97, vec2(14, 8))])
-    ]);
-
-    cam = vec2(Math.floor((gameWidth / maxDisplayTilesPerRow) / 2), Math.floor((gameWidth / maxDisplayTilesPerRow) / 2));
-
-    //Gameplay UI START
-
-    var fontSize = 14.0 * pixelSize;
-
+function controlBarUISetup(fontSize) {
     controlBar = [];
     controlBar.push(new Label(tr(), ""));
     controlBar.push(new Label(tr(), ""));
@@ -41,16 +29,9 @@ function gameplaySetup() {
     controlBar.push(new Label(tr(), ""));
     gameplay.push(new FlexGroup(tr(vec2(0.01, 0.01), vec2(gameWidth, 25 * pixelSize)),
         new SubState(tr(), controlBar), false, vec2(10 * pixelSize, 0), vec2(9, 1), true));
+}
 
-    leftUnitChangeBtn = new TextButton(tr(vec2(0.01, gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), "<<"),
-        new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
-    gameplay.push(leftUnitChangeBtn);
-    rightUnitChangeBtn = new TextButton(tr(vec2(gameWidth - (50 * pixelSize), gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), ">>"),
-        new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
-    gameplay.push(rightUnitChangeBtn);
-
+function unitControlsUISetup() {
     unitUpBtn = new Button(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) - (100 * pixelSize)), vec2(50 * pixelSize, 50 * pixelSize)), "#00000066", "#FFFFFFFF", "#000000BB", "#FF000044");
     gameplay.push(unitUpBtn);
     unitLeftBtn = new Button(tr(vec2((gameWidth / 2) - (100 * pixelSize), (gameHeight / 2) - (25 * pixelSize)), vec2(50 * pixelSize, 50 * pixelSize)), "#00000066", "#FFFFFFFF", "#000000BB", "#FF000044");
@@ -60,7 +41,37 @@ function gameplaySetup() {
     unitRightBtn = new Button(tr(vec2((gameWidth / 2) + (50 * pixelSize), (gameHeight / 2) - (25 * pixelSize)), vec2(50 * pixelSize, 50 * pixelSize)), "#00000066", "#FFFFFFFF", "#000000BB", "#FF000044");
     gameplay.push(unitRightBtn);
     unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
+}
 
+function gameplaySetup() {
+    map = new GameMap(map1, 16, 16);
+    manager = new PlayerManager([
+        new MapUnitGroup([
+            new MapUnit(120, vec2(4, 4)),
+            new MapUnit(120, vec2(7, 5)),
+            new MapUnit(120, vec2(9, 5))
+        ]),
+        new MapUnitGroup([
+            new MapUnit(121, vec2(12, 9)),
+            new MapUnit(121, vec2(11, 7)),
+            new MapUnit(121, vec2(14, 8))
+        ])
+    ]);
+
+    cam = vec2(Math.floor((gameWidth / maxDisplayTilesPerRow) / 2), Math.floor((gameWidth / maxDisplayTilesPerRow) / 2));
+
+    //Gameplay UI START
+    var fontSize = 14.0 * pixelSize;
+    controlBarUISetup(fontSize);
+    leftUnitChangeBtn = new TextButton(tr(vec2(0.01, gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
+        new Label(tr(), "<<"),
+        new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
+    gameplay.push(leftUnitChangeBtn);
+    rightUnitChangeBtn = new TextButton(tr(vec2(gameWidth - (50 * pixelSize), gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
+        new Label(tr(), ">>"),
+        new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
+    gameplay.push(rightUnitChangeBtn);
+    unitControlsUISetup();
     //Gameplay UI END
 
     gameplayReset();
