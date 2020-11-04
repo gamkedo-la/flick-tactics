@@ -46,15 +46,15 @@ function unitControlsUISetup() {
 function gameplaySetup() {
     map = new GameMap(map1, 16, 16);
     manager = new PlayerManager([
-        new MapUnitGroup([
-            new MapUnit(120, vec2(4, 4)),
-            new MapUnit(120, vec2(7, 5)),
-            new MapUnit(120, vec2(9, 5))
+        new Player(RED_TEAM, [
+            new MapUnit(RIFLE_MECH, vec2(4, 4)),
+            new MapUnit(TELEPORT_MECH, vec2(7, 5)),
+            new MapUnit(CANNON_MECH, vec2(9, 5))
         ]),
-        new MapUnitGroup([
-            new MapUnit(121, vec2(12, 9)),
-            new MapUnit(121, vec2(11, 7)),
-            new MapUnit(121, vec2(14, 8))
+        new Player(BLACK_TEAM, [
+            new MapUnit(RIFLE_MECH, vec2(12, 9)),
+            new MapUnit(SUPPORT_MECH, vec2(11, 7)),
+            new MapUnit(ARTILLERY_MECH, vec2(14, 8))
         ])
     ]);
 
@@ -88,6 +88,9 @@ function gameplayDraw(deltaTime) {
 
     if (getPlayer().getSelectedMapUnit().up == 0) {
         map.drawUnitMovement(cam, getPlayer().getSelectedMapUnit());
+    }
+    else if (getPlayer().getSelectedMapUnit().right == 0) {
+        map.drawUnitAttack(cam, getPlayer().getSelectedMapUnit());
     }
 }
 
@@ -127,6 +130,12 @@ function gameplayEvent(deltaTime) {
     //Unit Action Completion Events
     if (getPlayer().getSelectedMapUnit().up == 0) {
         if (map.eventUnitMovement(getPlayer().getSelectedMapUnit())) {
+            getPlayer().actionPoints--;
+            actionPointsLabel.text = "AP: " + getPlayer().actionPoints.toString();
+        }
+    }
+    else if (getPlayer().getSelectedMapUnit().right == 0) {
+        if (map.eventUnitAttack(getPlayer().getSelectedMapUnit())) {
             getPlayer().actionPoints--;
             actionPointsLabel.text = "AP: " + getPlayer().actionPoints.toString();
         }

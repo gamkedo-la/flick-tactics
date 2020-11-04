@@ -1,7 +1,13 @@
 
+const RED_TEAM = 0;
+const BLUE_TEAM = 1;
+const GREEN_TEAM = 2;
+const BLACK_TEAM = 3;
+
 class Player {
-    constructor(teamID) {
-        this.unitGroup = new MapUnitGroup([], typeof teamID == "undefined" ? 0 : teamID);
+    constructor(teamID, mapUnits) {
+        this.unitGroup = new MapUnitGroup(mapUnits);
+        this.unitGroup.teamID = teamID;
         this.selectedIndex = 0;
         this.actionPoints = 3;
     }

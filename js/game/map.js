@@ -2,13 +2,29 @@ var maxDisplayTilesPerRow = 16;
 var gridBlackLinesFixFactor = 0.02;
 
 const PLAINS_TILE = 0;
+
 const SAND_TILE = 1;
+
 const SEA_TILE = 2;
+const SEA_TILES = [20, 21, 22, 23, 24, 25, 26, 27, 28, 40, 41, 42, 43, 44, 45, 46, 47, 48, 60, 61, 62, 63, 64, 65, 66, 67, 68];
+const SEA_STARTANIMATION = 106; //107
 
 const FOREST_TILE = 3;
+
 const MOUNTAIN_TILE = 4;
 
 const TOXIC_TILE = 5;
+const TOXIC_TILES = [6, 7, 8, 9];
+const TOXIC_STARTANIMATION = 87; //88
+
+const ROAD_TILE = 86;
+const ROAD_TILES = [80, 81, 82, 83, 84, 85, 100, 101, 102, 103, 104, 105];
+
+//building_tile + teamID
+const HQ_TILE = 281;
+const CITY_TILE = 268;
+const WAR_TILE = 289;
+const RUIN_TILE = 293;
 
 var map1 =
     "01.01.01.01.01.02.02.02.01.01.01.01.01.01.01.01." +
@@ -35,10 +51,6 @@ function drawSheet(index, pos, sc, tileSize) {
 
     gameSheet.transform.position = pos;
     gameSheet.transform.scale = sc;
-
-    if (index == 120) {
-        console.log(Math.floor(index / cols));
-    }
 
     gameSheet.drawScIn(vec2(index % cols, Math.floor(index / cols)).multiply(vec2(64, 64)), tileSize);
 }
@@ -81,10 +93,16 @@ class GameMap {
         this.cursorTile.x = Math.floor(this.cursorTile.x + 1);
         this.cursorTile.y = Math.floor(this.cursorTile.y + 1);
 
-        /*drawRect(spritesRenderer, vec2(Math.floor((offset.x + (this.cursorTile.x * (gameWidth / maxDisplayTilesPerRow)) - ((gameWidth / maxDisplayTilesPerRow) / 2))),
+        drawRect(spritesRenderer, vec2(Math.floor((offset.x + (this.cursorTile.x * (gameWidth / maxDisplayTilesPerRow)) - ((gameWidth / maxDisplayTilesPerRow) / 2))),
             Math.floor((offset.y + (this.cursorTile.y * (gameWidth / maxDisplayTilesPerRow)) - ((gameWidth / maxDisplayTilesPerRow) / 2)))),
-            vec2(gameWidth / maxDisplayTilesPerRow, gameWidth / maxDisplayTilesPerRow), true, "#FFFFFF44");*/
+            vec2(gameWidth / maxDisplayTilesPerRow, gameWidth / maxDisplayTilesPerRow), true, "#FFFFFF44");
     }
+
+    //UNIT MOVEMENT START // //
+
+    //
+
+    //
 
     drawUnitMovement(offset, mapUnit) {
         for (let y = -mapUnit.unit.movement; y <= mapUnit.unit.movement; y++) {
@@ -93,13 +111,14 @@ class GameMap {
                 if (Math.abs(x) + Math.abs(y) > mapUnit.unit.movement
                     || (x == 0 && y == 0)
                     || manager.getPlayerAndUnitIndexOnTile(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y))[0] != -1
-                    || this.getTileTypeFromPosition(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y)) == SEA_TILE)
+                    || (this.getTileTypeFromPosition(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y)) == SEA_TILE
+                        && mapUnit.unit.type != TELEPORT_MECH))
                     continue;
 
                 var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * (gameWidth / maxDisplayTilesPerRow))),
                     Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * (gameWidth / maxDisplayTilesPerRow))));
 
-                drawRect(spritesRenderer, posi.subtract(vec2(gameWidth / maxDisplayTilesPerRow, gameWidth / maxDisplayTilesPerRow).divide(vec2(2, 2))),
+                drawRect(spritesRenderer, posi.subtract(vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)).divide(vec2(2, 2))),
                     vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)), true,
                     (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#00FF0088" : "#FFFF0044");
             }
@@ -119,7 +138,9 @@ class GameMap {
                     if (this.cursorTile.x == mapUnit.mapPosition.x + x
                         && this.cursorTile.y == mapUnit.mapPosition.y + y
                         && manager.getPlayerAndUnitIndexOnTile(this.cursorTile)[0] == -1
-                        && this.getTileTypeFromPosition(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y)) != SEA_TILE) {
+                        && ((this.getTileTypeFromPosition(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y)) != SEA_TILE
+                            && mapUnit.unit.type != TELEPORT_MECH)
+                            || mapUnit.unit.type == TELEPORT_MECH)) {
                         mapUnit.mapPosition = mapUnit.mapPosition.add(vec2(x, y));
                         mapUnit.up = -1;
                         return true;
@@ -129,4 +150,69 @@ class GameMap {
         }
         return false;
     }
+
+    //
+
+    //
+
+    //UNIT MOVEMENT END // //
+
+    //UNIT ATTACK START // //
+
+    //
+
+    //
+
+    drawUnitAttack(offset, mapUnit) {
+        for (let y = -1; y <= 1; y++) {
+            for (let x = -1; x <= 1; x++) {
+
+                if (Math.abs(x) + Math.abs(y) > 1
+                    || (x == 0 && y == 0)
+                    || manager.getPlayerAndUnitIndexOnTile(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y))[0] != -1
+                    || (this.getTileTypeFromPosition(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y)) == SEA_TILE
+                        && mapUnit.unit.type != TELEPORT_MECH))
+                    continue;
+
+                var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * (gameWidth / maxDisplayTilesPerRow))),
+                    Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * (gameWidth / maxDisplayTilesPerRow))));
+
+                drawRect(spritesRenderer, posi.subtract(vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)).divide(vec2(2, 2))),
+                    vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)), true,
+                    (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#FF000088" : "#FF000044");
+            }
+        }
+    }
+
+    eventUnitAttack(mapUnit) {
+        if (isTouched) {
+            isTouched = false;
+            for (let y = -1; y <= 1; y++) {
+                for (let x = -1; x <= 1; x++) {
+
+                    if (Math.abs(x) + Math.abs(y) > 1
+                        || (x == 0 && y == 0))
+                        continue;
+
+                    if (this.cursorTile.x == mapUnit.mapPosition.x + x
+                        && this.cursorTile.y == mapUnit.mapPosition.y + y) {
+                        var playerAndUnit = manager.getPlayerAndUnitIndexOnTile(this.cursorTile);
+
+                        //ATTACK/DEFENSE EVERYTHING HERE!
+                        manager.players[playerAndUnit[0]].unitGroup.mapUnits[playerAndUnit[1]].hp -= 4;
+
+                        mapUnit.right = -1;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    //
+
+    //
+
+    //UNIT ATTACK END // //
 }

@@ -2,13 +2,8 @@
 var actionPointsPerTurn = 3;
 
 class PlayerManager {
-    constructor(unitGroups, index) {
-        this.players = [];
-        for (let i = 0; i < unitGroups.length; i++) {
-            var pl = new Player();
-            pl.unitGroup = unitGroups[i];
-            this.players.push(pl);
-        }
+    constructor(players, index) {
+        this.players = players;
         this.index = typeof index == "undefined" ? 0 : index;
     }
 
