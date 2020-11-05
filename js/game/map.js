@@ -27,27 +27,27 @@ const WAR_TILE = 289;
 const RUIN_TILE = 293;
 
 var map1 =
-    "01.01.01.01.01.02.02.02.01.01.01.01.01.01.01.01." +
-    "01.01.03.00.02.02.02.02.00.00.00.00.01.01.01.01." +
-    "01.00.00.00.00.02.02.02.02.00.00.00.00.01.01.01." +
-    "01.00.00.00.00.00.02.02.02.02.02.00.00.00.00.01." +
-    "01.01.00.00.00.00.02.02.02.00.00.01.01.01.02.02." +
-    "01.01.01.00.00.00.00.02.00.00.01.01.02.02.02.02." +
-    "01.01.01.00.00.00.00.00.00.01.02.02.02.02.02.02." +
-    "00.00.00.01.01.01.01.01.01.01.01.02.02.02.02.01." +
-    "00.00.01.01.01.02.02.02.01.01.01.01.01.01.01.01." +
-    "01.00.00.02.02.02.02.02.02.02.00.00.01.01.01.01." +
-    "01.01.01.00.02.02.02.02.02.00.00.00.00.01.01.01." +
-    "01.00.00.02.02.02.02.02.02.02.02.00.00.00.00.01." +
-    "01.01.00.00.02.02.02.02.02.00.00.01.01.01.02.02." +
-    "01.01.01.02.02.02.02.02.00.00.01.01.02.02.02.02." +
-    "01.01.01.01.01.02.02.02.02.01.02.02.02.02.02.02." +
-    "01.01.01.01.01.01.01.01.01.01.01.02.02.02.02.01.";
+    "01.01.01.01.01.02.02.02.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.01.03.00.02.02.02.02.00.00.00.00.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.00.00.00.00.02.02.02.02.00.00.00.00.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.00.00.00.00.00.02.02.02.02.02.00.00.00.00.01.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.01.00.00.00.00.02.02.02.00.00.01.01.01.02.02.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.01.01.00.00.00.00.02.00.00.01.01.02.02.02.02.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.01.01.00.00.00.00.00.00.01.02.02.02.02.02.02.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "00.00.00.01.01.01.01.01.01.01.01.02.02.02.02.01.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "00.00.01.01.01.02.02.02.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.00.00.02.02.02.02.02.02.02.00.00.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.01.01.00.02.02.02.02.02.00.00.00.00.01.01.01.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.00.00.02.02.02.02.02.02.02.02.00.00.00.00.01.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.01.00.00.02.02.02.02.02.00.00.01.01.01.02.02.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.01.01.02.02.02.02.02.00.00.01.01.02.02.02.02.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.01.01.01.01.02.02.02.02.01.02.02.02.02.02.02.01.01.01.01.01.01.01.01.01.01.01.01." +
+    "01.01.01.01.01.01.01.01.01.01.01.02.02.02.02.01.01.01.01.01.01.01.01.01.01.01.01.01";
 
 function drawSheet(index, pos, sc, tileSize) {
     if (typeof tileSize == "undefined") tileSize = vec2(64, 64);
     var cols = Math.floor(gameSheet.imageObject.image.width / tileSize.x);
-    var rows = Math.floor(gameSheet.imageObject.image.height / tileSize.y);
+    //var rows = Math.floor(gameSheet.imageObject.image.height / tileSize.y);
 
     gameSheet.transform.position = pos;
     gameSheet.transform.scale = sc;
@@ -80,14 +80,17 @@ class GameMap {
             for (let x = 0; x < this.cols; x++) {
                 var index = this.getTileTypeFromPosition(vec2(x, y));
 
-                var pos = vec2(Math.floor(offset.x + (x * (gameWidth / maxDisplayTilesPerRow))),
-                    Math.floor(offset.y + (y * (gameWidth / maxDisplayTilesPerRow))));
-                var sc = vec2(((gameWidth / maxDisplayTilesPerRow) / 64) + gridBlackLinesFixFactor,
-                    ((gameWidth / maxDisplayTilesPerRow) / 64) + gridBlackLinesFixFactor);
+                var tileSize = gameWidth / maxDisplayTilesPerRow;
+
+                var pos = vec2(Math.floor(offset.x + (x * tileSize)),
+                    Math.floor(offset.y + (y * tileSize)));
+                var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
+                    (tileSize / 64) + gridBlackLinesFixFactor);
                 drawSheet(index, pos, sc);
             }
         }
 
+        //Getting Tile at which the mouse is hovering on (or about to click)
         this.cursorTile = vec2((touchPos[0].x - offset.x - ((gameWidth / maxDisplayTilesPerRow) / 2)) / (gameWidth / maxDisplayTilesPerRow),
             (touchPos[0].y - offset.y - ((gameWidth / maxDisplayTilesPerRow) / 2)) / (gameWidth / maxDisplayTilesPerRow));
         this.cursorTile.x = Math.floor(this.cursorTile.x + 1);
@@ -184,6 +187,30 @@ class GameMap {
         }
     }
 
+    attack(munit1, munit2) {
+        switch (munit1.unit.type) {
+            case RIFLE_MECH:
+                munit2.hp -= Math.floor((munit1.hp / 10.0) * 3);
+                break;
+
+            case CANNON_MECH:
+                munit2.hp -= Math.floor((munit1.hp / 10.0) * 6);
+                break;
+
+            case ARTILLERY_MECH:
+                munit2.hp -= Math.floor((munit1.hp / 10.0) * 8);
+                break;
+
+            case SUPPORT_MECH:
+                munit2.hp -= Math.floor((munit1.hp / 10.0) * 2);
+                break;
+
+            case TELEPORT_MECH:
+                munit2.hp -= Math.floor((munit1.hp / 10.0) * 4);
+                break;
+        }
+    }
+
     eventUnitAttack(mapUnit) {
         if (isTouched) {
             isTouched = false;
@@ -197,10 +224,7 @@ class GameMap {
                     if (this.cursorTile.x == mapUnit.mapPosition.x + x
                         && this.cursorTile.y == mapUnit.mapPosition.y + y) {
                         var playerAndUnit = manager.getPlayerAndUnitIndexOnTile(this.cursorTile);
-
-                        //ATTACK/DEFENSE EVERYTHING HERE!
-                        manager.players[playerAndUnit[0]].unitGroup.mapUnits[playerAndUnit[1]].hp -= 4;
-
+                        this.attack(mapUnit, manager.players[playerAndUnit[0]].unitGroup.mapUnits[playerAndUnit[1]]);
                         mapUnit.right = -1;
                         return true;
                     }
