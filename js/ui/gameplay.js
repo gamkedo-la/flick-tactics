@@ -172,17 +172,17 @@ function gameplayUpdate(deltaTime) {
         leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
     }
 
-    if (unitUpBtn.output != UIOUTPUT_SELECT)
-        unitUpBtn.output = getPlayer().getSelectedMapUnit().up == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (unitLeftBtn.output != UIOUTPUT_SELECT)
-        unitLeftBtn.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (unitDownBtn.output != UIOUTPUT_SELECT)
-        unitDownBtn.output = getPlayer().getSelectedMapUnit().down == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (unitRightBtn.output != UIOUTPUT_SELECT)
-        unitRightBtn.output = getPlayer().getSelectedMapUnit().right == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (unitUpBtn.button.output != UIOUTPUT_SELECT)
+        unitUpBtn.button.output = getPlayer().getSelectedMapUnit().up == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (unitLeftBtn.button.output != UIOUTPUT_SELECT)
+        unitLeftBtn.button.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (unitDownBtn.button.output != UIOUTPUT_SELECT)
+        unitDownBtn.button.output = getPlayer().getSelectedMapUnit().down == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (unitRightBtn.button.output != UIOUTPUT_SELECT)
+        unitRightBtn.button.output = getPlayer().getSelectedMapUnit().right == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
 
     if (getPlayer().actionPoints <= 0)
-        unitUpBtn.output = unitLeftBtn.output = unitDownBtn.output = unitRightBtn.output = UIOUTPUT_DISABLED;
+        unitUpBtn.button.output = unitLeftBtn.button.output = unitDownBtn.button.output = unitRightBtn.button.output = UIOUTPUT_DISABLED;
     // Disabling Unit Action Buttons and Left/Right Unit Buttons END
 }
 
@@ -220,20 +220,20 @@ function gameplayEvent(deltaTime) {
         updateUnitActionButtons();
         rightUnitChangeBtn.button.resetOutput();
     }
-    else if (unitUpBtn.output == UIOUTPUT_SELECT) {
+    else if (unitUpBtn.button.output == UIOUTPUT_SELECT) {
         getPlayer().getSelectedMapUnit().up = 0;
-        unitUpBtn.resetOutput();
+        unitUpBtn.button.resetOutput();
     }
-    else if (unitLeftBtn.output == UIOUTPUT_SELECT) {
+    else if (unitLeftBtn.button.output == UIOUTPUT_SELECT) {
         getPlayer().getSelectedMapUnit().left = 0;
-        unitLeftBtn.resetOutput();
+        unitLeftBtn.button.resetOutput();
     }
-    else if (unitDownBtn.output == UIOUTPUT_SELECT) {
+    else if (unitDownBtn.button.output == UIOUTPUT_SELECT) {
         getPlayer().getSelectedMapUnit().down = 0;
-        unitDownBtn.resetOutput();
+        unitDownBtn.button.resetOutput();
     }
-    else if (unitRightBtn.output == UIOUTPUT_SELECT) {
+    else if (unitRightBtn.button.output == UIOUTPUT_SELECT) {
         getPlayer().getSelectedMapUnit().right = 0;
-        unitRightBtn.resetOutput();
+        unitRightBtn.button.resetOutput();
     }
 }

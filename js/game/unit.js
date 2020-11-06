@@ -73,7 +73,8 @@ class MapUnit {
 
         this.unit.draw(teamID, offset, sc);
 
-        drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-32 * pixelSize, -16 * pixelSize))), "white");
+        if (ui.stateIndex != BATTLESCREEN)
+            drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-32 * pixelSize, -16 * pixelSize))), "white");
     }
 }
 

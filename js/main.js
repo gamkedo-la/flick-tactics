@@ -9,6 +9,7 @@ function event(deltaTime) {
         case STARTSCREEN: startscreenEvent(deltaTime); break;
         case GAMEPLAY: gameplayEvent(deltaTime); break;
         case ABOUT: aboutEvent(deltaTime); break;
+        case BATTLESCREEN: battlescreenEvent(deltaTime); break;
     }
     ui.event();
 }
@@ -18,6 +19,7 @@ function update(deltaTime) {
         case STARTSCREEN: startscreenUpdate(deltaTime); break;
         case GAMEPLAY: gameplayUpdate(deltaTime); break;
         case ABOUT: aboutUpdate(deltaTime); break;
+        case BATTLESCREEN: battlescreenUpdate(deltaTime); break;
     }
     ui.update();
 }
@@ -29,6 +31,7 @@ function draw(deltaTime) {
         case STARTSCREEN: startscreenDraw(deltaTime); break;
         case GAMEPLAY: gameplayDraw(deltaTime); break;
         case ABOUT: aboutDraw(deltaTime); break;
+        case BATTLESCREEN: battlescreenDraw(deltaTime); break;
     }
     ui.draw();
     //ui.debugDraw("green");

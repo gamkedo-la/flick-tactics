@@ -191,18 +191,21 @@ class GameMap {
         switch (munit1.unit.type) {
             case RIFLE_MECH:
                 if (munit2 != -1) {
+                    ui.stateIndex = BATTLESCREEN;
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 3);
                 }
                 break;
 
             case CANNON_MECH:
                 if (munit2 != -1) {
+                    ui.stateIndex = BATTLESCREEN;
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 6);
                 }
                 break;
 
             case ARTILLERY_MECH:
                 if (munit2 != -1) {
+                    ui.stateIndex = BATTLESCREEN;
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 8);
                 }
 
@@ -231,6 +234,7 @@ class GameMap {
 
             case SUPPORT_MECH:
                 if (munit2 != -1) {
+                    ui.stateIndex = BATTLESCREEN;
                     munit1.hp -= Math.floor((((munit1.hp + munit2.hp) / 2) / 10.0) * 2);
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 4);
                     munit2.mapPosition = munit2.mapPosition.add(placement);
@@ -239,6 +243,7 @@ class GameMap {
 
             case TELEPORT_MECH:
                 if (munit2 != -1) {
+                    ui.stateIndex = BATTLESCREEN;
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 2);
                 }
                 break;
