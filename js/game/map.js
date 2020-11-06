@@ -167,12 +167,14 @@ class GameMap {
     //
 
     drawUnitAttack(offset, mapUnit) {
-        for (let y = -1; y <= 1; y++) {
-            for (let x = -1; x <= 1; x++) {
+        var skipRange = mapUnit.unit.type == ARTILLERY_MECH ? 2 : 0;
+        var range = mapUnit.unit.type == ARTILLERY_MECH ? 4 : 1;
+        for (let y = -range; y <= range; y++) {
+            for (let x = -range; x <= range; x++) {
 
-                if (Math.abs(x) + Math.abs(y) > 1
-                    || (x == 0 && y == 0)
-                    || manager.getPlayerAndUnitIndexOnTile(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y))[0] != -1)
+                if (Math.abs(x) + Math.abs(y) > range
+                    || Math.abs(x) + Math.abs(y) <= skipRange
+                    || (x == 0 && y == 0))
                     continue;
 
                 var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * (gameWidth / maxDisplayTilesPerRow))),
@@ -185,26 +187,60 @@ class GameMap {
         }
     }
 
-    attack(munit1, munit2) {
+    attack(munit1, munit2, placement) {
         switch (munit1.unit.type) {
             case RIFLE_MECH:
-                munit2.hp -= Math.floor((munit1.hp / 10.0) * 3);
+                if (munit2 != -1) {
+                    munit2.hp -= Math.floor((munit1.hp / 10.0) * 3);
+                }
                 break;
 
             case CANNON_MECH:
-                munit2.hp -= Math.floor((munit1.hp / 10.0) * 6);
+                if (munit2 != -1) {
+                    munit2.hp -= Math.floor((munit1.hp / 10.0) * 6);
+                }
                 break;
 
             case ARTILLERY_MECH:
-                munit2.hp -= Math.floor((munit1.hp / 10.0) * 8);
+                if (munit2 != -1) {
+                    munit2.hp -= Math.floor((munit1.hp / 10.0) * 8);
+                }
+
+                //Artillery Range Attack and pushes all units around the attack point
+                var pu1 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(1, 0)));
+                if (pu1[0] != -1 && pu1[1] != -1)
+                    manager.players[pu1[0]].unitGroup.mapUnits[pu1[1]].mapPosition
+                        = manager.players[pu1[0]].unitGroup.mapUnits[pu1[1]].mapPosition.add(vec2(1, 0));
+
+                var pu2 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(-1, 0)));
+                if (pu2[0] != -1 && pu2[1] != -1)
+                    manager.players[pu2[0]].unitGroup.mapUnits[pu2[1]].mapPosition
+                        = manager.players[pu2[0]].unitGroup.mapUnits[pu2[1]].mapPosition.add(vec2(-1, 0));
+
+                var pu3 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(0, 1)));
+                if (pu3[0] != -1 && pu3[1] != -1)
+                    manager.players[pu3[0]].unitGroup.mapUnits[pu3[1]].mapPosition
+                        = manager.players[pu3[0]].unitGroup.mapUnits[pu3[1]].mapPosition.add(vec2(0, 1));
+
+                var pu4 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(0, -1)));
+                if (pu4[0] != -1 && pu4[1] != -1)
+                    manager.players[pu4[0]].unitGroup.mapUnits[pu4[1]].mapPosition
+                        = manager.players[pu4[0]].unitGroup.mapUnits[pu4[1]].mapPosition.add(vec2(0, -1));
+
                 break;
 
             case SUPPORT_MECH:
-                munit2.hp -= Math.floor((munit1.hp / 10.0) * 2);
+                if (munit2 != -1) {
+                    munit1.hp -= Math.floor((((munit1.hp + munit2.hp) / 2) / 10.0) * 2);
+                    munit2.hp -= Math.floor((munit1.hp / 10.0) * 4);
+                    munit2.mapPosition = munit2.mapPosition.add(placement);
+                }
                 break;
 
             case TELEPORT_MECH:
-                munit2.hp -= Math.floor((munit1.hp / 10.0) * 4);
+                if (munit2 != -1) {
+                    munit2.hp -= Math.floor((munit1.hp / 10.0) * 2);
+                }
                 break;
         }
     }
@@ -212,17 +248,23 @@ class GameMap {
     eventUnitAttack(mapUnit) {
         if (isTouched) {
             isTouched = false;
-            for (let y = -1; y <= 1; y++) {
-                for (let x = -1; x <= 1; x++) {
+            var skipRange = mapUnit.unit.type == ARTILLERY_MECH ? 2 : 0;
+            var range = mapUnit.unit.type == ARTILLERY_MECH ? 4 : 1;
+            for (let y = -range; y <= range; y++) {
+                for (let x = -range; x <= range; x++) {
 
-                    if (Math.abs(x) + Math.abs(y) > 1
+                    if (Math.abs(x) + Math.abs(y) > range
+                        || Math.abs(x) + Math.abs(y) <= skipRange
                         || (x == 0 && y == 0))
                         continue;
 
                     if (this.cursorTile.x == mapUnit.mapPosition.x + x
                         && this.cursorTile.y == mapUnit.mapPosition.y + y) {
                         var playerAndUnit = manager.getPlayerAndUnitIndexOnTile(this.cursorTile);
-                        this.attack(mapUnit, manager.players[playerAndUnit[0]].unitGroup.mapUnits[playerAndUnit[1]]);
+                        if (playerAndUnit[0] != -1 && playerAndUnit[1] != -1)
+                            this.attack(mapUnit, manager.players[playerAndUnit[0]].unitGroup.mapUnits[playerAndUnit[1]], vec2(x, y));
+                        else
+                            this.attack(mapUnit, -1, vec2(x, y));
                         mapUnit.right = -1;
                         return true;
                     }

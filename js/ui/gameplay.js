@@ -32,15 +32,74 @@ function controlBarUISetup(fontSize) {
 }
 
 function unitControlsUISetup() {
-    unitUpBtn = new Button(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) - (100 * pixelSize)), vec2(50 * pixelSize, 50 * pixelSize)), "#00000066", "#FFFFFFFF", "#000000BB", "#FF000044");
+    unitUpBtn = new TextButton(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) - (100 * pixelSize)),
+        vec2(50 * pixelSize, 50 * pixelSize)),
+        new Label(tr(), "", undefined, "white", 0),
+        new Button(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) - (100 * pixelSize)),
+            vec2(50 * pixelSize, 50 * pixelSize)),
+            "#00000066", "#FFFFFFFF", "#000000BB", "#FF000044"));
     gameplay.push(unitUpBtn);
-    unitLeftBtn = new Button(tr(vec2((gameWidth / 2) - (100 * pixelSize), (gameHeight / 2) - (25 * pixelSize)), vec2(50 * pixelSize, 50 * pixelSize)), "#00000066", "#FFFFFFFF", "#000000BB", "#FF000044");
+    unitLeftBtn = new TextButton(tr(vec2((gameWidth / 2) - (100 * pixelSize), (gameHeight / 2) - (25 * pixelSize)),
+        vec2(50 * pixelSize, 50 * pixelSize)),
+        new Label(tr(), "", undefined, "white", 0),
+        new Button(tr(vec2((gameWidth / 2) - (100 * pixelSize), (gameHeight / 2) - (25 * pixelSize)),
+            vec2(50 * pixelSize, 50 * pixelSize)),
+            "#00000066", "#FFFFFFFF", "#000000BB", "#FF000044"));
     gameplay.push(unitLeftBtn);
-    unitDownBtn = new Button(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) + (50 * pixelSize)), vec2(50 * pixelSize, 50 * pixelSize)), "#00000066", "#FFFFFFFF", "#000000BB", "#FF000044");
+    unitDownBtn = new TextButton(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) + (50 * pixelSize)),
+        vec2(50 * pixelSize, 50 * pixelSize)),
+        new Label(tr(), "", undefined, "white", 0),
+        new Button(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) + (50 * pixelSize)),
+            vec2(50 * pixelSize, 50 * pixelSize)),
+            "#00000066", "#FFFFFFFF", "#000000BB", "#FF000044"));
     gameplay.push(unitDownBtn);
-    unitRightBtn = new Button(tr(vec2((gameWidth / 2) + (50 * pixelSize), (gameHeight / 2) - (25 * pixelSize)), vec2(50 * pixelSize, 50 * pixelSize)), "#00000066", "#FFFFFFFF", "#000000BB", "#FF000044");
+    unitRightBtn = new TextButton(tr(vec2((gameWidth / 2) + (50 * pixelSize), (gameHeight / 2) - (25 * pixelSize)),
+        vec2(50 * pixelSize, 50 * pixelSize)),
+        new Label(tr(), "", undefined, "white", 0),
+        new Button(tr(vec2((gameWidth / 2) + (50 * pixelSize), (gameHeight / 2) - (25 * pixelSize)),
+            vec2(50 * pixelSize, 50 * pixelSize)),
+            "#00000066", "#FFFFFFFF", "#000000BB", "#FF000044"));
     gameplay.push(unitRightBtn);
     unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
+}
+
+function updateUnitActionButtons() {
+    switch (getPlayer().unitGroup.mapUnits[getPlayer().selectedIndex].unit.type) {
+        case RIFLE_MECH:
+            unitUpBtn.label.text = "MOVE";
+            unitLeftBtn.label.text = "SMOKE"; //no
+            unitDownBtn.label.text = "EMP"; //no
+            unitRightBtn.label.text = "ATTACK";
+            break;
+
+        case CANNON_MECH:
+            unitUpBtn.label.text = "MOVE"; //push->no
+            unitLeftBtn.label.text = "BOOST"; //no
+            unitDownBtn.label.text = "MINI-ART"; //no; push->no
+            unitRightBtn.label.text = "ATTACK";
+            break;
+
+        case ARTILLERY_MECH:
+            unitUpBtn.label.text = "MOVE";
+            unitLeftBtn.label.text = "SMOKE"; //no
+            unitDownBtn.label.text = "SHIELD"; //no
+            unitRightBtn.label.text = "ATTACK"; //push
+            break;
+
+        case SUPPORT_MECH:
+            unitUpBtn.label.text = "MOVE";
+            unitLeftBtn.label.text = "SUPPLY"; //no
+            unitDownBtn.label.text = "REPAIR"; //no
+            unitRightBtn.label.text = "TACKLE"; //push
+            break;
+
+        case TELEPORT_MECH:
+            unitUpBtn.label.text = "MOVE";
+            unitLeftBtn.label.text = "TELEPORT"; //no
+            unitDownBtn.label.text = "SHIELD"; //no
+            unitRightBtn.label.text = "TACKLE";
+            break;
+    }
 }
 
 function gameplaySetup() {
@@ -73,6 +132,8 @@ function gameplaySetup() {
     gameplay.push(rightUnitChangeBtn);
     unitControlsUISetup();
     //Gameplay UI END
+
+    updateUnitActionButtons();
 
     gameplayReset();
 }
@@ -150,11 +211,13 @@ function gameplayEvent(deltaTime) {
     else if (leftUnitChangeBtn.button.output == UIOUTPUT_SELECT) {
         getPlayer().selectedIndex--;
         if (getPlayer().selectedIndex <= -1) getPlayer().selectedIndex = getPlayer().unitGroup.mapUnits.length - 1;
+        updateUnitActionButtons();
         leftUnitChangeBtn.button.resetOutput();
     }
     else if (rightUnitChangeBtn.button.output == UIOUTPUT_SELECT) {
         getPlayer().selectedIndex++;
         if (getPlayer().selectedIndex >= getPlayer().unitGroup.mapUnits.length) getPlayer().selectedIndex = 0;
+        updateUnitActionButtons();
         rightUnitChangeBtn.button.resetOutput();
     }
     else if (unitUpBtn.output == UIOUTPUT_SELECT) {
