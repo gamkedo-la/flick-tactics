@@ -44,7 +44,7 @@ function unitControlsUISetup() {
 }
 
 function gameplaySetup() {
-    map = new GameMap(map1, 16, 16);
+    map = new GameMap(map1, 28, 16);
     manager = new PlayerManager([
         new Player(RED_TEAM, [
             new MapUnit(RIFLE_MECH, vec2(4, 4)),
