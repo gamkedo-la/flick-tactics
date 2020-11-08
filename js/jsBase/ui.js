@@ -194,17 +194,17 @@ class SubState extends UIObject {
 }
 
 class Label extends UIObject {
-    constructor(transform, text, font, textColor, align, tooltip) {
+    constructor(transform, text, font = uiContext.fontSize.toString() + "px " + uiContext.fontFamily, textColor = uiContext.textColor, align = 0, tooltip) {
         super(transform);
 
         this.text = text;
         this.tooltip = tooltip;
 
-        this.font = typeof font == "undefined" ? uiContext.fontSize.toString() + "px " + uiContext.fontFamily : font;
+        this.font = font;
 
-        this.textColor = typeof textColor == "undefined" ? uiContext.textColor : textColor;
+        this.textColor = textColor;
 
-        this.align = typeof align == "undefined" ? 0 : align;
+        this.align = align;
     }
 
     draw() {
@@ -232,15 +232,15 @@ class Label extends UIObject {
 }
 
 class Button extends UIObject {
-    constructor(transform, btnColor, selectColor, hoverColor, disabledColor) {
+    constructor(transform, btnColor = uiContext.fgPrimaryColor, selectColor = uiContext.fgSecondaryColor, hoverColor = uiContext.fgTertiaryColor, disabledColor = uiContext.fgPrimaryColor + "80") {
         super(transform);
 
-        this.btnColor = typeof btnColor == "undefined" ? uiContext.fgPrimaryColor : btnColor;
+        this.btnColor = btnColor;
         this.defColor = this.btnColor;
 
-        this.selectColor = typeof selectColor == "undefined" ? uiContext.fgSecondaryColor : selectColor;
-        this.hoverColor = typeof hoverColor == "undefined" ? uiContext.fgTertiaryColor : hoverColor;
-        this.disabledColor = typeof disabledColor == "undefined" ? uiContext.fgPrimaryColor + "80" : disabledColor;
+        this.selectColor = selectColor;
+        this.hoverColor = hoverColor;
+        this.disabledColor = disabledColor;
 
         this.prevTouchId = -1;
 
@@ -284,14 +284,14 @@ class Button extends UIObject {
 }
 
 class Selector {
-    constructor(object, selected, possibleSelections, deselectable) {
+    constructor(object, selected = false, possibleSelections = -1, deselectable = true) {
         this.object = object;
 
-        this.selected = typeof selected == "undefined" ? false : selected;
+        this.selected = selected;
 
-        this.possibleSelections = typeof possibleSelections == "undefined" ? -1 /* means infinite */ : possibleSelections;
+        this.possibleSelections = possibleSelections; //default of -1 means infinite
 
-        this.deselectable = typeof deselectable == "undefined" ? true : deselectable;
+        this.deselectable = deselectable;
 
         this.otherSelectors = [];
         this.otherObjects = [];
@@ -347,7 +347,7 @@ class Selector {
 }
 
 class RadioButton extends UIObject {
-    constructor(transform, otherRadioButtons, enableRadius, color, check, enableColor, disableColor) {
+    constructor(transform, otherRadioButtons, enableRadius, color = uiContext.bgSecondaryColor, check = false, enableColor = uiContext.fgSecondaryColor, disableColor = uiContext.bgPrimaryColor) {
         super(transform);
 
         this.transform.scale = vec2((this.transform.scale.x + this.transform.scale.y) / 2,
@@ -356,12 +356,12 @@ class RadioButton extends UIObject {
         this.enableRadius = typeof enableRadius == "undefined" ?
             this.transform.scale.x /* or y; doesnt matter */ - 4 : enableRadius;
 
-        this.color = typeof color == "undefined" ? uiContext.bgSecondaryColor : color;
+        this.color = color;
 
-        this.enableColor = typeof enableColor == "undefined" ? uiContext.fgSecondaryColor : enableColor;
-        this.disableColor = typeof disableColor == "undefined" ? uiContext.bgPrimaryColor : disableColor;
+        this.enableColor = enableColor;
+        this.disableColor = disableColor;
 
-        this.selector = new Selector(this, typeof check == "undefined" ? false : check, 1, false);
+        this.selector = new Selector(this, check, 1, false);
         this.selector.groupSelectors(otherRadioButtons);
 
         this.prevTouchId = -1;
@@ -396,7 +396,7 @@ class RadioButton extends UIObject {
 }
 
 class Panel extends UIObject {
-    constructor(transform, subState, minOffset, maxOffset, color, offset) {
+    constructor(transform, subState, minOffset = vec2(0, 0), maxOffset = vec2(0, 0), color = uiContext.bgPrimaryColor, offset = vec2(0, 0)) {
         super(transform);
 
         this.fixPosition = vec2(this.transform.position.x, this.transform.position.y);
@@ -408,12 +408,12 @@ class Panel extends UIObject {
         for (let i = 0; i < this.subState.uiObjects.length; i++)
             this.uiObjectsFixPosition.push(this.subState.uiObjects[i].transform.position);
 
-        this.minOffset = typeof minOffset == "undefined" ? vec2(0, 0) : minOffset;
-        this.maxOffset = typeof maxOffset == "undefined" ? vec2(0, 0) : maxOffset;
+        this.minOffset = minOffset;
+        this.maxOffset = maxOffset;
 
-        this.color = typeof color == "undefined" ? uiContext.bgPrimaryColor : color;
+        this.color = color;
 
-        this.offset = typeof offset == "undefined" ? vec2(0, 0) : offset;
+        this.offset = offset;
 
         this.event = function () {
             if (this.enabled) {
@@ -466,18 +466,18 @@ class Panel extends UIObject {
 }
 
 class GridGroup extends UIObject {
-    constructor(transform, subState, isAxisVertical, gridSpace, gridSize, cellSize) {
+    constructor(transform, subState, isAxisVertical = true, gridSpace = vec2(0, 0), gridSize = vec2(-1, -1), cellSize = vec2(-1, -1)) {
         super(transform);
 
         this.subState = typeof subState == "undefined" ? new SubState(transform) : subState;
 
-        this.isAxisVertical = typeof isAxisVertical == "undefined" ? true : isAxisVertical;
+        this.isAxisVertical = isAxisVertical;
 
-        this.gridSpace = typeof gridSpace == "undefined" ? vec2(0, 0) : gridSpace;
+        this.gridSpace = gridSpace;
 
-        this.gridSize = typeof gridSize == "undefined" ? vec2(-1, -1) : gridSize;
+        this.gridSize = gridSize;
 
-        this.cellSize = typeof cellSize == "undefined" ? vec2(-1, -1) : cellSize;
+        this.cellSize = cellSize;
 
         this.adaptX = typeof cellSize == "undefined" ? true : cellSize.x <= -1;
         this.adaptY = typeof cellSize == "undefined" ? true : cellSize.y <= -1;
@@ -555,20 +555,20 @@ class GridGroup extends UIObject {
 }
 
 class FlexGroup extends UIObject {
-    constructor(transform, subState, isAxisVertical, gridSpace, gridSize, scaleFlex) {
+    constructor(transform, subState, isAxisVertical = true, gridSpace = vec2(0, 0), gridSize = vec2(-1, -1), scaleFlex = true) {
         super(transform);
 
         this.subState = typeof subState == "undefined" ? new SubState(transform) : subState;
 
-        this.isAxisVertical = typeof isAxisVertical == "undefined" ? true : isAxisVertical;
+        this.isAxisVertical = isAxisVertical;
 
-        this.gridSpace = typeof gridSpace == "undefined" ? vec2(0, 0) : gridSpace;
+        this.gridSpace = gridSpace;
 
-        this.gridSize = typeof gridSize == "undefined" ? vec2(-1, -1) : gridSize;
+        this.gridSize = gridSize;
 
         this.cellSize = typeof cellSize == "undefined" ? vec2(-1, -1) : cellSize;
 
-        this.scaleFlex = typeof scaleFlex == "undefined" ? true : scaleFlex;
+        this.scaleFlex = scaleFlex;
 
         this.event = function () {
             this.subState.event();
@@ -701,7 +701,7 @@ class TextButton extends UIObject {
 }
 
 class Tab extends UIObject {
-    constructor(transform, uiObjectsToToggle, otherTabs, textButton, selected, enableColor, disableColor) {
+    constructor(transform, uiObjectsToToggle, otherTabs, textButton, selected = false, enableColor = uiContext.fgTertiaryColor, disableColor = uiContext.fgPrimaryColor) {
         super(transform);
 
         this.uiObjectsToToggle = uiObjectsToToggle;
@@ -710,10 +710,10 @@ class Tab extends UIObject {
         this.textButton = typeof textButton == "undefined" ? new TextButton(this.transform) : textButton;
         this.textButton.transform = this.transform;
 
-        this.enableColor = typeof enableColor == "undefined" ? uiContext.fgTertiaryColor : enableColor;
-        this.disableColor = typeof disableColor == "undefined" ? uiContext.fgPrimaryColor : disableColor;
+        this.enableColor = enableColor;
+        this.disableColor = disableColor;
 
-        this.selector = new Selector(this, typeof selected == "undefined" ? false : selected, 1, true);
+        this.selector = new Selector(this, selected, 1, true);
         this.selector.groupSelectors(otherTabs);
 
         this.prevTouchId = -1;
@@ -762,37 +762,43 @@ class Tab extends UIObject {
 }
 
 class Slider extends UIObject {
-    constructor(transform, rangeVec2, label, steps, knobValue, knobRadius, knobColor, bgLineThickness, bgLineColor, selectKnobColor, disabledKnobColor, tooltip) {
+    constructor(transform, rangeVec2 = vec2(0, 1), label, steps = 0,
+        knobValue, knobRadius = window.innerWidth / 46.0,
+        knobColor = uiContext.fgPrimaryColor, bgLineThickness = 2,
+        bgLineColor = uiContext.bgSecondaryColor,
+        selectKnobColor = uiContext.fgSecondaryColor,
+        disabledKnobColor = uiContext.fgPrimaryColor + "80",
+        tooltip) {
         super(transform);
 
         this.tooltip = tooltip;
 
-        this.range = typeof rangeVec2 == "undefined" ? vec2(0, 1) : rangeVec2;
+        this.range = rangeVec2;
 
         this.label = typeof label == "undefined" ? new Label(new Transform(transform.position), '') : label;
         this.label.transform.position = this.transform.position;
         this.label.transform.scale = vec2(this.transform.scale.x / 2, this.transform.scale.y);
         this.label.tooltip = tooltip;
 
-        this.steps = typeof steps == "undefined" ? 0 : steps;
+        this.steps = steps;
 
         this.knobValue = typeof knobValue == "undefined" ? this.range.x : knobValue;
 
-        this.knobRadius = typeof knobRadius == "undefined" ? window.innerWidth / 46.0 : knobRadius;
+        this.knobRadius = knobRadius;
 
         this.knobTransform = new Transform(
             vec2(this.transform.position.x + (this.transform.scale.x / 2),
                 this.transform.position.y + (this.knobRadius * 2)),
             vec2(this.knobRadius * 2, this.knobRadius * 2));
 
-        this.knobColor = typeof knobColor == "undefined" ? uiContext.fgPrimaryColor : knobColor;
+        this.knobColor = knobColor;
         this.defKnobColor = this.knobColor;
 
-        this.bgLineThickness = typeof bgLineThickness == "undefined" ? 2 : bgLineThickness;
-        this.bgLineColor = typeof bgLineColor == "undefined" ? uiContext.bgSecondaryColor : bgLineColor;
+        this.bgLineThickness = bgLineThickness;
+        this.bgLineColor = bgLineColor;
 
-        this.selectKnobColor = typeof selectKnobColor == "undefined" ? uiContext.fgSecondaryColor : selectKnobColor;
-        this.disabledKnobColor = typeof disabledKnobColor == "undefined" ? uiContext.fgPrimaryColor + "80" : disabledKnobColor;
+        this.selectKnobColor = selectKnobColor;
+        this.disabledKnobColor = disabledKnobColor;
 
         this.startKnobValueSet = 10;
 
@@ -887,17 +893,23 @@ class Slider extends UIObject {
 }
 // *** WORK IN PROGRESS ***
 class CircularPad extends UIObject {
-    constructor(transform, controlRadius, padRadius, controlColor, padColor, limitArea) {
+    constructor(transform,
+        controlRadius = window.innerWidth / 32.0,
+        padRadius = this.controlRadius * 2.6,
+        controlColor = uiContext.fgPrimaryColor,
+        padColor = uiContext.bgSecondaryColor,
+        limitArea = vec2(0, 0)) {
+        
         super(transform);
         this.controlPosition = transform.position;
 
-        this.controlRadius = typeof controlRadius == "undefined" ? window.innerWidth / 32.0 : controlRadius;
-        this.padRadius = typeof padRadius == "undefined" ? this.controlRadius * 2.6 : padRadius;
+        this.controlRadius = controlRadius;
+        this.padRadius = padRadius;
 
-        this.controlColor = typeof controlColor == "undefined" ? uiContext.fgPrimaryColor : controlColor;
-        this.padColor = typeof padColor == "undefined" ? uiContext.bgSecondaryColor : padColor;
+        this.controlColor = controlColor;
+        this.padColor = padColor;
 
-        this.limitArea = typeof limitArea == "undefined" ? vec2(0, 0) : limitArea;
+        this.limitArea = limitArea;
 
         this.event = function () {
             if (this.enabled) {
