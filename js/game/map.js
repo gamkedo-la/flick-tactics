@@ -1,24 +1,18 @@
+
+var tileSize;
+var tileGap;
+var tileGapFactor = 8.0;
+
 var maxDisplayTilesPerRow = 16;
 var gridBlackLinesFixFactor = 0.02;
 
 const PLAINS_TILE = 0;
-
 const SAND_TILE = 1;
-
 const SEA_TILE = 2;
-const SEA_TILES = [20, 21, 22, 23, 24, 25, 26, 27, 28, 40, 41, 42, 43, 44, 45, 46, 47, 48, 60, 61, 62, 63, 64, 65, 66, 67, 68];
-const SEA_STARTANIMATION = 106; //107
-
 const FOREST_TILE = 3;
-
 const MOUNTAIN_TILE = 4;
-
 const TOXIC_TILE = 5;
-const TOXIC_TILES = [6, 7, 8, 9];
-const TOXIC_STARTANIMATION = 87; //88
-
 const ROAD_TILE = 86;
-const ROAD_TILES = [80, 81, 82, 83, 84, 85, 100, 101, 102, 103, 104, 105];
 
 //building_tile + teamID
 const HQ_TILE = 281;
@@ -55,6 +49,11 @@ function drawSheet(index, pos, sc, tileSize) {
     gameSheet.drawScIn((vec2(index % cols, Math.floor(index / cols)).multiply(vec2(64, 64))).subtract(vec2(0.001 * pixelSize, 0.001 * pixelSize)), tileSize.add(vec2(0.001 * pixelSize, 0.001 * pixelSize)));
 }
 
+function updateTileSizes() {
+    tileSize = gameWidth / maxDisplayTilesPerRow;
+    tileGap = Math.floor(tileSize / tileGapFactor);
+}
+
 class GameMap {
     constructor(mapString, totalCols, totalRows) {
         this.cols = totalCols;
@@ -80,25 +79,22 @@ class GameMap {
             for (let x = 0; x < this.cols; x++) {
                 var index = this.getTileTypeFromPosition(vec2(x, y));
 
-                var tileSize = gameWidth / maxDisplayTilesPerRow;
-
-                var pos = vec2(Math.floor(offset.x + (x * tileSize)),
-                    Math.floor(offset.y + (y * tileSize)));
+                var pos = vec2(Math.floor(offset.x + (x * tileSize) + (x * tileGap)),
+                    Math.floor(offset.y + (y * tileSize) + (y * tileGap)));
                 var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
                     (tileSize / 64) + gridBlackLinesFixFactor);
                 drawSheet(index, pos, sc);
             }
         }
-
         //Getting Tile at which the mouse is hovering on (or about to click)
-        this.cursorTile = vec2((touchPos[0].x - offset.x - ((gameWidth / maxDisplayTilesPerRow) / 2)) / (gameWidth / maxDisplayTilesPerRow),
-            (touchPos[0].y - offset.y - ((gameWidth / maxDisplayTilesPerRow) / 2)) / (gameWidth / maxDisplayTilesPerRow));
+        this.cursorTile = vec2((touchPos[0].x - offset.x - (tileSize / 2)) / (tileSize + tileGap),
+            (touchPos[0].y - offset.y - (tileSize / 2)) / (tileSize + tileGap));
         this.cursorTile.x = Math.floor(this.cursorTile.x + 1);
         this.cursorTile.y = Math.floor(this.cursorTile.y + 1);
 
-        drawRect(spritesRenderer, vec2(Math.floor((offset.x + (this.cursorTile.x * (gameWidth / maxDisplayTilesPerRow)) - ((gameWidth / maxDisplayTilesPerRow) / 2))),
-            Math.floor((offset.y + (this.cursorTile.y * (gameWidth / maxDisplayTilesPerRow)) - ((gameWidth / maxDisplayTilesPerRow) / 2)))),
-            vec2(gameWidth / maxDisplayTilesPerRow, gameWidth / maxDisplayTilesPerRow), true, "#FFFFFF44");
+        drawRect(spritesRenderer, vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
+            Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))),
+            vec2(tileSize, tileSize), true, "#FFFFFF44");
     }
 
     //UNIT MOVEMENT START // //
@@ -118,11 +114,11 @@ class GameMap {
                         && mapUnit.unit.type != TELEPORT_MECH))
                     continue;
 
-                var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * (gameWidth / maxDisplayTilesPerRow))),
-                    Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * (gameWidth / maxDisplayTilesPerRow))));
+                var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * tileSize) + ((mapUnit.mapPosition.x + x) * tileGap)),
+                    Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * tileSize) + ((mapUnit.mapPosition.y + y) * tileGap)));
 
-                drawRect(spritesRenderer, posi.subtract(vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)).divide(vec2(2, 2))),
-                    vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)), true,
+                drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
+                    vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true,
                     (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#00FF00BB" : "#FFFF0088");
             }
         }
@@ -177,11 +173,11 @@ class GameMap {
                     || (x == 0 && y == 0))
                     continue;
 
-                var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * (gameWidth / maxDisplayTilesPerRow))),
-                    Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * (gameWidth / maxDisplayTilesPerRow))));
+                var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * tileSize) + ((mapUnit.mapPosition.x + x) * tileGap)),
+                    Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * tileSize) + ((mapUnit.mapPosition.y + y) * tileGap)));
 
-                drawRect(spritesRenderer, posi.subtract(vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)).divide(vec2(2, 2))),
-                    vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)), true,
+                drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
+                    vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true,
                     (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#FF0000BB" : "#FF000088");
             }
         }

@@ -27,6 +27,7 @@ function update(deltaTime) {
 function draw(deltaTime) {
     renderer.clearRect(0, 0, window.innerWidth, window.innerHeight);
     drawRect(renderer, vec2(0, 0), vec2(window.innerWidth, window.innerHeight), true, "black");
+    drawRect(renderer, vec2(0, 0), vec2(window.innerWidth, window.innerHeight), true, getActiveTeamColor() + "66");
     switch (ui.stateIndex) {
         case STARTSCREEN: startscreenDraw(deltaTime); break;
         case GAMEPLAY: gameplayDraw(deltaTime); break;

@@ -31,6 +31,23 @@ function controlBarUISetup(fontSize) {
         new SubState(tr(), controlBar), false, vec2(10 * pixelSize, 0), vec2(9, 1), true));
 }
 
+function getActiveTeamColor() {
+    if (ui.stateIndex != GAMEPLAY)
+        return "#000000";
+    switch (getPlayer().unitGroup.teamID) {
+        case RED_TEAM:
+            return "#c32454";
+        case BLUE_TEAM:
+            return "#4d65b4";
+        case GREEN_TEAM:
+            return "#239063";
+        case BLACK_TEAM:
+            return "#625565";
+        default:
+            return "#000000";
+    }
+}
+
 function unitControlsUISetup() {
     unitUpBtn = new TextButton(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) - (100 * pixelSize)),
         vec2(50 * pixelSize, 50 * pixelSize)),

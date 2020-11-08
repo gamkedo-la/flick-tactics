@@ -49,12 +49,12 @@ class Unit {
 class MapUnit {
     constructor(type, mapPos) {
         this.mapPosition = mapPos;
-        var pos = vec2(Math.floor(this.mapPosition.x * (gameWidth / maxDisplayTilesPerRow)),
-            Math.floor(this.mapPosition.y * (gameWidth / maxDisplayTilesPerRow)));
+        var pos = vec2(Math.floor((this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap)),
+            Math.floor((this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap)));
         this.unit = new Unit(type, pos);
 
         this.hp = 10.0;
-        this.clearDisabledActions()
+        this.clearDisabledActions();
     }
 
     clearDisabledActions() {
@@ -66,10 +66,10 @@ class MapUnit {
     }
 
     draw(teamID, offset) {
-        var sc = vec2(((gameWidth / maxDisplayTilesPerRow) / 64) + gridBlackLinesFixFactor,
-            ((gameWidth / maxDisplayTilesPerRow) / 64) + gridBlackLinesFixFactor);
-        this.unit.position = lerpVec2(this.unit.position, vec2(Math.floor(this.mapPosition.x * (gameWidth / maxDisplayTilesPerRow)),
-            Math.floor(this.mapPosition.y * (gameWidth / maxDisplayTilesPerRow))), 0.25);
+        var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
+            (tileSize / 64) + gridBlackLinesFixFactor);
+        this.unit.position = lerpVec2(this.unit.position, vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
+            Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap)), 0.25);
 
         this.unit.draw(teamID, offset, sc);
 

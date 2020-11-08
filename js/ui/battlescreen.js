@@ -13,6 +13,8 @@ var battlescreenGapBetweenBar = 4;
 var battlescreenStartUnitX = 400;
 var battlescreenActiveUnitX = 0;
 var battlescreenPassiveUnitX = 0;
+var battlescreenTileSize = 1.4;
+var battlescreenTileOffset = 24;
 
 var activeTeamID = -1;
 var activeMapUnit = undefined;
@@ -65,9 +67,18 @@ function battlescreenDraw(deltaTime) {
             vec2(battlescreenSingleBarSize.x * pixelSize, battlescreenSingleBarSize.y * pixelSize), true, "green");
     }
 
-    //Units
+    //Units and Map Tiles
     var prevActiveMapUnitPosition = vec2(activeMapUnit.unit.position.x, activeMapUnit.unit.position.y);
     activeMapUnit.unit.position = vec2(battlescreenActiveUnitX, 0);
+
+    for (let i = 0; i < 3; i++) {
+        drawSheet(map.getTileTypeFromPosition(activeMapUnit.mapPosition), vec2(200 * pixelSize, (150 * pixelSize) + (100 * pixelSize * i) + (battlescreenTileOffset * pixelSize)),
+            vec2(battlescreenTileSize * pixelSize, battlescreenTileSize * pixelSize));
+    }
+    for (let i = 0; i < 2; i++) {
+        drawSheet(map.getTileTypeFromPosition(activeMapUnit.mapPosition), vec2(300 * pixelSize, (200 * pixelSize) + (100 * pixelSize * i) + (battlescreenTileOffset * pixelSize)),
+            vec2(battlescreenTileSize * pixelSize, battlescreenTileSize * pixelSize));
+    }
 
     var activeTHp = activeMapUnit.hp;
     for (let i = 0; i < 3; i++, activeTHp -= 2) {
@@ -85,6 +96,15 @@ function battlescreenDraw(deltaTime) {
 
     var prevPassiveMapUnitPosition = vec2(passiveMapUnit.unit.position.x, passiveMapUnit.unit.position.y);
     passiveMapUnit.unit.position = vec2(battlescreenPassiveUnitX, 0);
+
+    for (let i = 0; i < 3; i++) {
+        drawSheet(map.getTileTypeFromPosition(passiveMapUnit.mapPosition), vec2(gameWidth - (200 * pixelSize), (150 * pixelSize) + (100 * pixelSize * i) + (battlescreenTileOffset * pixelSize)),
+            vec2(battlescreenTileSize * pixelSize, battlescreenTileSize * pixelSize));
+    }
+    for (let i = 0; i < 2; i++) {
+        drawSheet(map.getTileTypeFromPosition(passiveMapUnit.mapPosition), vec2(gameWidth - (300 * pixelSize), (200 * pixelSize) + (100 * pixelSize * i) + (battlescreenTileOffset * pixelSize)),
+            vec2(battlescreenTileSize * pixelSize, battlescreenTileSize * pixelSize));
+    }
 
     var passiveTHp = passiveMapUnit.hp;
     for (let i = 0; i < 3; i++, passiveTHp -= 2) {
