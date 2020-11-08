@@ -187,25 +187,33 @@ class GameMap {
         }
     }
 
+    battlescreenTransition(munit1, munit2) {
+        ui.stateIndex = BATTLESCREEN;
+        activeTeamID = manager.players[manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition)[0]].unitGroup.teamID;
+        activeMapUnit = munit1;
+        passiveTeamID = manager.players[manager.getPlayerAndUnitIndexOnTile(munit2.mapPosition)[0]].unitGroup.teamID;
+        passiveMapUnit = munit2;
+    }
+
     attack(munit1, munit2, placement) {
         switch (munit1.unit.type) {
             case RIFLE_MECH:
                 if (munit2 != -1) {
-                    ui.stateIndex = BATTLESCREEN;
+                    this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 3);
                 }
                 break;
 
             case CANNON_MECH:
                 if (munit2 != -1) {
-                    ui.stateIndex = BATTLESCREEN;
+                    this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 6);
                 }
                 break;
 
             case ARTILLERY_MECH:
                 if (munit2 != -1) {
-                    ui.stateIndex = BATTLESCREEN;
+                    this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 8);
                 }
 
@@ -234,7 +242,7 @@ class GameMap {
 
             case SUPPORT_MECH:
                 if (munit2 != -1) {
-                    ui.stateIndex = BATTLESCREEN;
+                    this.battlescreenTransition(munit1, munit2);
                     munit1.hp -= Math.floor((((munit1.hp + munit2.hp) / 2) / 10.0) * 2);
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 4);
                     munit2.mapPosition = munit2.mapPosition.add(placement);
@@ -243,7 +251,7 @@ class GameMap {
 
             case TELEPORT_MECH:
                 if (munit2 != -1) {
-                    ui.stateIndex = BATTLESCREEN;
+                    this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 2);
                 }
                 break;

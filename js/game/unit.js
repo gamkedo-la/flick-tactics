@@ -53,7 +53,7 @@ class MapUnit {
             Math.floor(this.mapPosition.y * (gameWidth / maxDisplayTilesPerRow)));
         this.unit = new Unit(type, pos);
 
-        this.hp = 10;
+        this.hp = 10.0;
         this.clearDisabledActions()
     }
 
