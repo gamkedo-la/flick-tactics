@@ -52,7 +52,7 @@ function drawSheet(index, pos, sc, tileSize) {
     gameSheet.transform.position = pos;
     gameSheet.transform.scale = sc;
 
-    gameSheet.drawScIn(vec2(index % cols, Math.floor(index / cols)).multiply(vec2(64, 64)), tileSize);
+    gameSheet.drawScIn((vec2(index % cols, Math.floor(index / cols)).multiply(vec2(64, 64))).subtract(vec2(0.001 * pixelSize, 0.001 * pixelSize)), tileSize.add(vec2(0.001 * pixelSize, 0.001 * pixelSize)));
 }
 
 class GameMap {
@@ -123,7 +123,7 @@ class GameMap {
 
                 drawRect(spritesRenderer, posi.subtract(vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)).divide(vec2(2, 2))),
                     vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)), true,
-                    (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#00FF0088" : "#FFFF0044");
+                    (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#00FF00BB" : "#FFFF0088");
             }
         }
     }
@@ -182,7 +182,7 @@ class GameMap {
 
                 drawRect(spritesRenderer, posi.subtract(vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)).divide(vec2(2, 2))),
                     vec2((gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize), (gameWidth / maxDisplayTilesPerRow) - (8 * pixelSize)), true,
-                    (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#FF000088" : "#FF000044");
+                    (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#FF0000BB" : "#FF000088");
             }
         }
     }

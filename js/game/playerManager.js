@@ -25,6 +25,7 @@ class PlayerManager {
 
         this.index++;
         if (this.index >= this.players.length) this.index = 0;
+        updateUnitActionButtons();
     }
 
     draw(offset, index) {

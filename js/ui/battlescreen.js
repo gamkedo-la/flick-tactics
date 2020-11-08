@@ -68,22 +68,35 @@ function battlescreenDraw(deltaTime) {
     //Units
     var prevActiveMapUnitPosition = vec2(activeMapUnit.unit.position.x, activeMapUnit.unit.position.y);
     activeMapUnit.unit.position = vec2(battlescreenActiveUnitX, 0);
-    for (let i = 0; i < 3; i++)
-        activeMapUnit.unit.draw(activeTeamID, vec2(200 * pixelSize, (150 * pixelSize) + (100 * pixelSize * i)),
-            vec2(pixelSize, pixelSize));
-    for (let i = 0; i < 2; i++)
-        activeMapUnit.unit.draw(activeTeamID, vec2(300 * pixelSize, (200 * pixelSize) + (100 * pixelSize * i)),
-            vec2(pixelSize, pixelSize));
+
+    var activeTHp = activeMapUnit.hp;
+    for (let i = 0; i < 3; i++, activeTHp -= 2) {
+        if (activeTHp > 0)
+            activeMapUnit.unit.draw(activeTeamID, vec2(200 * pixelSize, (150 * pixelSize) + (100 * pixelSize * i)),
+                vec2(pixelSize, pixelSize));
+    }
+    for (let i = 0; i < 2; i++, activeTHp -= 2) {
+        if (activeTHp > 0)
+            activeMapUnit.unit.draw(activeTeamID, vec2(300 * pixelSize, (200 * pixelSize) + (100 * pixelSize * i)),
+                vec2(pixelSize, pixelSize));
+    }
+
     activeMapUnit.unit.position = vec2(prevActiveMapUnitPosition.x, prevActiveMapUnitPosition.y);
 
     var prevPassiveMapUnitPosition = vec2(passiveMapUnit.unit.position.x, passiveMapUnit.unit.position.y);
     passiveMapUnit.unit.position = vec2(battlescreenPassiveUnitX, 0);
-    for (let i = 0; i < 3; i++)
-        passiveMapUnit.unit.draw(passiveTeamID, vec2(gameWidth - (200 * pixelSize), (150 * pixelSize) + (100 * pixelSize * i)),
-            vec2(pixelSize, pixelSize));
-    for (let i = 0; i < 2; i++)
-        passiveMapUnit.unit.draw(passiveTeamID, vec2(gameWidth - (300 * pixelSize), (200 * pixelSize) + (100 * pixelSize * i)),
-            vec2(pixelSize, pixelSize));
+
+    var passiveTHp = passiveMapUnit.hp;
+    for (let i = 0; i < 3; i++, passiveTHp -= 2) {
+        if (passiveTHp > 0)
+            passiveMapUnit.unit.draw(passiveTeamID, vec2(gameWidth - (200 * pixelSize), (150 * pixelSize) + (100 * pixelSize * i)),
+                vec2(pixelSize, pixelSize));
+    }
+    for (let i = 0; i < 2; i++, passiveTHp -= 2) {
+        if (passiveTHp > 0)
+            passiveMapUnit.unit.draw(passiveTeamID, vec2(gameWidth - (300 * pixelSize), (200 * pixelSize) + (100 * pixelSize * i)),
+                vec2(pixelSize, pixelSize));
+    }
     passiveMapUnit.unit.position = vec2(prevPassiveMapUnitPosition.x, prevPassiveMapUnitPosition.y);
 
     spritesRenderer.globalAlpha = 1.0;
