@@ -124,6 +124,35 @@ function gameplaySetup() {
     manager = new PlayerManager([
         new Player(RED_TEAM, [
             new MapUnit(RIFLE_MECH, vec2(4, 4)),
+            new MapUnit(CANNON_MECH, vec2(5, 4)),
+            new MapUnit(ARTILLERY_MECH, vec2(6, 4)),
+            new MapUnit(SUPPORT_MECH, vec2(4, 5)),
+            new MapUnit(TELEPORT_MECH, vec2(5, 5))
+        ]),
+        new Player(BLUE_TEAM, [
+            new MapUnit(RIFLE_MECH, vec2(7, 4)),
+            new MapUnit(CANNON_MECH, vec2(8, 4)),
+            new MapUnit(ARTILLERY_MECH, vec2(9, 4)),
+            new MapUnit(SUPPORT_MECH, vec2(7, 5)),
+            new MapUnit(TELEPORT_MECH, vec2(8, 5))
+        ]),
+        new Player(GREEN_TEAM, [
+            new MapUnit(RIFLE_MECH, vec2(1, 4)),
+            new MapUnit(CANNON_MECH, vec2(2, 4)),
+            new MapUnit(ARTILLERY_MECH, vec2(3, 4)),
+            new MapUnit(SUPPORT_MECH, vec2(1, 5)),
+            new MapUnit(TELEPORT_MECH, vec2(2, 5))
+        ]),
+        new Player(BLACK_TEAM, [
+            new MapUnit(RIFLE_MECH, vec2(2, 3)),
+            new MapUnit(CANNON_MECH, vec2(3, 3)),
+            new MapUnit(ARTILLERY_MECH, vec2(4, 3)),
+            new MapUnit(SUPPORT_MECH, vec2(5, 3)),
+            new MapUnit(TELEPORT_MECH, vec2(6, 3))
+        ]),
+        /*
+        new Player(RED_TEAM, [
+            new MapUnit(RIFLE_MECH, vec2(4, 4)),
             new MapUnit(TELEPORT_MECH, vec2(7, 5)),
             new MapUnit(CANNON_MECH, vec2(9, 5))
         ]),
@@ -132,6 +161,7 @@ function gameplaySetup() {
             new MapUnit(SUPPORT_MECH, vec2(11, 7)),
             new MapUnit(ARTILLERY_MECH, vec2(14, 8))
         ])
+        */
     ]);
 
     cam = vec2(Math.floor((gameWidth / maxDisplayTilesPerRow) / 2), Math.floor((gameWidth / maxDisplayTilesPerRow) / 2));
