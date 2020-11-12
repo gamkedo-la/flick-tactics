@@ -42,7 +42,7 @@ class Unit {
 
     draw(teamID, offset, scale) {
         if (typeof scale == "undefined") scale = vec2(1, 1);
-        drawSheet(120 + (4 * this.type) + teamID, offset.add(this.position), scale);
+        drawSheet(100 + (4 * this.type) + teamID, offset.add(this.position), scale);
     }
 }
 
@@ -68,12 +68,16 @@ class MapUnit {
     draw(teamID, offset) {
         var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
             (tileSize / 64) + gridBlackLinesFixFactor);
-        this.unit.position = lerpVec2(this.unit.position, vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
-            Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap)), 0.25);
+        if(maxDisplayTilesPerRow != defaultTilesPerRow)
+            this.unit.position = vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
+                Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap));
+        else
+            this.unit.position = lerpVec2(this.unit.position, vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
+                Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap)), 0.25);
 
         this.unit.draw(teamID, offset, sc);
 
-        if (ui.stateIndex != BATTLESCREEN)
+        if (ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow)
         {
             spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
             drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-31.6 * pixelSize, -16.6 * pixelSize))), "black");

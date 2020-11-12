@@ -31,6 +31,18 @@ function controlBarUISetup(fontSize) {
         new SubState(tr(), controlBar), false, vec2(10 * pixelSize, 0), vec2(9, 1), true));
 }
 
+function disableControlBar()
+{
+    for(let i = 0; i < controlBar.length; i++)
+        controlBar[i].enabled = false;
+}
+
+function enableControlBar()
+{
+    for(let i = 0; i < controlBar.length; i++)
+        controlBar[i].enabled = true;
+}
+
 function getActiveTeamColor() {
     if (ui.stateIndex != GAMEPLAY)
         return "#000000";
@@ -122,7 +134,7 @@ function updateUnitActionButtons() {
 function gameplaySetup() {
     map = new GameMap(map1, 28, 16);
     manager = new PlayerManager([
-        new Player(RED_TEAM, [
+        /*new Player(RED_TEAM, [
             new MapUnit(RIFLE_MECH, vec2(4, 4)),
             new MapUnit(CANNON_MECH, vec2(5, 4)),
             new MapUnit(ARTILLERY_MECH, vec2(6, 4)),
@@ -149,8 +161,8 @@ function gameplaySetup() {
             new MapUnit(ARTILLERY_MECH, vec2(4, 3)),
             new MapUnit(SUPPORT_MECH, vec2(5, 3)),
             new MapUnit(TELEPORT_MECH, vec2(6, 3))
-        ]),
-        /*
+        ]),*/
+        
         new Player(RED_TEAM, [
             new MapUnit(RIFLE_MECH, vec2(4, 4)),
             new MapUnit(TELEPORT_MECH, vec2(7, 5)),
@@ -161,7 +173,7 @@ function gameplaySetup() {
             new MapUnit(SUPPORT_MECH, vec2(11, 7)),
             new MapUnit(ARTILLERY_MECH, vec2(14, 8))
         ])
-        */
+        
     ]);
 
     cam = vec2(Math.floor((gameWidth / maxDisplayTilesPerRow) / 2), Math.floor((gameWidth / maxDisplayTilesPerRow) / 2));
@@ -178,6 +190,12 @@ function gameplaySetup() {
         new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
     gameplay.push(rightUnitChangeBtn);
     unitControlsUISetup();
+    var zoomBtnSize = pixelSize/1.4;
+    gameplayZoomBtn = new TextButton(tr(vec2(0.01, gameHeight - (128 * zoomBtnSize)),
+        vec2(128*zoomBtnSize, 128*zoomBtnSize)),
+        new Label(tr(), "", fontSize.toString() + "px " + uiContext.fontFamily),
+        new Button(tr(), "#00000000", "#00000000", "#00000000"));
+    gameplay.push(gameplayZoomBtn);
     //Gameplay UI END
 
     updateUnitActionButtons();
@@ -200,6 +218,35 @@ function gameplayDraw(deltaTime) {
     else if (getPlayer().getSelectedMapUnit().right == 0) {
         map.drawUnitAttack(cam, getPlayer().getSelectedMapUnit());
     }
+
+    if(gameplayZoomBtn.button.output == UIOUTPUT_HOVER)
+    {
+        var oldzoomBtnSize = pixelSize/1.4;
+        var zoomBtnSize = pixelSize/1.3;
+        if(!zoomLock)
+        {
+            gameplayZoomBtn.label.text = "ZOOM LOCK OFF";
+            gameplayZoomBtn.label.textColor = "#FFBBBBFF";
+        }
+        else
+        {
+            gameplayZoomBtn.label.text = "ZOOM LOCK ON";
+            gameplayZoomBtn.label.textColor = "#00FF00FF";
+        }
+        drawSheet(18, vec2(32 * oldzoomBtnSize, gameHeight - (96 * oldzoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+        drawSheet(19, vec2(96 * oldzoomBtnSize, gameHeight - (96 * oldzoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+        drawSheet(38, vec2(32 * oldzoomBtnSize, gameHeight - (32 * oldzoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+        drawSheet(39, vec2(96 * oldzoomBtnSize, gameHeight - (32 * oldzoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+    }
+    else
+    {
+        var zoomBtnSize = pixelSize/1.4;
+        gameplayZoomBtn.label.text = "";
+        drawSheet(18, vec2(32 * zoomBtnSize, gameHeight - (96 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+        drawSheet(19, vec2(96 * zoomBtnSize, gameHeight - (96 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+        drawSheet(38, vec2(32 * zoomBtnSize, gameHeight - (32 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+        drawSheet(39, vec2(96 * zoomBtnSize, gameHeight - (32 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+    }
 }
 
 function gameplayUpdate(deltaTime) {
@@ -215,7 +262,7 @@ function gameplayUpdate(deltaTime) {
         leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled =
             unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
     }
-    else {
+    else if(controlBar[0].enabled) {
         leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
     }
 
@@ -248,6 +295,40 @@ function gameplayEvent(deltaTime) {
             actionPointsLabel.text = "AP: " + getPlayer().actionPoints.toString();
         }
     }
+
+    //ZOOM ON SELECT/TOGGLE
+    if(gameplayZoomBtn.button.output == UIOUTPUT_SELECT) {
+        zoomLock = !zoomLock;
+        /*if(maxDisplayTilesPerRow == defaultTilesPerRow) {
+            maxDisplayTilesPerRow = zoomedTilesPerRow;
+            updateTileSizes();
+        } else if(maxDisplayTilesPerRow == zoomedTilesPerRow) {
+            maxDisplayTilesPerRow = defaultTilesPerRow;
+            updateTileSizes();
+        }*/
+    }
+
+    //Gameplay Zoom Button Events START
+    if(gameplayZoomBtn.button.output == UIOUTPUT_HOVER) {
+        if(maxDisplayTilesPerRow == defaultTilesPerRow) {
+            disableControlBar();
+            leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = false;
+            maxDisplayTilesPerRow = zoomedTilesPerRow;
+            updateTileSizes();
+        }
+    }
+    else if(maxDisplayTilesPerRow == zoomedTilesPerRow && !zoomLock)
+    {
+        enableControlBar();
+        leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
+        maxDisplayTilesPerRow = defaultTilesPerRow;
+        updateTileSizes();
+    }
+    if(maxDisplayTilesPerRow == zoomedTilesPerRow) {
+        cam.x = ((tileSize/2) + (tileGap/2));
+        cam.y = 5.0 * pixelSize;
+    }
+    //Gameplay Zoom Button Events END
 
     //Gameplay UI Button Events
     if (endTurnBtn.button.output == UIOUTPUT_SELECT) {

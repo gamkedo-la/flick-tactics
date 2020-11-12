@@ -3,6 +3,9 @@ var tileSize;
 var tileGap;
 var tileGapFactor = 8.0;
 
+var defaultTilesPerRow = 16;
+var zoomedTilesPerRow = 34;
+var zoomLock = false;
 var maxDisplayTilesPerRow = 16;
 var gridBlackLinesFixFactor = 0.02;
 
