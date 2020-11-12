@@ -167,7 +167,7 @@ function gameplaySetup() {
     cam = vec2(Math.floor((gameWidth / maxDisplayTilesPerRow) / 2), Math.floor((gameWidth / maxDisplayTilesPerRow) / 2));
 
     //Gameplay UI START
-    var fontSize = 14.0 * pixelSize;
+    var fontSize = 18.0 * pixelSize;
     controlBarUISetup(fontSize);
     leftUnitChangeBtn = new TextButton(tr(vec2(0.01, gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
         new Label(tr(), "<<"),

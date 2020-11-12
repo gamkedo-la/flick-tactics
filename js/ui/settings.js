@@ -1,7 +1,7 @@
 
 function uiInit() {
     updateTileSizes();
-    uiContext.set(renderer, 0, "Lucida, sans-serif", 11 * pixelSize);
+    uiContext.set(renderer, 0, "OrangeKid", 12 * pixelSize);
     startscreenSetup();
     gameplaySetup();
     aboutSetup();
@@ -19,7 +19,7 @@ function resizeGame() {
     screenSizeCalculation();
     updateTileSizes();
 
-    uiContext.set(renderer, 0, "Lucida, sans-serif", 11 * pixelSize);
+    uiContext.set(renderer, 0, "OrangeKid", 12 * pixelSize);
     startscreenResize();
     gameplayResize();
     aboutResize();

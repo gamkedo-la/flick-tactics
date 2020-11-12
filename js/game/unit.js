@@ -74,7 +74,11 @@ class MapUnit {
         this.unit.draw(teamID, offset, sc);
 
         if (ui.stateIndex != BATTLESCREEN)
-            drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-32 * pixelSize, -16 * pixelSize))), "white");
+        {
+            spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
+            drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-31.6 * pixelSize, -16.6 * pixelSize))), "black");
+            drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-30 * pixelSize, -18 * pixelSize))), "white");
+        }
     }
 }
 

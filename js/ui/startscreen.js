@@ -2,7 +2,7 @@ const STARTSCREEN = 0;
 var startscreen = [];
 
 function startscreenSetup() {
-    var fontSize = 14.0 * pixelSize;
+    var fontSize = 18.0 * pixelSize;
 
     titleSprite = new Sprite(tr(), new ImageObject("images/title.png"));
     titleSprite.transform.scale = vec2((sizeFactor / 1.8) / titleSprite.imageObject.image.width, (sizeFactor / 4) / titleSprite.imageObject.image.height);
@@ -25,7 +25,7 @@ function startscreenSetup() {
 }
 
 function startscreenResize() {
-    var fontSize = 14.0 * pixelSize;
+    var fontSize = 18.0 * pixelSize;
 
     titleSprite.transform.scale = vec2((sizeFactor / 1.8) / titleSprite.imageObject.image.width, (sizeFactor / 4) / titleSprite.imageObject.image.height);
     titleSprite.transform.position = vec2(gameWidth / 2, gameHeight / 4);
