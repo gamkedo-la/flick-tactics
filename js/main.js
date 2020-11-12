@@ -1,4 +1,6 @@
 
+var gameTime = 0;
+
 window.onload = function () {
     init();
     frame();
@@ -45,6 +47,7 @@ function frame() {
         update(deltaTime);
         draw(deltaTime);
         inputTimer -= deltaTime;
+        gameTime += deltaTime;
     }
     setTimeout(frame, 15);
 }

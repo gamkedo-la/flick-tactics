@@ -9,6 +9,12 @@ const ARTILLERY_MECH = 2;
 const SUPPORT_MECH = 3;
 const TELEPORT_MECH = 4;
 
+//buildings acts as units
+const HQ_BUILDING = 80;
+const CITY_BUILDING = 84;
+const WAR_BUILDING = 88;
+const RUIN_BUILDING = 92;
+
 class Unit {
     constructor(type, pos) {
         this.type = type;
@@ -17,6 +23,7 @@ class Unit {
     }
 
     setupUnitProperties() {
+        this.isBuilding = false;
         switch (this.type) {
             case RIFLE_MECH:
                 this.movement = 3;
@@ -37,12 +44,31 @@ class Unit {
             case TELEPORT_MECH:
                 this.movement = 5;
                 break;
+
+            case HQ_BUILDING:
+                this.isBuilding = true;
+                this.movement = 0;
+                break;
+
+            case CITY_BUILDING:
+                this.isBuilding = true;
+                this.movement = 0;
+                break;
+
+            case WAR_BUILDING:
+                this.isBuilding = true;
+                this.movement = 0;
+                break;
         }
     }
 
     draw(teamID, offset, scale) {
         if (typeof scale == "undefined") scale = vec2(1, 1);
-        drawSheet(100 + (4 * this.type) + teamID, offset.add(this.position), scale);
+
+        if(!this.isBuilding)
+            drawSheet(100 + (4 * this.type) + teamID, offset.add(this.position), scale);
+        else
+            drawSheet(this.type + teamID, offset.add(this.position), scale);
     }
 }
 
@@ -54,6 +80,7 @@ class MapUnit {
         this.unit = new Unit(type, pos);
 
         this.hp = 10.0;
+        
         this.clearDisabledActions();
     }
 
@@ -102,5 +129,44 @@ class MapUnitGroup {
         for (let i = 0; i < this.mapUnits.length; i++) {
             this.mapUnits[i].draw(this.teamID, offset);
         }
+    }
+}
+
+function updateUnitActionButtons() {
+    switch (getPlayer().unitGroup.mapUnits[getPlayer().selectedIndex].unit.type) {
+        case RIFLE_MECH:
+            unitUpBtn.label.text = "MOVE";
+            unitLeftBtn.label.text = "SMOKE"; //no
+            unitDownBtn.label.text = "EMP"; //no
+            unitRightBtn.label.text = "ATTACK";
+            break;
+
+        case CANNON_MECH:
+            unitUpBtn.label.text = "MOVE"; //push->no
+            unitLeftBtn.label.text = "BOOST"; //no
+            unitDownBtn.label.text = "MINI-ART"; //no; push->no
+            unitRightBtn.label.text = "ATTACK";
+            break;
+
+        case ARTILLERY_MECH:
+            unitUpBtn.label.text = "MOVE";
+            unitLeftBtn.label.text = "SMOKE"; //no
+            unitDownBtn.label.text = "SHIELD"; //no
+            unitRightBtn.label.text = "ATTACK"; //push
+            break;
+
+        case SUPPORT_MECH:
+            unitUpBtn.label.text = "MOVE";
+            unitLeftBtn.label.text = "SUPPLY"; //no
+            unitDownBtn.label.text = "REPAIR"; //no
+            unitRightBtn.label.text = "TACKLE"; //push
+            break;
+
+        case TELEPORT_MECH:
+            unitUpBtn.label.text = "MOVE";
+            unitLeftBtn.label.text = "TELEPORT"; //no
+            unitDownBtn.label.text = "SHIELD"; //no
+            unitRightBtn.label.text = "TACKLE";
+            break;
     }
 }

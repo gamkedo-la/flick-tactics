@@ -143,7 +143,7 @@ function inputSetup() {
 
     window.addEventListener("wheel", onMouseWheelScroll);
     window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("keypress", onKeyPress);
+    //window.addEventListener("keypress", onKeyPress);
     window.addEventListener("keyup", onKeyUp);
 }
 

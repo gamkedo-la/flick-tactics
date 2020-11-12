@@ -92,45 +92,6 @@ function unitControlsUISetup() {
     unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
 }
 
-function updateUnitActionButtons() {
-    switch (getPlayer().unitGroup.mapUnits[getPlayer().selectedIndex].unit.type) {
-        case RIFLE_MECH:
-            unitUpBtn.label.text = "MOVE";
-            unitLeftBtn.label.text = "SMOKE"; //no
-            unitDownBtn.label.text = "EMP"; //no
-            unitRightBtn.label.text = "ATTACK";
-            break;
-
-        case CANNON_MECH:
-            unitUpBtn.label.text = "MOVE"; //push->no
-            unitLeftBtn.label.text = "BOOST"; //no
-            unitDownBtn.label.text = "MINI-ART"; //no; push->no
-            unitRightBtn.label.text = "ATTACK";
-            break;
-
-        case ARTILLERY_MECH:
-            unitUpBtn.label.text = "MOVE";
-            unitLeftBtn.label.text = "SMOKE"; //no
-            unitDownBtn.label.text = "SHIELD"; //no
-            unitRightBtn.label.text = "ATTACK"; //push
-            break;
-
-        case SUPPORT_MECH:
-            unitUpBtn.label.text = "MOVE";
-            unitLeftBtn.label.text = "SUPPLY"; //no
-            unitDownBtn.label.text = "REPAIR"; //no
-            unitRightBtn.label.text = "TACKLE"; //push
-            break;
-
-        case TELEPORT_MECH:
-            unitUpBtn.label.text = "MOVE";
-            unitLeftBtn.label.text = "TELEPORT"; //no
-            unitDownBtn.label.text = "SHIELD"; //no
-            unitRightBtn.label.text = "TACKLE";
-            break;
-    }
-}
-
 function gameplaySetup() {
     map = new GameMap(map1, 28, 16);
     manager = new PlayerManager([
@@ -164,11 +125,13 @@ function gameplaySetup() {
         ]),*/
         
         new Player(RED_TEAM, [
+            new MapUnit(HQ_BUILDING, vec2(2, 2)),
             new MapUnit(RIFLE_MECH, vec2(4, 4)),
             new MapUnit(TELEPORT_MECH, vec2(7, 5)),
             new MapUnit(CANNON_MECH, vec2(9, 5))
         ]),
         new Player(BLACK_TEAM, [
+            new MapUnit(HQ_BUILDING, vec2(16, 8)),
             new MapUnit(RIFLE_MECH, vec2(12, 9)),
             new MapUnit(SUPPORT_MECH, vec2(11, 7)),
             new MapUnit(ARTILLERY_MECH, vec2(14, 8))
@@ -193,7 +156,7 @@ function gameplaySetup() {
     var zoomBtnSize = pixelSize/1.4;
     gameplayZoomBtn = new TextButton(tr(vec2(0.01, gameHeight - (128 * zoomBtnSize)),
         vec2(128*zoomBtnSize, 128*zoomBtnSize)),
-        new Label(tr(), "", fontSize.toString() + "px " + uiContext.fontFamily),
+        new Label(tr(), "Q", fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00000000", "#00000000", "#00000000"));
     gameplay.push(gameplayZoomBtn);
     //Gameplay UI END
@@ -241,7 +204,8 @@ function gameplayDraw(deltaTime) {
     else
     {
         var zoomBtnSize = pixelSize/1.4;
-        gameplayZoomBtn.label.text = "";
+        gameplayZoomBtn.label.text = "Q";
+        gameplayZoomBtn.label.textColor = "white";
         drawSheet(18, vec2(32 * zoomBtnSize, gameHeight - (96 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
         drawSheet(19, vec2(96 * zoomBtnSize, gameHeight - (96 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
         drawSheet(38, vec2(32 * zoomBtnSize, gameHeight - (32 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
@@ -251,19 +215,23 @@ function gameplayDraw(deltaTime) {
 
 function gameplayUpdate(deltaTime) {
 
-    cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.1);
+    if(maxDisplayTilesPerRow == defaultTilesPerRow)
+        cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.1);
 
-    // Disabling Unit Action Buttons and Left/Right Unit Buttons START
-    unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled =
-        (cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize);
+    if(!getPlayer().unitGroup.mapUnits[getPlayer().selectedIndex].unit.isBuilding)
+    {
+        // Disabling Unit Action Buttons and Left/Right Unit Buttons START
+        unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled =
+            (cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize);
 
-    if (getPlayer().getSelectedMapUnit().up == 0 || getPlayer().getSelectedMapUnit().left == 0 ||
-        getPlayer().getSelectedMapUnit().down == 0 || getPlayer().getSelectedMapUnit().right == 0) {
-        leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled =
-            unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
-    }
-    else if(controlBar[0].enabled) {
-        leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
+        if (getPlayer().getSelectedMapUnit().up == 0 || getPlayer().getSelectedMapUnit().left == 0 ||
+            getPlayer().getSelectedMapUnit().down == 0 || getPlayer().getSelectedMapUnit().right == 0) {
+            leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled =
+                unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
+        }
+        else if(controlBar[0].enabled) {
+            leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
+        }
     }
 
     if (unitUpBtn.button.output != UIOUTPUT_SELECT)
@@ -282,6 +250,21 @@ function gameplayUpdate(deltaTime) {
 
 function gameplayEvent(deltaTime) {
 
+    if(keysDown.indexOf('q') != -1) {
+        if(!isKeyPressed('q')) {
+            zoomLock = !zoomLock;
+            if(maxDisplayTilesPerRow == defaultTilesPerRow) {
+                disableControlBar();
+                leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = false;
+                maxDisplayTilesPerRow = zoomedTilesPerRow;
+                updateTileSizes();
+            }
+        }
+    }
+    else {
+        removeKeyPressed('q');
+    }
+
     //Unit Action Completion Events
     if (getPlayer().getSelectedMapUnit().up == 0) {
         if (map.eventUnitMovement(getPlayer().getSelectedMapUnit())) {
@@ -296,19 +279,10 @@ function gameplayEvent(deltaTime) {
         }
     }
 
-    //ZOOM ON SELECT/TOGGLE
+    //Gameplay Zoom Button Events START
     if(gameplayZoomBtn.button.output == UIOUTPUT_SELECT) {
         zoomLock = !zoomLock;
-        /*if(maxDisplayTilesPerRow == defaultTilesPerRow) {
-            maxDisplayTilesPerRow = zoomedTilesPerRow;
-            updateTileSizes();
-        } else if(maxDisplayTilesPerRow == zoomedTilesPerRow) {
-            maxDisplayTilesPerRow = defaultTilesPerRow;
-            updateTileSizes();
-        }*/
     }
-
-    //Gameplay Zoom Button Events START
     if(gameplayZoomBtn.button.output == UIOUTPUT_HOVER) {
         if(maxDisplayTilesPerRow == defaultTilesPerRow) {
             disableControlBar();
@@ -325,8 +299,16 @@ function gameplayEvent(deltaTime) {
         updateTileSizes();
     }
     if(maxDisplayTilesPerRow == zoomedTilesPerRow) {
-        cam.x = ((tileSize/2) + (tileGap/2));
-        cam.y = 5.0 * pixelSize;
+        cam.x = 24.0 * pixelSize;
+        cam.y = 24.0 * pixelSize;
+    }
+    if(wheelScroll != 0.0 && zoomLock)
+    {
+        zoomedTilesPerRow += wheelScroll/20.0;
+        zoomedTilesPerRow = clamp(zoomedTilesPerRow, 6.0, 60.0);
+        wheelScroll = 0.0;
+        maxDisplayTilesPerRow = zoomedTilesPerRow;
+        updateTileSizes();
     }
     //Gameplay Zoom Button Events END
 
