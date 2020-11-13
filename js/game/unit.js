@@ -67,7 +67,7 @@ class Unit {
 
         if(!this.isBuilding)
             drawSheet(100 + (4 * this.type) + teamID, offset.add(this.position), scale);
-        else
+        else if(this.isBuilding)
             drawSheet(this.type + teamID, offset.add(this.position), scale);
     }
 }

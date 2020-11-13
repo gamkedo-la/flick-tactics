@@ -8,41 +8,6 @@ function gameplayReset() {
 
 }
 
-function controlBarUISetup(fontSize) {
-    controlBar = [];
-    controlBar.push(new Label(tr(), ""));
-    controlBar.push(new Label(tr(), ""));
-    controlBar.push(new Label(tr(), ""));
-    actionPointsLabel = new Label(tr(), "AP: " + getPlayer().actionPoints.toString(),
-        fontSize.toString() + "px " + uiContext.fontFamily);
-    controlBar.push(actionPointsLabel);
-    resetTurnBtn = new TextButton(tr(),
-        new Label(tr(), "Reset", fontSize.toString() + "px " + uiContext.fontFamily, "black"),
-        new Button(tr(), "#FFFFFFFF", "#000000FF", "#FFFFFF99"));
-    controlBar.push(resetTurnBtn);
-    endTurnBtn = new TextButton(tr(),
-        new Label(tr(), "END", fontSize.toString() + "px " + uiContext.fontFamily, "black"),
-        new Button(tr(), "#FFFFFFFF", "#000000FF", "#FFFFFF99"));
-    controlBar.push(endTurnBtn);
-    controlBar.push(new Label(tr(), ""));
-    controlBar.push(new Label(tr(), ""));
-    controlBar.push(new Label(tr(), ""));
-    gameplay.push(new FlexGroup(tr(vec2(0.01, 0.01), vec2(gameWidth, 25 * pixelSize)),
-        new SubState(tr(), controlBar), false, vec2(10 * pixelSize, 0), vec2(9, 1), true));
-}
-
-function disableControlBar()
-{
-    for(let i = 0; i < controlBar.length; i++)
-        controlBar[i].enabled = false;
-}
-
-function enableControlBar()
-{
-    for(let i = 0; i < controlBar.length; i++)
-        controlBar[i].enabled = true;
-}
-
 function getActiveTeamColor() {
     if (ui.stateIndex != GAMEPLAY)
         return "#000000";
@@ -182,6 +147,9 @@ function gameplayDraw(deltaTime) {
         map.drawUnitAttack(cam, getPlayer().getSelectedMapUnit());
     }
 
+    if(getPlayer().getSelectedMapUnit().unit.isBuilding)
+        drawBuildingPanel();
+
     if(gameplayZoomBtn.button.output == UIOUTPUT_HOVER)
     {
         var oldzoomBtnSize = pixelSize/1.4;
@@ -216,7 +184,7 @@ function gameplayDraw(deltaTime) {
 function gameplayUpdate(deltaTime) {
 
     if(maxDisplayTilesPerRow == defaultTilesPerRow)
-        cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.1);
+        cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.25);
 
     if(!getPlayer().unitGroup.mapUnits[getPlayer().selectedIndex].unit.isBuilding)
     {
@@ -232,6 +200,10 @@ function gameplayUpdate(deltaTime) {
         else if(controlBar[0].enabled) {
             leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
         }
+    }
+    else
+    {
+        unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
     }
 
     if (unitUpBtn.button.output != UIOUTPUT_SELECT)
