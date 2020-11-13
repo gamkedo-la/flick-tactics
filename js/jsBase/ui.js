@@ -713,7 +713,7 @@ class Tab extends UIObject {
         this.enableColor = enableColor;
         this.disableColor = disableColor;
 
-        this.selector = new Selector(this, selected, 1, true);
+        this.selector = new Selector(this, selected, 1, false);
         this.selector.groupSelectors(otherTabs);
 
         this.prevTouchId = -1;

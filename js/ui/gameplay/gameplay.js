@@ -25,38 +25,6 @@ function getActiveTeamColor() {
     }
 }
 
-function unitControlsUISetup() {
-    unitUpBtn = new TextButton(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) - (100 * pixelSize)),
-        vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), "", undefined, "white", 0),
-        new Button(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) - (100 * pixelSize)),
-            vec2(50 * pixelSize, 50 * pixelSize)),
-            "#00000088", "#FFFFFFFF", "#000000BB", "#FF0000BB"));
-    gameplay.push(unitUpBtn);
-    unitLeftBtn = new TextButton(tr(vec2((gameWidth / 2) - (100 * pixelSize), (gameHeight / 2) - (25 * pixelSize)),
-        vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), "", undefined, "white", 0),
-        new Button(tr(vec2((gameWidth / 2) - (100 * pixelSize), (gameHeight / 2) - (25 * pixelSize)),
-            vec2(50 * pixelSize, 50 * pixelSize)),
-            "#00000088", "#FFFFFFFF", "#000000BB", "#FF0000BB"));
-    gameplay.push(unitLeftBtn);
-    unitDownBtn = new TextButton(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) + (50 * pixelSize)),
-        vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), "", undefined, "white", 0),
-        new Button(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) + (50 * pixelSize)),
-            vec2(50 * pixelSize, 50 * pixelSize)),
-            "#00000088", "#FFFFFFFF", "#000000BB", "#FF0000BB"));
-    gameplay.push(unitDownBtn);
-    unitRightBtn = new TextButton(tr(vec2((gameWidth / 2) + (50 * pixelSize), (gameHeight / 2) - (25 * pixelSize)),
-        vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), "", undefined, "white", 0),
-        new Button(tr(vec2((gameWidth / 2) + (50 * pixelSize), (gameHeight / 2) - (25 * pixelSize)),
-            vec2(50 * pixelSize, 50 * pixelSize)),
-            "#00000088", "#FFFFFFFF", "#000000BB", "#FF0000BB"));
-    gameplay.push(unitRightBtn);
-    unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
-}
-
 function gameplaySetup() {
     map = new GameMap(map1, 28, 16);
     manager = new PlayerManager([
@@ -117,13 +85,15 @@ function gameplaySetup() {
         new Label(tr(), ">>"),
         new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
     gameplay.push(rightUnitChangeBtn);
-    unitControlsUISetup();
+    unitActionUISetup();
     var zoomBtnSize = pixelSize/1.4;
     gameplayZoomBtn = new TextButton(tr(vec2(0.01, gameHeight - (128 * zoomBtnSize)),
         vec2(128*zoomBtnSize, 128*zoomBtnSize)),
         new Label(tr(), "Q", fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00000000", "#00000000", "#00000000"));
     gameplay.push(gameplayZoomBtn);
+    buildingPanelSetup();
+    gameplay.push(buildingPanel);
     //Gameplay UI END
 
     updateUnitActionButtons();
@@ -146,9 +116,6 @@ function gameplayDraw(deltaTime) {
     else if (getPlayer().getSelectedMapUnit().right == 0) {
         map.drawUnitAttack(cam, getPlayer().getSelectedMapUnit());
     }
-
-    if(getPlayer().getSelectedMapUnit().unit.isBuilding)
-        drawBuildingPanel();
 
     if(gameplayZoomBtn.button.output == UIOUTPUT_HOVER)
     {
@@ -188,6 +155,7 @@ function gameplayUpdate(deltaTime) {
 
     if(!getPlayer().unitGroup.mapUnits[getPlayer().selectedIndex].unit.isBuilding)
     {
+        buildingPanel.enabled = false;
         // Disabling Unit Action Buttons and Left/Right Unit Buttons START
         unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled =
             (cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize);
@@ -203,7 +171,7 @@ function gameplayUpdate(deltaTime) {
     }
     else
     {
-        unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
+        buildingPanelUpdate();
     }
 
     if (unitUpBtn.button.output != UIOUTPUT_SELECT)
