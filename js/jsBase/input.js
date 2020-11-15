@@ -180,7 +180,7 @@ function hover(transform) //or sprite
 
 dragMoveObj = null;
 dragMoveRelPos = vec2(-1, -1);
-function dragMove(transform, lerpAmount, limitPoint1, limitPoint2) {
+function dragMove(transform, lerpAmount = 1.0, limitPoint1, limitPoint2) {
     if (isTouched) {
         if (dragMoveObj == null) {
             var p = transform.relPointInside(touchPos[0].subtract(vec2(canvasStartX, canvasStartY)));
@@ -192,10 +192,9 @@ function dragMove(transform, lerpAmount, limitPoint1, limitPoint2) {
         }
         else if (isTouchMoved) {
             if (dragMoveObj == transform) {
-                lerpAmount = typeof lerpAmount == "undefined" ? 1.0 : lerpAmount;
                 transform.position = lerpVec2(transform.position, touchPos[0].add(dragMoveRelPos).subtract(vec2(canvasStartX, canvasStartY)), lerpAmount);
 
-                if (typeof limitPoint1 == "undefined") return;
+                if (!limitPoint1) return;
 
                 if (transform.position.x < limitPoint1.x) transform.position.x = limitPoint1.x;
                 else if (transform.position.x + transform.scale.x > limitPoint2.x) transform.position.x = limitPoint2.x - transform.scale.x;

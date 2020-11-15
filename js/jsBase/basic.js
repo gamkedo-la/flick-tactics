@@ -28,9 +28,9 @@ function pushArr(sumArr, addArr) {
 }
 
 class Vector2 {
-  constructor(x, y) {
-    this.x = typeof x == "undefined" ? 0 : x;
-    this.y = typeof y == "undefined" ? 0 : y;
+  constructor(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
   }
 
   negative() {
