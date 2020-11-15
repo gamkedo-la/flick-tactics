@@ -14,17 +14,17 @@ class UIContext {
     set(renderer, roundness, fontFamily, fontSize, fgPrimaryColor, fgSecondaryColor, fgTertiaryColor, bgPrimaryColor, bgSecondaryColor, textColor) {
         this.renderer = renderer;
 
-        if (typeof roundness != "undefined") this.roundness = roundness;
+        if (!this.roundness) this.roundness = roundness;
 
-        if (typeof fontFamily != "undefined") this.fontFamily = fontFamily;
-        if (typeof fontSize != "undefined") this.fontSize = fontSize;
+        if (!this.fontFamily) this.fontFamily = fontFamily;
+        if (!this.fontSize) this.fontSize = fontSize;
 
-        if (typeof fgPrimaryColor != "undefined") this.fgPrimaryColor = fgPrimaryColor;
-        if (typeof fgSecondaryColor != "undefined") this.fgSecondaryColor = fgSecondaryColor;
-        if (typeof fgTertiaryColor != "undefined") this.fgTertiaryColor = fgTertiaryColor;
-        if (typeof bgPrimaryColor != "undefined") this.bgPrimaryColor = bgPrimaryColor;
-        if (typeof bgSecondaryColor != "undefined") this.bgSecondaryColor = bgSecondaryColor;
-        if (typeof textColor != "undefined") this.textColor = textColor;
+        if (!this.fgPrimaryColor) this.fgPrimaryColor = fgPrimaryColor;
+        if (!this.fgSecondaryColor) this.fgSecondaryColor = fgSecondaryColor;
+        if (!this.fgTertiaryColor) this.fgTertiaryColor = fgTertiaryColor;
+        if (!this.bgPrimaryColor) this.bgPrimaryColor = bgPrimaryColor;
+        if (!this.bgSecondaryColor) this.bgSecondaryColor = bgSecondaryColor;
+        if (!this.textColor) this.textColor = textColor;
     }
 }
 
