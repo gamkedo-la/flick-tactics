@@ -53,15 +53,15 @@ function buildingPanelSetup()
     buildingPanelTab5Objects.push(new TextButton(tr(), new Label(tr(), "Restart"), new Button(tr(), "black", "grey", "grey")));
 
     buildingPanelTabs = [];
-    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/3)), buildingPanelTab1Objects, undefined,
+    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/4)), buildingPanelTab1Objects, undefined,
         new TextButton(tr(), new Label(tr(), "OBJECTIVE")), true, "grey", "black"));
-    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/3)), buildingPanelTab2Objects, undefined,
+    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/4)), buildingPanelTab2Objects, undefined,
         new TextButton(tr(), new Label(tr(), "PLAYER CO")), false, "grey", "black"));
-    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/3)), buildingPanelTab3Objects, undefined,
+    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/4)), buildingPanelTab3Objects, undefined,
         new TextButton(tr(), new Label(tr(), "ENEMY CO")), false, "grey", "black"));
-    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/3)), buildingPanelTab4Objects, undefined,
+    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/4)), buildingPanelTab4Objects, undefined,
         new TextButton(tr(), new Label(tr(), "STATS")), false, "grey", "black"));
-    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/3)), buildingPanelTab5Objects,
+    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/4)), buildingPanelTab5Objects,
         [buildingPanelTabs[0], buildingPanelTabs[1], buildingPanelTabs[2], buildingPanelTabs[3]],
         new TextButton(tr(), new Label(tr(), "OPTIONS"), undefined), false, "grey", "black"));
 
@@ -134,10 +134,7 @@ function buildingPanelUpdate()
 
 function buildingPanelDraw()
 {
-    /*drawRect(spritesRenderer,
-        vec2(panelXOffset, (gameHeight/2)+(40*pixelSize)),
-        vec2(gameWidth-(panelXOffset*2), panelHeight),
-        true, getActiveTeamColor() + "BB");*/
+
 }
 
 function buildingPanelEvent()

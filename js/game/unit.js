@@ -66,7 +66,13 @@ class Unit {
         if (typeof scale == "undefined") scale = vec2(1, 1);
 
         if(!this.isBuilding)
-            drawSheet(100 + (4 * this.type) + teamID, offset.add(this.position), scale);
+        {
+            //2 Frame Mech Unit Idle Animation
+            if(gameTime % 1200 < 600)
+                drawSheet(120 + (4 * this.type) + teamID, offset.add(this.position), scale);
+            else
+                drawSheet(100 + (4 * this.type) + teamID, offset.add(this.position), scale);
+        }
         else if(this.isBuilding)
             drawSheet(this.type + teamID, offset.add(this.position), scale);
     }

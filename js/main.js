@@ -37,7 +37,7 @@ function draw(deltaTime) {
         case BATTLESCREEN: battlescreenDraw(deltaTime); break;
     }
     ui.draw();
-    ui.debugDraw("green");
+    //ui.debugDraw("green");
 }
 
 function frame() {
