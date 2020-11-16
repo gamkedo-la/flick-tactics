@@ -11,20 +11,20 @@ class UIContext {
         this.textColor = "#fff5f5";
     }
 
-    set(renderer, roundness, fontFamily, fontSize, fgPrimaryColor, fgSecondaryColor, fgTertiaryColor, bgPrimaryColor, bgSecondaryColor, textColor) {
+    set(renderer, roundness = 2,
+        fontFamily = "Lucida, sans-serif", fontSize = (window.innerWidth * 0.01).toString(),
+        fgPrimaryColor = "#3dbf5a", fgSecondaryColor = "#22c93c", fgTertiaryColor = "#7fcdae",
+        bgPrimaryColor = "#4d4646", bgSecondaryColor = "#696161", textColor = "#fff5f5") {
         this.renderer = renderer;
-
-        if (!this.roundness) this.roundness = roundness;
-
-        if (!this.fontFamily) this.fontFamily = fontFamily;
-        if (!this.fontSize) this.fontSize = fontSize;
-
-        if (!this.fgPrimaryColor) this.fgPrimaryColor = fgPrimaryColor;
-        if (!this.fgSecondaryColor) this.fgSecondaryColor = fgSecondaryColor;
-        if (!this.fgTertiaryColor) this.fgTertiaryColor = fgTertiaryColor;
-        if (!this.bgPrimaryColor) this.bgPrimaryColor = bgPrimaryColor;
-        if (!this.bgSecondaryColor) this.bgSecondaryColor = bgSecondaryColor;
-        if (!this.textColor) this.textColor = textColor;
+        this.roundness = roundness;
+        this.fontFamily = fontFamily;
+        this.fontSize = fontSize;
+        this.fgPrimaryColor = fgPrimaryColor;
+        this.fgSecondaryColor = fgSecondaryColor;
+        this.fgTertiaryColor = fgTertiaryColor;
+        this.bgPrimaryColor = bgPrimaryColor;
+        this.bgSecondaryColor = bgSecondaryColor;
+        this.textColor = textColor;
     }
 }
 
@@ -194,13 +194,15 @@ class SubState extends UIObject {
 }
 
 class Label extends UIObject {
-    constructor(transform, text, font = uiContext.fontSize.toString() + "px " + uiContext.fontFamily, textColor = uiContext.textColor, align = 0, tooltip) {
+    constructor(transform, text, font, textColor = uiContext.textColor, align = 0, tooltip) {
         super(transform);
 
         this.text = text;
         this.tooltip = tooltip;
 
         this.font = font;
+
+        this.font = typeof font === "undefined" ? uiContext.fontSize.toString() + "px " + uiContext.fontFamily : font;
 
         this.textColor = textColor;
 
@@ -899,7 +901,7 @@ class CircularPad extends UIObject {
         controlColor = uiContext.fgPrimaryColor,
         padColor = uiContext.bgSecondaryColor,
         limitArea = vec2(0, 0)) {
-        
+
         super(transform);
         this.controlPosition = transform.position;
 

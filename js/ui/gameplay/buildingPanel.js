@@ -4,13 +4,12 @@
 // Middle Row:  Description/Label + Images
 // Bottom Row:  Text Buttons
 
-function buildingPanelSetup()
-{
-    var panelX = 100*pixelSize;
-    var panelY = (gameHeight/2)+(40*pixelSize);
-    var panelW = gameWidth-(panelX*2);
-    var panelH = 200*pixelSize;
-    var tabGap = 4*pixelSize;
+function buildingPanelSetup() {
+    var panelX = 100 * pixelSize;
+    var panelY = (gameHeight / 2) + (40 * pixelSize);
+    var panelW = gameWidth - (panelX * 2);
+    var panelH = 200 * pixelSize;
+    var tabGap = 4 * pixelSize;
 
     buildingPanelTab1Objects = [];
     buildingPanelTab1Objects.push(new Label(tr(), "WIN: Destroy the Enemy HQ or destroy all enemy units."));
@@ -53,15 +52,15 @@ function buildingPanelSetup()
     buildingPanelTab5Objects.push(new TextButton(tr(), new Label(tr(), "Restart"), new Button(tr(), "black", "grey", "grey")));
 
     buildingPanelTabs = [];
-    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/4)), buildingPanelTab1Objects, undefined,
+    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW / 5) - tabGap, panelH / 4)), buildingPanelTab1Objects, undefined,
         new TextButton(tr(), new Label(tr(), "OBJECTIVE")), true, "grey", "black"));
-    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/4)), buildingPanelTab2Objects, undefined,
+    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW / 5) - tabGap, panelH / 4)), buildingPanelTab2Objects, undefined,
         new TextButton(tr(), new Label(tr(), "PLAYER CO")), false, "grey", "black"));
-    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/4)), buildingPanelTab3Objects, undefined,
+    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW / 5) - tabGap, panelH / 4)), buildingPanelTab3Objects, undefined,
         new TextButton(tr(), new Label(tr(), "ENEMY CO")), false, "grey", "black"));
-    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/4)), buildingPanelTab4Objects, undefined,
+    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW / 5) - tabGap, panelH / 4)), buildingPanelTab4Objects, undefined,
         new TextButton(tr(), new Label(tr(), "STATS")), false, "grey", "black"));
-    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW/5) - tabGap, panelH/4)), buildingPanelTab5Objects,
+    buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW / 5) - tabGap, panelH / 4)), buildingPanelTab5Objects,
         [buildingPanelTabs[0], buildingPanelTabs[1], buildingPanelTabs[2], buildingPanelTabs[3]],
         new TextButton(tr(), new Label(tr(), "OPTIONS"), undefined), false, "grey", "black"));
 
@@ -110,34 +109,36 @@ function buildingPanelSetup()
     buildingPanel = new Panel(
         tr(vec2(panelX, panelY), vec2(panelW, panelH)), new SubState(tr(), [
             new FlexGroup(
-                tr(vec2(panelX + tabGap, panelY + tabGap), vec2(panelW, panelH/4)),
+                tr(vec2(panelX + tabGap, panelY + tabGap), vec2(panelW, panelH / 4)),
                 new SubState(tr(), buildingPanelTabs),
                 false, vec2(tabGap, 0), vec2(5, 1)),
             new FlexGroup(
-                tr(vec2(panelX + tabGap, panelY + tabGap + (panelH/3)), vec2(panelW, panelH/3)),
+                tr(vec2(panelX + tabGap, panelY + tabGap + (panelH / 3)), vec2(panelW, panelH / 3)),
                 new SubState(tr(), buildingPanelLabels),
                 false, vec2(), vec2(1, 3)),
             new FlexGroup(
-                tr(vec2(panelX + tabGap, panelY + tabGap + ((panelH/3)*2)), vec2(panelW, panelH/4)),
+                tr(vec2(panelX + tabGap, panelY + tabGap + ((panelH / 3) * 2)), vec2(panelW, panelH / 4)),
                 new SubState(tr(), buildingPanelButtons),
                 false, vec2(), vec2(3, 1)),
         ]));
 }
 
-function buildingPanelUpdate()
-{
-    unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
-    buildingPanel.enabled = true;
+function buildingPanelUpdate() {
+    if (maxDisplayTilesPerRow == defaultTilesPerRow) {
+        unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
+        buildingPanel.enabled = true;
+    }
+    else {
+        buildingPanel.enabled = false;
+    }
 
     buildingPanel.color = getActiveTeamColor();
 }
 
-function buildingPanelDraw()
-{
+function buildingPanelDraw() {
 
 }
 
-function buildingPanelEvent()
-{
+function buildingPanelEvent() {
 
 }

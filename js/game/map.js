@@ -79,10 +79,9 @@ class GameMap {
                     Math.floor(offset.y + (y * tileSize) + (y * tileGap)));
                 var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
                     (tileSize / 64) + gridBlackLinesFixFactor);
-                
-                if(index == SEA_TILE || index == TOXIC_TILE)
-                {
-                    if(gameTime % 2000 < 1000)
+
+                if (index == SEA_TILE || index == TOXIC_TILE) {
+                    if (gameTime % 2000 < 1000)
                         index += 20;
                 }
                 drawSheet(index, pos, sc);
@@ -290,4 +289,31 @@ class GameMap {
     //
 
     //UNIT ATTACK END // //
+
+    event() {
+        //Unit Action Event End Point
+        if (getPlayer().getSelectedMapUnit().up == 0) {
+            if (this.eventUnitMovement(getPlayer().getSelectedMapUnit())) {
+                getPlayer().actionPoints--;
+                actionPointsLabel.text = "AP: " + getPlayer().actionPoints.toString();
+            }
+        }
+        else if (getPlayer().getSelectedMapUnit().right == 0) {
+            if (this.eventUnitAttack(getPlayer().getSelectedMapUnit())) {
+                getPlayer().actionPoints--;
+                actionPointsLabel.text = "AP: " + getPlayer().actionPoints.toString();
+            }
+        }
+
+        //Select unit on click/touch
+        if (isTouched) {
+            var playerAndUnit = manager.getPlayerAndUnitIndexOnTile(this.cursorTile);
+            if (playerAndUnit[0] != -1
+                && manager.players[playerAndUnit[0]].unitGroup.teamID == getPlayer().unitGroup.teamID) {
+                getPlayer().selectedIndex = playerAndUnit[1];
+                updateUnitActionButtons();
+                zoomLock = false;
+            }
+        }
+    }
 }

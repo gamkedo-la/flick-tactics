@@ -48,6 +48,7 @@ function frame() {
         draw(deltaTime);
         inputTimer -= deltaTime;
         gameTime += deltaTime;
+        isTouched = false;
     }
     setTimeout(frame, 15);
 }

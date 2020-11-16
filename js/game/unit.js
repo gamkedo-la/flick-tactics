@@ -65,15 +65,14 @@ class Unit {
     draw(teamID, offset, scale) {
         if (typeof scale == "undefined") scale = vec2(1, 1);
 
-        if(!this.isBuilding)
-        {
+        if (!this.isBuilding) {
             //2 Frame Mech Unit Idle Animation
-            if(gameTime % 1200 < 600)
+            if (gameTime % 1200 < 600)
                 drawSheet(120 + (4 * this.type) + teamID, offset.add(this.position), scale);
             else
                 drawSheet(100 + (4 * this.type) + teamID, offset.add(this.position), scale);
         }
-        else if(this.isBuilding)
+        else if (this.isBuilding)
             drawSheet(this.type + teamID, offset.add(this.position), scale);
     }
 }
@@ -86,7 +85,7 @@ class MapUnit {
         this.unit = new Unit(type, pos);
 
         this.hp = 10.0;
-        
+
         this.clearDisabledActions();
     }
 
@@ -101,7 +100,7 @@ class MapUnit {
     draw(teamID, offset) {
         var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
             (tileSize / 64) + gridBlackLinesFixFactor);
-        if(maxDisplayTilesPerRow != defaultTilesPerRow)
+        if (maxDisplayTilesPerRow != defaultTilesPerRow)
             this.unit.position = vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
                 Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap));
         else
@@ -110,8 +109,7 @@ class MapUnit {
 
         this.unit.draw(teamID, offset, sc);
 
-        if (ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow)
-        {
+        if (ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
             spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
             drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-31.6 * pixelSize, -16.6 * pixelSize))), "black");
             drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-30 * pixelSize, -18 * pixelSize))), "white");
@@ -135,44 +133,5 @@ class MapUnitGroup {
         for (let i = 0; i < this.mapUnits.length; i++) {
             this.mapUnits[i].draw(this.teamID, offset);
         }
-    }
-}
-
-function updateUnitActionButtons() {
-    switch (getPlayer().unitGroup.mapUnits[getPlayer().selectedIndex].unit.type) {
-        case RIFLE_MECH:
-            unitUpBtn.label.text = "MOVE";
-            unitLeftBtn.label.text = "SMOKE"; //no
-            unitDownBtn.label.text = "EMP"; //no
-            unitRightBtn.label.text = "ATTACK";
-            break;
-
-        case CANNON_MECH:
-            unitUpBtn.label.text = "MOVE"; //push->no
-            unitLeftBtn.label.text = "BOOST"; //no
-            unitDownBtn.label.text = "MINI-ART"; //no; push->no
-            unitRightBtn.label.text = "ATTACK";
-            break;
-
-        case ARTILLERY_MECH:
-            unitUpBtn.label.text = "MOVE";
-            unitLeftBtn.label.text = "SMOKE"; //no
-            unitDownBtn.label.text = "SHIELD"; //no
-            unitRightBtn.label.text = "ATTACK"; //push
-            break;
-
-        case SUPPORT_MECH:
-            unitUpBtn.label.text = "MOVE";
-            unitLeftBtn.label.text = "SUPPLY"; //no
-            unitDownBtn.label.text = "REPAIR"; //no
-            unitRightBtn.label.text = "TACKLE"; //push
-            break;
-
-        case TELEPORT_MECH:
-            unitUpBtn.label.text = "MOVE";
-            unitLeftBtn.label.text = "TELEPORT"; //no
-            unitDownBtn.label.text = "SHIELD"; //no
-            unitRightBtn.label.text = "TACKLE";
-            break;
     }
 }
