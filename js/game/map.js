@@ -1,13 +1,14 @@
 
 var tileSize;
 var tileGap;
-var tileGapFactor = 8.0;
+var tileGapFactor = 16.0;
 
-var defaultTilesPerRow = 16;
-var zoomedTilesPerRow = 34;
+var defaultTilesPerRow = 15.0;
 var zoomLock = false;
-var maxDisplayTilesPerRow = 16;
-var gridBlackLinesFixFactor = 0.02;
+var maxDisplayTilesPerRow = 15.0;
+var totalTilesInRow = 28.0;
+var tilePixels = 16.0;
+var gridBlackLinesFixFactor = 0.0;
 
 const PLAINS_TILE = 0;
 const SAND_TILE = 1;
@@ -46,7 +47,7 @@ function drawSheet(index, pos, sc, tileSize) {
 }
 
 function updateTileSizes() {
-    tileSize = gameWidth / maxDisplayTilesPerRow;
+    tileSize = (gameWidth / (maxDisplayTilesPerRow + (totalTilesInRow / tilePixels)));
     tileGap = Math.floor(tileSize / tileGapFactor);
 }
 

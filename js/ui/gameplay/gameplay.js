@@ -28,48 +28,20 @@ function getActiveTeamColor() {
 function gameplaySetup() {
     map = new GameMap(map1, 28, 16);
     manager = new PlayerManager([
-        /*new Player(RED_TEAM, [
-            new MapUnit(RIFLE_MECH, vec2(4, 4)),
-            new MapUnit(CANNON_MECH, vec2(5, 4)),
-            new MapUnit(ARTILLERY_MECH, vec2(6, 4)),
-            new MapUnit(SUPPORT_MECH, vec2(4, 5)),
-            new MapUnit(TELEPORT_MECH, vec2(5, 5))
-        ]),
-        new Player(BLUE_TEAM, [
-            new MapUnit(RIFLE_MECH, vec2(7, 4)),
-            new MapUnit(CANNON_MECH, vec2(8, 4)),
-            new MapUnit(ARTILLERY_MECH, vec2(9, 4)),
-            new MapUnit(SUPPORT_MECH, vec2(7, 5)),
-            new MapUnit(TELEPORT_MECH, vec2(8, 5))
-        ]),
-        new Player(GREEN_TEAM, [
-            new MapUnit(RIFLE_MECH, vec2(1, 4)),
-            new MapUnit(CANNON_MECH, vec2(2, 4)),
-            new MapUnit(ARTILLERY_MECH, vec2(3, 4)),
-            new MapUnit(SUPPORT_MECH, vec2(1, 5)),
-            new MapUnit(TELEPORT_MECH, vec2(2, 5))
-        ]),
-        new Player(BLACK_TEAM, [
-            new MapUnit(RIFLE_MECH, vec2(2, 3)),
-            new MapUnit(CANNON_MECH, vec2(3, 3)),
-            new MapUnit(ARTILLERY_MECH, vec2(4, 3)),
-            new MapUnit(SUPPORT_MECH, vec2(5, 3)),
-            new MapUnit(TELEPORT_MECH, vec2(6, 3))
-        ]),*/
-
         new Player(RED_TEAM, [
             new MapUnit(HQ_BUILDING, vec2(2, 2)),
+            new MapUnit(CITY_BUILDING, vec2(3, 3)),
             new MapUnit(RIFLE_MECH, vec2(4, 4)),
             new MapUnit(TELEPORT_MECH, vec2(7, 5)),
             new MapUnit(CANNON_MECH, vec2(9, 5))
         ]),
         new Player(BLACK_TEAM, [
             new MapUnit(HQ_BUILDING, vec2(16, 8)),
+            new MapUnit(CITY_BUILDING, vec2(17, 6)),
             new MapUnit(RIFLE_MECH, vec2(12, 9)),
             new MapUnit(SUPPORT_MECH, vec2(11, 7)),
             new MapUnit(ARTILLERY_MECH, vec2(14, 8))
         ])
-
     ]);
 
     cam = vec2(Math.floor((gameWidth / maxDisplayTilesPerRow) / 2), Math.floor((gameWidth / maxDisplayTilesPerRow) / 2));
@@ -86,12 +58,7 @@ function gameplaySetup() {
         new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
     gameplay.push(rightUnitChangeBtn);
     unitActionUISetup();
-    var zoomBtnSize = pixelSize / 1.4;
-    gameplayZoomBtn = new TextButton(tr(vec2(0.01, gameHeight - (128 * zoomBtnSize)),
-        vec2(128 * zoomBtnSize, 128 * zoomBtnSize)),
-        new Label(tr(), "Q", fontSize.toString() + "px " + uiContext.fontFamily),
-        new Button(tr(), "#00000000", "#00000000", "#00000000"));
-    gameplay.push(gameplayZoomBtn);
+    overviewUISetup(fontSize);
     buildingPanelSetup();
     gameplay.push(buildingPanel);
     //Gameplay UI END
@@ -117,31 +84,7 @@ function gameplayDraw(deltaTime) {
         map.drawUnitAttack(cam, getPlayer().getSelectedMapUnit());
     }
 
-    if (gameplayZoomBtn.button.output == UIOUTPUT_HOVER) {
-        var oldzoomBtnSize = pixelSize / 1.4;
-        var zoomBtnSize = pixelSize / 1.3;
-        if (!zoomLock) {
-            gameplayZoomBtn.label.text = "ZOOM LOCK OFF";
-            gameplayZoomBtn.label.textColor = "#FFBBBBFF";
-        }
-        else {
-            gameplayZoomBtn.label.text = "ZOOM LOCK ON";
-            gameplayZoomBtn.label.textColor = "#00FF00FF";
-        }
-        drawSheet(18, vec2(32 * oldzoomBtnSize, gameHeight - (96 * oldzoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
-        drawSheet(19, vec2(96 * oldzoomBtnSize, gameHeight - (96 * oldzoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
-        drawSheet(38, vec2(32 * oldzoomBtnSize, gameHeight - (32 * oldzoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
-        drawSheet(39, vec2(96 * oldzoomBtnSize, gameHeight - (32 * oldzoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
-    }
-    else {
-        var zoomBtnSize = pixelSize / 1.4;
-        gameplayZoomBtn.label.text = "Q";
-        gameplayZoomBtn.label.textColor = "white";
-        drawSheet(18, vec2(32 * zoomBtnSize, gameHeight - (96 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
-        drawSheet(19, vec2(96 * zoomBtnSize, gameHeight - (96 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
-        drawSheet(38, vec2(32 * zoomBtnSize, gameHeight - (32 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
-        drawSheet(39, vec2(96 * zoomBtnSize, gameHeight - (32 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
-    }
+    overviewUIDraw(cam);
 }
 
 function gameplayUpdate(deltaTime) {
@@ -184,51 +127,7 @@ function gameplayUpdate(deltaTime) {
 
 function gameplayEvent(deltaTime) {
 
-    if (keysDown.indexOf('q') != -1) {
-        if (!isKeyPressed('q')) {
-            zoomLock = !zoomLock;
-            if (maxDisplayTilesPerRow == defaultTilesPerRow) {
-                disableControlBar();
-                leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = false;
-                maxDisplayTilesPerRow = zoomedTilesPerRow;
-                updateTileSizes();
-            }
-        }
-    }
-    else {
-        removeKeyPressed('q');
-    }
-
-    //Gameplay Zoom Button Events START
-    if (gameplayZoomBtn.button.output == UIOUTPUT_SELECT) {
-        zoomLock = !zoomLock;
-    }
-    if (gameplayZoomBtn.button.output == UIOUTPUT_HOVER) {
-        if (maxDisplayTilesPerRow == defaultTilesPerRow) {
-            disableControlBar();
-            leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = false;
-            maxDisplayTilesPerRow = zoomedTilesPerRow;
-            updateTileSizes();
-        }
-    }
-    else if (maxDisplayTilesPerRow == zoomedTilesPerRow && !zoomLock) {
-        enableControlBar();
-        leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
-        maxDisplayTilesPerRow = defaultTilesPerRow;
-        updateTileSizes();
-    }
-    if (maxDisplayTilesPerRow == zoomedTilesPerRow) {
-        cam.x = 24.0 * pixelSize;
-        cam.y = 24.0 * pixelSize;
-    }
-    if (wheelScroll != 0.0 && zoomLock) {
-        zoomedTilesPerRow += wheelScroll / 20.0;
-        zoomedTilesPerRow = clamp(zoomedTilesPerRow, 6.0, 60.0);
-        wheelScroll = 0.0;
-        maxDisplayTilesPerRow = zoomedTilesPerRow;
-        updateTileSizes();
-    }
-    //Gameplay Zoom Button Events END
+    overviewUIEvents();
 
     //Gameplay UI Button Events
     if (endTurnBtn.button.output == UIOUTPUT_SELECT) {
