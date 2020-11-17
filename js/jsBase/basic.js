@@ -37,6 +37,10 @@ class Vector2 {
     return new Vector2(-this.x, -this.y);
   }
 
+  isEqual(vec2) {
+    return vec2.x == this.x && vec2.y == this.y;
+  }
+
   add(vec2) {
     return new Vector2(this.x + vec2.x, this.y + vec2.y);
   }

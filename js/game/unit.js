@@ -80,6 +80,10 @@ class Unit {
 class MapUnit {
     constructor(type, mapPos) {
         this.mapPosition = mapPos;
+
+        this.mapPathIndex = -1;
+        this.mapPath = [];
+
         var pos = vec2(Math.floor((this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap)),
             Math.floor((this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap)));
         this.unit = new Unit(type, pos);
@@ -100,12 +104,27 @@ class MapUnit {
     draw(teamID, offset) {
         var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
             (tileSize / 64) + gridBlackLinesFixFactor);
+
         if (maxDisplayTilesPerRow != defaultTilesPerRow)
             this.unit.position = vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
                 Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap));
         else
             this.unit.position = lerpVec2(this.unit.position, vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
-                Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap)), 0.25);
+                Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap)), 0.3);
+
+        if (this.mapPathIndex > -1) {
+            if (this.mapPosition.distance(this.mapPath[this.mapPathIndex]) < 0.01) {
+                this.mapPathIndex++;
+
+                if (this.mapPathIndex >= this.mapPath.length) {
+                    this.mapPosition = this.mapPath[this.mapPath.length - 1];
+                    this.mapPathIndex = -1;
+                }
+            }
+            else {
+                this.mapPosition = lerpVec2(this.mapPosition, this.mapPath[this.mapPathIndex], 0.3);
+            }
+        }
 
         this.unit.draw(teamID, offset, sc);
 

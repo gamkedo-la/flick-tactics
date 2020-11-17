@@ -104,31 +104,81 @@ class GameMap {
 
     //
 
+    calculateUnitMovement(mapUnit, destinationTile = vec2(this.cursorTile.x, this.cursorTile.y)) {
+        var path = [mapUnit.mapPosition];
+        var totalMovement = mapUnit.unit.movement;
+        do {
+            var adjacentTiles = [
+                path[path.length - 1].add(vec2(-1, 0)),
+                path[path.length - 1].add(vec2(0, -1)),
+                path[path.length - 1].add(vec2(1, 0)),
+                path[path.length - 1].add(vec2(0, 1))
+            ];
+            var shortestDist = 99999.0;
+            var shortestDistTileIndex = -1;
+            for (let i = 0; i < 4; i++) {
+                var dist = adjacentTiles[i].distance(destinationTile);
+                if (dist < shortestDist) {
+                    shortestDist = dist;
+                    shortestDistTileIndex = i;
+                }
+            }
+            path.push(adjacentTiles[shortestDistTileIndex]);
+            totalMovement -= 1;
+        } while (!path[path.length - 1].isEqual(destinationTile) && totalMovement > 0);
+
+        return path;
+    }
+
+    canUnitReachTile(mapUnit, tilePosition) {
+        var path = this.calculateUnitMovement(mapUnit, tilePosition);
+        return path[path.length - 1].isEqual(tilePosition);
+    }
+
     drawUnitMovement(offset, mapUnit) {
+
         for (let y = -mapUnit.unit.movement; y <= mapUnit.unit.movement; y++) {
             for (let x = -mapUnit.unit.movement; x <= mapUnit.unit.movement; x++) {
 
+                /*
                 if (Math.abs(x) + Math.abs(y) > mapUnit.unit.movement
                     || (x == 0 && y == 0)
                     || manager.getPlayerAndUnitIndexOnTile(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y))[0] != -1
                     || (this.getTileTypeFromPosition(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y)) == SEA_TILE
                         && mapUnit.unit.type != TELEPORT_MECH))
                     continue;
+                */
 
-                var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * tileSize) + ((mapUnit.mapPosition.x + x) * tileGap)),
-                    Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * tileSize) + ((mapUnit.mapPosition.y + y) * tileGap)));
+                if (this.canUnitReachTile(mapUnit, vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y))) {
+                    var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * tileSize) + ((mapUnit.mapPosition.x + x) * tileGap)),
+                        Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * tileSize) + ((mapUnit.mapPosition.y + y) * tileGap)));
 
-                drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
-                    vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true,
-                    (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#00FF00BB" : "#FFFF0088");
+                    drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
+                        vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true, "#FFFF0088");
+                }
             }
+        }
+
+        var path = this.calculateUnitMovement(mapUnit);
+        for (let i = 0; i < path.length; i++) {
+            var posi = vec2(Math.floor(offset.x + (path[i].x * tileSize) + (path[i].x * tileGap)),
+                Math.floor(offset.y + (path[i].y * tileSize) + (path[i].y * tileGap)));
+            drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
+                vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true,
+                (this.cursorTile.x == path[i].x && this.cursorTile.y == path[i].y) ? "#FF0000FF" : "#FF0000BB");
         }
     }
 
     eventUnitMovement(mapUnit) {
         if (isTouched) {
             isTouched = false;
-            for (let y = -mapUnit.unit.movement; y <= mapUnit.unit.movement; y++) {
+
+            var path = this.calculateUnitMovement(mapUnit);
+            mapUnit.mapPath = path;
+            mapUnit.mapPathIndex = 0;
+            mapUnit.up = -1;
+
+            /*for (let y = -mapUnit.unit.movement; y <= mapUnit.unit.movement; y++) {
                 for (let x = -mapUnit.unit.movement; x <= mapUnit.unit.movement; x++) {
 
                     if (Math.abs(x) + Math.abs(y) > mapUnit.unit.movement
@@ -146,7 +196,7 @@ class GameMap {
                         return true;
                     }
                 }
-            }
+            }*/
         }
         return false;
     }
