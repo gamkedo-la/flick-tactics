@@ -6,12 +6,14 @@ function uiInit() {
     gameplaySetup();
     aboutSetup();
     battlescreenSetup();
+    worldmapSetup();
 
     uistates = [];
     uistates.push(new UIState(startscreen));
     uistates.push(new UIState(gameplay));
     uistates.push(new UIState(about));
     uistates.push(new UIState(battlescreen));
+    uistates.push(new UIState(worldmap));
     ui = new UI(uistates, STARTSCREEN);
 }
 
@@ -24,6 +26,7 @@ function resizeGame() {
     gameplayResize();
     aboutResize();
     battlescreenResize();
+    worldmapResize();
 
     prevPixelSize = pixelSize;
     prevGameWidth = gameWidth;
