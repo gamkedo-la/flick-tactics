@@ -10,10 +10,10 @@ const SUPPORT_MECH = 3;
 const TELEPORT_MECH = 4;
 
 //buildings acts as units
-const HQ_BUILDING = 80;
-const CITY_BUILDING = 84;
-const WAR_BUILDING = 88;
-const RUIN_BUILDING = 92;
+const HQ_BUILDING = 60;
+const CITY_BUILDING = 64;
+const WAR_BUILDING = 68;
+const RUIN_BUILDING = 72;
 
 class Unit {
     constructor(type, pos) {
@@ -59,6 +59,11 @@ class Unit {
                 this.isBuilding = true;
                 this.movement = 0;
                 break;
+
+            case RUIN_BUILDING:
+                this.isBuilding = true;
+                this.movement = 0;
+                break;
         }
     }
 
@@ -66,14 +71,17 @@ class Unit {
         if (typeof scale == "undefined") scale = vec2(1, 1);
 
         if (!this.isBuilding) {
-            //2 Frame Mech Unit Idle Animation
             if (gameTime % 1200 < 600)
                 drawSheet(120 + (4 * this.type) + teamID, offset.add(this.position), scale);
             else
                 drawSheet(100 + (4 * this.type) + teamID, offset.add(this.position), scale);
         }
-        else if (this.isBuilding)
-            drawSheet(this.type + teamID, offset.add(this.position), scale);
+        else if (this.isBuilding) {
+            if (gameTime % 1200 < 600)
+                drawSheet(this.type + teamID, offset.add(this.position), scale);
+            else
+                drawSheet(20 + this.type + teamID, offset.add(this.position), scale);
+        }
     }
 }
 

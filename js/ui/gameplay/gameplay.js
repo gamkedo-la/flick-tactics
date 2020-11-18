@@ -31,6 +31,8 @@ function gameplaySetup() {
         new Player(RED_TEAM, [
             new MapUnit(HQ_BUILDING, vec2(2, 2)),
             new MapUnit(CITY_BUILDING, vec2(3, 3)),
+            new MapUnit(WAR_BUILDING, vec2(4, 3)),
+            new MapUnit(RUIN_BUILDING, vec2(6, 6)),
             new MapUnit(RIFLE_MECH, vec2(4, 4)),
             new MapUnit(TELEPORT_MECH, vec2(7, 5)),
             new MapUnit(CANNON_MECH, vec2(9, 5))
