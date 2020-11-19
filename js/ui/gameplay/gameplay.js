@@ -27,6 +27,7 @@ function getActiveTeamColor() {
 
 function gameplaySetup() {
     map = new GameMap(map1, 28, 16);
+    //map = new GameMap(map2, 14, 8);
     manager = new PlayerManager([
         new Player(RED_TEAM, [
             new MapUnit(HQ_BUILDING, vec2(2, 2)),
@@ -43,6 +44,11 @@ function gameplaySetup() {
             new MapUnit(RIFLE_MECH, vec2(12, 9)),
             new MapUnit(SUPPORT_MECH, vec2(11, 7)),
             new MapUnit(ARTILLERY_MECH, vec2(14, 8))
+            /*new MapUnit(HQ_BUILDING, vec2(5, 8)),
+            new MapUnit(CITY_BUILDING, vec2(5, 6)),
+            new MapUnit(RIFLE_MECH, vec2(5, 9)),
+            new MapUnit(SUPPORT_MECH, vec2(5, 7)),
+            new MapUnit(ARTILLERY_MECH, vec2(5, 8))*/
         ])
     ]);
 
