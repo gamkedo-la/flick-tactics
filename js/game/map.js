@@ -45,6 +45,49 @@ var map2 =
     "01.01.03.03.03.01.01.02.02.01.01.03.03.03." +
     "01.01.03.03.03.03.01.01.02.02.01.01.03.03.";
 
+var currentMapNumber = 0;
+var mapList = [];
+
+function mapDefinitions(){
+     mapList = [
+{levelData:map1, levelCol: 28, levelRow: 16, redTeam:[
+            new MapUnit(HQ_BUILDING, vec2(2, 2)),
+            new MapUnit(CITY_BUILDING, vec2(3, 3)),
+            new MapUnit(WAR_BUILDING, vec2(4, 3)),
+            new MapUnit(RUIN_BUILDING, vec2(6, 6)),
+            new MapUnit(RIFLE_MECH, vec2(4, 4)),
+            new MapUnit(TELEPORT_MECH, vec2(7, 5)),
+            new MapUnit(CANNON_MECH, vec2(9, 5))
+        ],blackTeam:[
+            new MapUnit(HQ_BUILDING, vec2(16, 8)),
+            new MapUnit(CITY_BUILDING, vec2(17, 6)),
+            new MapUnit(RIFLE_MECH, vec2(12, 9)),
+            new MapUnit(SUPPORT_MECH, vec2(11, 7)),
+            new MapUnit(ARTILLERY_MECH, vec2(14, 8))]},
+
+{levelData:map2, levelCol: 14, levelRow: 8, redTeam:[
+            new MapUnit(HQ_BUILDING, vec2(2, 2)),
+            new MapUnit(CITY_BUILDING, vec2(3, 3)),
+            new MapUnit(WAR_BUILDING, vec2(4, 3)),
+            new MapUnit(RUIN_BUILDING, vec2(6, 6)),
+            new MapUnit(RIFLE_MECH, vec2(4, 4)),
+            new MapUnit(TELEPORT_MECH, vec2(7, 5)),
+            new MapUnit(CANNON_MECH, vec2(9, 5))
+        ],blackTeam:[
+            new MapUnit(HQ_BUILDING, vec2(5, 4)),
+            new MapUnit(CITY_BUILDING, vec2(5, 6)),
+            new MapUnit(RIFLE_MECH, vec2(5, 5)),
+            new MapUnit(SUPPORT_MECH, vec2(5, 7)),
+            new MapUnit(ARTILLERY_MECH, vec2(5, 7))]},
+];
+}
+  /*new Player(RED_TEAM, ),
+        new Player(BLACK_TEAM, [
+            new MapUnit(HQ_BUILDING, vec2(16, 8)),
+            new MapUnit(CITY_BUILDING, vec2(17, 6)),
+            new MapUnit(RIFLE_MECH, vec2(12, 9)),
+            new MapUnit(SUPPORT_MECH, vec2(11, 7)),
+            new MapUnit(ARTILLERY_MECH, vec2(14, 8))*/
 
 function drawSheet(index, pos, sc, tileSize) {
     if (typeof tileSize == "undefined") tileSize = vec2(64, 64);
