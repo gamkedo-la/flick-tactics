@@ -11,6 +11,7 @@ function worldmapDraw(deltaTime) {
 }
 
 function worldmapUpdate(deltaTime) {
+    ui.stateIndex = GAMEPLAY;
 }
 
 function worldmapEvent(deltaTime) {

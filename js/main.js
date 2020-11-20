@@ -14,6 +14,8 @@ function event(deltaTime) {
         case ABOUT: aboutEvent(deltaTime); break;
         case BATTLESCREEN: battlescreenEvent(deltaTime); break;
         case WORLDMAP: worldmapEvent(deltaTime); break;
+        case VERSUS: versusEvent(deltaTime); break;
+        case EDITOR: editorEvent(deltaTime); break;
     }
     ui.event();
 }
@@ -25,6 +27,8 @@ function update(deltaTime) {
         case ABOUT: aboutUpdate(deltaTime); break;
         case BATTLESCREEN: battlescreenUpdate(deltaTime); break;
         case WORLDMAP: worldmapUpdate(deltaTime); break;
+        case VERSUS: versusUpdate(deltaTime); break;
+        case EDITOR: editorUpdate(deltaTime); break;
     }
     ui.update();
 }
@@ -39,6 +43,8 @@ function draw(deltaTime) {
         case ABOUT: aboutDraw(deltaTime); break;
         case BATTLESCREEN: battlescreenDraw(deltaTime); break;
         case WORLDMAP: worldmapDraw(deltaTime); break;
+        case VERSUS: versusDraw(deltaTime); break;
+        case EDITOR: editorDraw(deltaTime); break;
     }
     ui.draw();
     //ui.debugDraw("green");

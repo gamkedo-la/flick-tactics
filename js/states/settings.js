@@ -7,6 +7,8 @@ function uiInit() {
     aboutSetup();
     battlescreenSetup();
     worldmapSetup();
+    versusSetup();
+    editorSetup();
 
     uistates = [];
     uistates.push(new UIState(startscreen));
@@ -14,6 +16,8 @@ function uiInit() {
     uistates.push(new UIState(about));
     uistates.push(new UIState(battlescreen));
     uistates.push(new UIState(worldmap));
+    uistates.push(new UIState(versus));
+    uistates.push(new UIState(editor));
     ui = new UI(uistates, STARTSCREEN);
 }
 
@@ -27,6 +31,8 @@ function resizeGame() {
     aboutResize();
     battlescreenResize();
     worldmapResize();
+    versusResize();
+    editorResize();
 
     prevPixelSize = pixelSize;
     prevGameWidth = gameWidth;

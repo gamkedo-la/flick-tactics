@@ -109,6 +109,10 @@ function vec2(x, y) {
   return new Vector2(x, y);
 }
 
+function toVec2(value) {
+  return new Vector2(value, value);
+}
+
 function getDistBtwVec2(vec2_a, vec2_b) {
   var diffY = vec2_a.y - vec2_b.y;
   var diffX = vec2_a.x - vec2_b.x;
@@ -169,6 +173,12 @@ function lerpVec2(vec2_a, vec2_b, amount) {
   amount = amount < 0 ? 0 : amount;
   amount = amount > 1 ? 1 : amount;
   return new Vector2((1.0 - amount) * vec2_a.x + amount * vec2_b.x, (1.0 - amount) * vec2_a.y + amount * vec2_b.y);
+}
+
+function moveToVec2(vec2_a, vec2_b, amount) {
+  var xMove = amount * Math.cos(vec2_b.angle(vec2_a));
+  var yMove = amount * Math.sin(vec2_b.angle(vec2_a));
+  return new Vector2(vec2_a.x + xMove, vec2_a.y + yMove);
 }
 
 function rotateAroundPoint(pointToRotate, fixedPoint, angle) {
