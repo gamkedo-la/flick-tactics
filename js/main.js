@@ -3,6 +3,7 @@ var gameTime = 0;
 
 window.onload = function () {
     init();
+    audioSetup();
     frame();
 };
 

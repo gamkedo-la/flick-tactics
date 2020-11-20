@@ -50,8 +50,19 @@ function aboutUpdate(deltaTime) {
 }
 
 function aboutEvent(deltaTime) {
-    if (aboutToStartButton.button.output == UIOUTPUT_SELECT) {
-        ui.stateIndex = STARTSCREEN;
-        aboutToStartButton.button.resetOutput();
+    switch (aboutToStartButton.button.output)
+    {
+        case UIOUTPUT_HOVER:
+            if(aboutToStartButton.button.hoverTrigger)
+            {
+                playSFX(SFX_BUTTON_HOVER);
+                aboutToStartButton.button.hoverTrigger = false;
+            }
+            break;
+
+        case UIOUTPUT_SELECT:
+            playSFX(SFX_BUTTON_CLICK);
+            ui.stateIndex = STARTSCREEN;
+            aboutToStartButton.button.resetOutput();
     }
 }

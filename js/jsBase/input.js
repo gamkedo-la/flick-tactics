@@ -49,6 +49,8 @@ function onTouchStart(ev) {
 
     for (let i = 0; i < ev.touches.length; i++)
         touchPos[i] = vec2(ev.touches[i].clientX, ev.touches[i].clientY);
+
+    audioPlayOnInput();
 }
 
 function onTouchMove(ev) {
@@ -84,6 +86,8 @@ function onMouseDown(ev) {
     }
 
     touchPos[0] = vec2(ev.clientX, ev.clientY);
+
+    audioPlayOnInput();
 }
 
 function onMouseMove(ev) {

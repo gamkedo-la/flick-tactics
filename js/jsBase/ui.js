@@ -242,6 +242,7 @@ class Button extends UIObject {
 
         this.selectColor = selectColor;
         this.hoverColor = hoverColor;
+        this.hoverTrigger = false;
         this.disabledColor = disabledColor;
 
         this.prevTouchId = -1;
@@ -257,6 +258,10 @@ class Button extends UIObject {
                 }
                 else if (this.output != UIOUTPUT_DISABLED && hover(this.transform)) {
                     this.btnColor = this.hoverColor;
+                    if(this.output != UIOUTPUT_HOVER)
+                    {
+                        this.hoverTrigger = true;
+                    }
                     this.output = UIOUTPUT_HOVER;
                 }
                 else if (this.output == UIOUTPUT_DISABLED) {
