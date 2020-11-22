@@ -62,7 +62,7 @@ function aboutEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
-            ui.stateIndex = STARTSCREEN;
+            ui.transitionToState = STARTSCREEN;
             aboutToStartButton.button.resetOutput();
     }
 }

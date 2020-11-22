@@ -30,17 +30,19 @@ function update(deltaTime) {
         case VERSUS: versusUpdate(deltaTime); break;
         case EDITOR: editorUpdate(deltaTime); break;
     }
-    ui.update();
+    ui.update(deltaTime);
 }
 
 function draw(deltaTime) {
     renderer.clearRect(0, 0, window.innerWidth, window.innerHeight);
     drawRect(renderer, vec2(0, 0), vec2(window.innerWidth, window.innerHeight), true, "black");
-    drawRect(renderer, vec2(0, 0), vec2(window.innerWidth, window.innerHeight), true, getActiveTeamColor() + "66");
     switch (ui.stateIndex) {
         case STARTSCREEN: startscreenDraw(deltaTime); break;
-        case GAMEPLAY: gameplayDraw(deltaTime); break;
-        case ABOUT: aboutDraw(deltaTime); break;
+        case GAMEPLAY:
+            drawRect(renderer, vec2(0, 0), vec2(window.innerWidth, window.innerHeight), true, getActiveTeamColor() + "66");
+            gameplayDraw(deltaTime);
+            break;
+        case ABOUT:aboutDraw(deltaTime); break;
         case BATTLESCREEN: battlescreenDraw(deltaTime); break;
         case WORLDMAP: worldmapDraw(deltaTime); break;
         case VERSUS: versusDraw(deltaTime); break;

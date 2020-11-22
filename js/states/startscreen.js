@@ -8,16 +8,16 @@ function startscreenSetup() {
     titleSprite.transform.scale = vec2((sizeFactor / 1.8) / titleSprite.imageObject.image.width, (sizeFactor / 4) / titleSprite.imageObject.image.height);
     titleSprite.transform.position = vec2(gameWidth / 2, gameHeight / 4);
 
-    worldMapSprite = new Sprite(tr(), new ImageObject("images/worldMap.png"));
-    worldMapSprite.transform.scale = toVec2(pixelSize);
-    worldMapAnimationPoints = [
+    worldmapSprite = new Sprite(tr(), new ImageObject("images/worldmap.png"));
+    worldmapSprite.transform.scale = toVec2(pixelSize);
+    worldmapAnimationPoints = [
         {pos: vec2(gameWidth/1.25, gameWidth/2.0), sc: pixelSize},
         {pos: vec2(gameWidth/1.25, gameWidth/10.0), sc: pixelSize*0.9},
         {pos: vec2(gameWidth/4.0, gameWidth/12.0), sc: pixelSize*1.1},
         {pos: vec2(gameWidth/20.0, gameWidth/2.0), sc: pixelSize*0.9}
     ];
-    worldMapPositionIndex = 0;
-    worldMapSprite.transform.position = worldMapAnimationPoints[worldMapPositionIndex].pos;
+    worldmapPositionIndex = 0;
+    worldmapSprite.transform.position = worldmapAnimationPoints[worldmapPositionIndex].pos;
 
     startLabel = new Label(tr(vec2(), vec2(gameWidth, gameHeight)), "Touch/Click anywhere to begin.",
         fontSize.toString() + "px " + uiContext.fontFamily);
@@ -69,14 +69,16 @@ function startscreenResize() {
 function startscreenDraw(deltaTime) {
     if(startscreen[1].enabled)
     {
-        worldMapSprite.transform.position = moveToVec2(worldMapSprite.transform.position, worldMapAnimationPoints[worldMapPositionIndex].pos, 1.5);
-        worldMapSprite.transform.scale = lerpVec2(worldMapSprite.transform.scale, toVec2(worldMapAnimationPoints[worldMapPositionIndex].sc), 0.005);
-        if(worldMapSprite.transform.position.distance(worldMapAnimationPoints[worldMapPositionIndex].pos) < 10)
+        drawRect(renderer, vec2(0, 0), vec2(window.innerWidth, window.innerHeight), true, "#5599ff");
+        
+        worldmapSprite.transform.position = moveToVec2(worldmapSprite.transform.position, worldmapAnimationPoints[worldmapPositionIndex].pos, 1.5);
+        worldmapSprite.transform.scale = lerpVec2(worldmapSprite.transform.scale, toVec2(worldmapAnimationPoints[worldmapPositionIndex].sc), 0.005);
+        if(worldmapSprite.transform.position.distance(worldmapAnimationPoints[worldmapPositionIndex].pos) < 10)
         {
-            worldMapPositionIndex++;
-            if(worldMapPositionIndex >= worldMapAnimationPoints.length) worldMapPositionIndex = 0;
+            worldmapPositionIndex++;
+            if(worldmapPositionIndex >= worldmapAnimationPoints.length) worldmapPositionIndex = 0;
         }
-        worldMapSprite.drawSc();
+        worldmapSprite.drawSc();
         drawRect(renderer, vec2(), vec2(gameWidth, gameHeight), true, "#661111DD");
         
         startscreenUnit.type = RIFLE_MECH;
@@ -97,6 +99,10 @@ function startscreenDraw(deltaTime) {
         
         titleSprite.drawSc();
     }
+    else
+    {
+        drawRect(renderer, vec2(0, 0), vec2(window.innerWidth, window.innerHeight), true, "black");
+    }
 }
 
 function startscreenUpdate(deltaTime) {
@@ -115,7 +121,7 @@ function startscreenEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
-            ui.stateIndex = WORLDMAP;
+            ui.transitionToState = WORLDMAP;
             playButton.button.resetOutput();
     }
 
@@ -131,7 +137,7 @@ function startscreenEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
-            ui.stateIndex = VERSUS;
+            ui.transitionToState = VERSUS;
             versusButton.button.resetOutput();
     }
 
@@ -147,7 +153,7 @@ function startscreenEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
-            ui.stateIndex = EDITOR;
+            ui.transitionToState = EDITOR;
             editorButton.button.resetOutput();
     }
 
@@ -163,7 +169,7 @@ function startscreenEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
-            ui.stateIndex = ABOUT;
+            ui.transitionToState = ABOUT;
             aboutButton.button.resetOutput();
     }
 }

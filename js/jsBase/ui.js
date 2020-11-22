@@ -30,6 +30,10 @@ class UIContext {
 
 uiContext = new UIContext();
 
+const STATETRANSITION_FADE = 0;
+const STATETRANSITION_BARS = 1;
+const STATETRANSITION_DOORS = 2;
+
 class UI {
     //contains all the UI States
     //runs only 1 UIState at a time
@@ -37,6 +41,10 @@ class UI {
     constructor(uiStates, stateIndex) {
         this.uiStates = uiStates;
         this.stateIndex = stateIndex;
+        this.transitionDelay = 400;
+        this.transitionTimer = this.transitionDelay;
+        this.transitionToState = -1;
+        this.transitionType = STATETRANSITION_DOORS;
 
         this.prevState = this.uiStates;
     }
@@ -50,12 +58,52 @@ class UI {
         this.getActiveState().event();
     }
 
-    update() {
+    update(deltaTime) {
+        if(this.transitionToState != -1)
+        {
+            this.transitionTimer -= deltaTime;
+
+            if(this.transitionTimer <= (this.transitionDelay/2.0))
+            {
+                this.stateIndex = this.transitionToState;
+
+                if(this.transitionTimer <= 0)
+                {
+                    this.transitionToState = -1;
+                    this.transitionTimer = this.transitionDelay;
+                }
+            }
+        }
         this.getActiveState().update();
     }
 
     draw() {
         this.getActiveState().draw();
+
+        if(this.transitionToState != -1)
+        {
+            var ratio;
+            if(this.transitionTimer > (this.transitionDelay/2.0))
+                ratio = 1.0 - ((this.transitionTimer-(this.transitionDelay/2.0))/(this.transitionDelay/2.0));
+            else
+                ratio = this.transitionTimer/(this.transitionDelay/2.0);
+            switch(this.transitionType)
+            {
+                case STATETRANSITION_FADE:
+                    uiContext.renderer.globalAlpha = ratio;
+                    drawRect(uiContext.renderer, vec2(), vec2(gameWidth, gameHeight), true, "black");
+                    uiContext.renderer.globalAlpha = 1.0;
+                    break;
+                case STATETRANSITION_BARS:
+                    for(let i = 0; i < gameWidth; i += gameWidth/10)
+                        drawRect(uiContext.renderer, vec2(i, 0.0), vec2((gameWidth/10) * ratio, gameHeight), true, "black");
+                    break;
+                case STATETRANSITION_DOORS:
+                    drawRect(uiContext.renderer, vec2(-gameWidth * (1.0-ratio), 0.0), vec2(gameWidth, gameHeight), true, "black");
+                    drawRect(uiContext.renderer, vec2(gameWidth * (1.0-ratio), 0.0), vec2(gameWidth, gameHeight), true, "black");
+                    break;
+            }
+        }
     }
 
     debugDraw(color) {
