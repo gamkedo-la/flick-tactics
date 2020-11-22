@@ -56,13 +56,17 @@ function audioSetup()
 
 function playBGM(id)
 {
-    BGM[id].content.play();
+    if(gameOptions.BGMEnabled) {
+        BGM[id].content.play();
+    }
 }
 
 function playSFX(id)
 {
-    SFX[id].content[SFX[id].index++].play();
-    if(SFX[id].index >= SFX[id].content.length) SFX[id].index = 0;
+    if(gameOptions.SFXEnabled) {
+        SFX[id].content[SFX[id].index++].play();
+        if(SFX[id].index >= SFX[id].content.length) SFX[id].index = 0;
+    }
 }
 
 function audioPlayOnInput()
