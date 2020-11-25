@@ -107,13 +107,15 @@ function mapDefinitions(){
 
 function drawSheet(index, pos, sc, tileSize) {
     if (typeof tileSize == "undefined") tileSize = vec2(64, 64);
-    var cols = Math.floor(gameSheet.imageObject.image.width / tileSize.x);
+    var cols = Math.floor((gameSheet.imageObject.image.width - 20) / tileSize.x);
     //var rows = Math.floor(gameSheet.imageObject.image.height / tileSize.y);
 
     gameSheet.transform.position = pos;
     gameSheet.transform.scale = sc;
 
-    gameSheet.drawScIn((vec2(index % cols, Math.floor(index / cols)).multiply(vec2(64, 64))).subtract(vec2(0.001 * pixelSize, 0.001 * pixelSize)), tileSize.add(vec2(0.001 * pixelSize, 0.001 * pixelSize)));
+    var row = index % cols;
+    var col = Math.floor(index / cols);
+    gameSheet.drawScIn(vec2((row*68), (col*68)), tileSize);
 }
 
 function updateTileSizes() {
