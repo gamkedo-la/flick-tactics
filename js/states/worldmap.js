@@ -81,16 +81,16 @@ function worldmapDraw(deltaTime) {
 
 function worldmapUpdate(deltaTime) {
     playBGM(BGM_WORLDMAP);
+    if(!dialogueUpdate(deltaTime))
+        if(isTouched) ui.transitionToState = GAMEPLAY;
 }
 
 function worldmapEvent(deltaTime) {
     if(isTouched)
     {
-        ui.transitionToState = GAMEPLAY;
-        
-        /*if(!worldmapMissionFocus) worldmapMissionFocus = true;
+        if(!worldmapMissionFocus) worldmapMissionFocus = true;
         else if(currentMissionIndex < missionPoints.length - 1) currentMissionIndex++;
         else { currentMissionIndex = 0; worldmapMissionFocus = false; }
-        worldmapFocusCircleRadius = 0.0;*/
+        worldmapFocusCircleRadius = 0.0;
     }
 }
