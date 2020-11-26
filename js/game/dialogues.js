@@ -28,6 +28,13 @@ var TAJA = 2;
 var HULU = 3;
 var JONAH = 4;
 
+var FACE_NEUTRAL = 0;
+var FACE_HAPPY = 1;
+var FACE_SAD = 2;
+var FACE_UPSET = 3;
+var FACE_ANGRY = 4;
+var FACE_SHOCK = 5;
+
 var dialogueCO = [
     {name: "GURU:", color: "#fbff86"},
     {name: "ZAREEM:", color: "#8ff8e2"},
