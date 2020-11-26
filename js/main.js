@@ -30,6 +30,7 @@ function update(deltaTime) {
         case VERSUS: versusUpdate(deltaTime); break;
         case EDITOR: editorUpdate(deltaTime); break;
     }
+    audioUpdate();
     ui.update(deltaTime);
 }
 

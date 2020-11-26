@@ -80,7 +80,7 @@ function worldmapDraw(deltaTime) {
 }
 
 function worldmapUpdate(deltaTime) {
-
+    playBGM(BGM_WORLDMAP);
 }
 
 function worldmapEvent(deltaTime) {

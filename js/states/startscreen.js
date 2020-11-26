@@ -106,6 +106,8 @@ function startscreenDraw(deltaTime) {
 }
 
 function startscreenUpdate(deltaTime) {
+    if(startscreen[1].enabled)
+        playBGM(STARTSCREEN);
 }
 
 function startscreenEvent(deltaTime) {
