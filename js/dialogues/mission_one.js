@@ -56,5 +56,7 @@ const mission_one = [
         speaker: ZAREEM,
         dialogue: "On it's GURU SIR!",
         face: FACE_NEUTRAL
+
+        //event: centered on unit, player needs to move the unit to another position.
     },
 ];
