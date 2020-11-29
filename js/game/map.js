@@ -73,7 +73,7 @@ function mapDefinitions(){
             new MapUnit(ARTILLERY_MECH, vec2(14, 8))]},
 
 {levelData:map2, levelCol: 28, levelRow: 16, redTeam:[
-            new MapUnit(HQ_BUILDING, vec2(2, 2)),
+            new MapUnit(HQ_BUILDING, vec2(27, 2)),
             new MapUnit(CITY_BUILDING, vec2(3, 3)),
             new MapUnit(WAR_BUILDING, vec2(4, 3)),
             new MapUnit(RUIN_BUILDING, vec2(6, 6)),
@@ -81,7 +81,7 @@ function mapDefinitions(){
             new MapUnit(TELEPORT_MECH, vec2(7, 5)),
             new MapUnit(CANNON_MECH, vec2(9, 5))
         ],blackTeam:[
-            new MapUnit(HQ_BUILDING, vec2(5, 4)),
+            new MapUnit(HQ_BUILDING, vec2(15, 4)),
             new MapUnit(CITY_BUILDING, vec2(5, 6)),
             new MapUnit(RIFLE_MECH, vec2(5, 5)),
             new MapUnit(SUPPORT_MECH, vec2(5, 7)),
