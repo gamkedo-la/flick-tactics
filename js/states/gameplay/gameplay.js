@@ -28,7 +28,6 @@ function getActiveTeamColor() {
 function gameplaySetup() {
     mapDefinitions();
     map = new GameMap(mapList[currentMapNumber].levelData, mapList[currentMapNumber].levelCol, mapList[currentMapNumber].levelRow);
-    //map = new GameMap(map2, 14, 8);
     manager = new PlayerManager([
         new Player(RED_TEAM, mapList[currentMapNumber].redTeam),
         new Player(BLACK_TEAM, mapList[currentMapNumber].blackTeam)

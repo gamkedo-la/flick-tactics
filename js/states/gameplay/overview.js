@@ -20,19 +20,23 @@ function overviewUIDraw(offset) {
             gameplayZoomBtn.label.text = "ZOOM LOCK ON";
             gameplayZoomBtn.label.textColor = "#00FF00FF";
         }
+        renderer.globalAlpha = 0.4;
         drawSheet(18, vec2(32 * oldzoomBtnSize, gameHeight - (96 * oldzoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
         drawSheet(19, vec2(96 * oldzoomBtnSize, gameHeight - (96 * oldzoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
         drawSheet(38, vec2(32 * oldzoomBtnSize, gameHeight - (32 * oldzoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
         drawSheet(39, vec2(96 * oldzoomBtnSize, gameHeight - (32 * oldzoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+        renderer.globalAlpha = 1.0;
     }
     else {
         var zoomBtnSize = pixelSize / 1.4;
         gameplayZoomBtn.label.text = "Q";
         gameplayZoomBtn.label.textColor = "white";
+        if(zoomLock) renderer.globalAlpha = 0.6;
         drawSheet(18, vec2(32 * zoomBtnSize, gameHeight - (96 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
         drawSheet(19, vec2(96 * zoomBtnSize, gameHeight - (96 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
         drawSheet(38, vec2(32 * zoomBtnSize, gameHeight - (32 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
         drawSheet(39, vec2(96 * zoomBtnSize, gameHeight - (32 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+        renderer.globalAlpha = 1.0;
     }
 
     var oPos = vec2(offset.x, offset.y).subtract(vec2(tileSize / 2, tileSize / 2));
