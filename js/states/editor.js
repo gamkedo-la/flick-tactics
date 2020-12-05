@@ -2,8 +2,14 @@ const EDITOR = 6;
 var editor = [];
 var editorCam = vec2();
 var editorCamMove = 0.5;
-var editorSelectedIndex = -1;
+var editorSelectedIndex = 0;
 var currentEditorMap = 0;
+var editorTeamID = RED_TEAM;
+
+const EDIT_TERRAIN = 0;
+const EDIT_BUILDING = 1;
+const EDIT_MECH = 2;
+var editMode = EDIT_TERRAIN;
 
 var defaultEditorMapString =
     "00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00." +
@@ -23,7 +29,7 @@ var defaultEditorMapString =
     "00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00." +
     "00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00";
 
-var editorMaps = [
+var editorMapData = [
     defaultEditorMapString,
     defaultEditorMapString,
     defaultEditorMapString,
@@ -31,8 +37,21 @@ var editorMaps = [
     defaultEditorMapString
 ];
 
+function editorSaveMap() {
+
+    //TODO [WIP]
+    //PROPER SAVE MAP
+
+    editorMapData[currentEditorMap] = editorMap.getMapString();
+    console.log(map.getMapString());
+}
+
+function editorLoadMap() {
+    editorMap = new GameMap(editorMapData[currentEditorMap], 28, 16);
+}
+
 function editorSetup() {
-    editorMap = new GameMap(editorMaps[currentEditorMap], 28, 16);
+    editorLoadMap();
 
     leftMoveBtn = new TextButton(tr(vec2(0.01, ((gameHeight - (64 * pixelSize)) / 2) - (64 * pixelSize)), vec2(32 * pixelSize, 128 * pixelSize)),
         new Label(tr(), "<"),
@@ -60,10 +79,9 @@ function editorSetup() {
         new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFBBBBFF"));
     editorBtnGroup.push(editorToMenuBtn);
     mapBuildingUnitToggleBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 1, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "MAP", undefined, "black"),
+        new Label(tr(), "TERRAIN", undefined, "black"),
         new Button(tr(), "#FFFF88BB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(mapBuildingUnitToggleBtn);
-
     prevMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
         new Label(tr(), "PREV", undefined, "black"),
         new Button(tr(), "#BBFFFFBB", "#000000FF", "#FFFFFFFF"));
@@ -76,6 +94,10 @@ function editorSetup() {
         new Label(tr(), "RESET", undefined, "black"),
         new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(resetMapBtn);
+    editorTeamBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
+        new Label(tr(), "RED", undefined, "black"),
+        new Button(tr(), "#FFBBBBBB", "#000000FF", "#FFFFFFFF"));
+    editorBtnGroup.push(editorTeamBtn);
     saveMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 3, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
         new Label(tr(), "SAVE", undefined, "black"),
         new Button(tr(), "#88FF88BB", "#000000FF", "#FFFFFFFF"));
@@ -96,13 +118,18 @@ function editorDraw(deltaTime) {
     editorMap.draw(editorCam);
 
     drawRect(renderer, vec2(0, gameHeight - (64.0 * pixelSize)), vec2(gameWidth, 64.0 * pixelSize), true, "#000000BB");
-    for(let i = 0; i < 6; i++)
+    for(let i = 0; i < 6 - (editMode == EDIT_BUILDING ? 2 : 0); i++)
     {
         if(editorSelectedIndex == -1 || editorSelectedIndex == i)
             renderer.globalAlpha = 1.0;
         else
             renderer.globalAlpha = 0.4;
-        drawSheet(i, vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (32.0 * pixelSize)), toVec2(pixelSize - (pixelSize/8.0)));
+
+        var index = i;
+        if(editMode == EDIT_BUILDING) index = getBuildingIndexFromType(i, editorTeamID);
+        else if(editMode == EDIT_MECH) index = getMechIndexFromType(i, editorTeamID);
+        drawSheet(index, vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (32.0 * pixelSize)), toVec2(pixelSize - (pixelSize/8.0)));
+        
         renderer.globalAlpha = 1.0;
 
         renderer.font = (uiContext.fontSize * 2.0).toString() + "px " + uiContext.fontFamily;
@@ -116,9 +143,6 @@ function editorUpdate(deltaTime) {
 }
 
 function editorEvent(deltaTime) {
-
-    var isIndexChanged = false;
-
     for(let i = 0; i < 6; i++)
     {
         var pos = vec2(gameWidth - (64.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (64.0 * pixelSize));
@@ -128,17 +152,13 @@ function editorEvent(deltaTime) {
             && touchPos[0].y >= pos.y && touchPos[0].y < pos.y + sc.y)
         {
             editorSelectedIndex = i;
-            isIndexChanged = true;
             break;
         }
     }
 
-    if(!isIndexChanged)
+    if(isTouched && touchPos[0].y < gameHeight - (64.0 * pixelSize))
     {
-        if(isTouched)
-        {
-            editorMap.indexes[editorMap.cursorTile.x + (editorMap.cursorTile.y * editorMap.cols)] = editorSelectedIndex;
-        }
+        editorMap.indexes[editorMap.cursorTile.x + (editorMap.cursorTile.y * editorMap.cols)] = editorSelectedIndex;
     }
 
     if(leftMoveBtn.button.output == UIOUTPUT_HOVER)
@@ -185,9 +205,21 @@ function editorEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
+            editMode++;
+            if(editMode > EDIT_MECH) editMode = EDIT_TERRAIN;
 
-            //TODO [WIP]
-            //TOGGLE BETWEEN MAP BUILDINGS AND UNITS
+            switch(editMode)
+            {
+                case EDIT_TERRAIN:
+                    mapBuildingUnitToggleBtn.label.text = "TERRAIN";
+                    break;
+                case EDIT_BUILDING:
+                    mapBuildingUnitToggleBtn.label.text = "BUILDING";
+                    break;
+                case EDIT_MECH:
+                    mapBuildingUnitToggleBtn.label.text = "MECH";
+                    break;
+            }
 
             mapBuildingUnitToggleBtn.button.resetOutput();
     }
@@ -203,10 +235,9 @@ function editorEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
-            
-            //TODO [WIP]
-            //LOAD PREVIOUS MAP
-
+            currentEditorMap--;
+            if(currentEditorMap < 0) currentEditorMap = editorMapData.length - 1;
+            editorLoadMap();
             prevMapBtn.button.resetOutput();
     }
     switch (nextMapBtn.button.output)
@@ -221,10 +252,9 @@ function editorEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
-            
-            //TODO [WIP]
-            //LOAD NEXT MAP
-
+            currentEditorMap++;
+            if(currentEditorMap > editorMapData.length - 1) currentEditorMap = 0;
+            editorLoadMap();
             nextMapBtn.button.resetOutput();
     }
     switch (resetMapBtn.button.output)
@@ -242,6 +272,42 @@ function editorEvent(deltaTime) {
             editorCam = vec2();
             resetMapBtn.button.resetOutput();
     }
+    switch (editorTeamBtn.button.output)
+    {
+        case UIOUTPUT_HOVER:
+            if(editorTeamBtn.button.hoverTrigger)
+            {
+                playSFX(SFX_BUTTON_HOVER);
+                editorTeamBtn.button.hoverTrigger = false;
+            }
+            break;
+
+        case UIOUTPUT_SELECT:
+            editorTeamID++;
+            if(editorTeamID > BLACK_TEAM) editorTeamID = RED_TEAM;
+
+            switch(editorTeamID)
+            {
+                case RED_TEAM:
+                    editorTeamBtn.label.text = "RED";
+                    editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#FFBBBBBB";
+                    break;
+                case BLUE_TEAM:
+                    editorTeamBtn.label.text = "BLUE";
+                    editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#BBBBFFBB";
+                    break;
+                case GREEN_TEAM:
+                    editorTeamBtn.label.text = "GREEN";
+                    editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#BBFFBBBB";
+                    break;
+                case BLACK_TEAM:
+                    editorTeamBtn.label.text = "BLACK";
+                    editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#BBBBBBBB";
+                    break;
+            }
+
+            editorTeamBtn.button.resetOutput();
+    }
     switch (saveMapBtn.button.output)
     {
         case UIOUTPUT_HOVER:
@@ -254,12 +320,7 @@ function editorEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
-
-            //TODO [WIP]
-            //PROPER SAVE MAP
-
-            console.log(map.getMapString());
-
+            editorSaveMap();
             saveMapBtn.button.resetOutput();
     }
     switch (loadMapBtn.button.output)
@@ -274,10 +335,7 @@ function editorEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
-            
-            //TODO [WIP]
-            //LOAD MAP
-
+            editorLoadMap();
             loadMapBtn.button.resetOutput();
     }
 }

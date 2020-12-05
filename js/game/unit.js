@@ -15,6 +15,21 @@ const CITY_BUILDING = 64;
 const WAR_BUILDING = 68;
 const RUIN_BUILDING = 72;
 
+function getMechIndexFromType(type, teamNo)
+{
+    return (gameTime % 1200 < 600 ? 20 : 0) + 100 + (4 * type) + teamNo;
+}
+
+function getBuildingIndexFromType(type, teamNo)
+{
+    return (gameTime % 1200 < 600 ? 20 : 0) + 60 + (4 * type) + teamNo;
+}
+
+function getTeamIndex(index, teamNo)
+{
+    return (gameTime % 1200 < 600 ? 20 : 0) + index + teamNo;
+}
+
 class Unit {
     constructor(type, pos) {
         this.type = type;
@@ -71,16 +86,10 @@ class Unit {
         if (typeof scale == "undefined") scale = vec2(1, 1);
 
         if (!this.isBuilding) {
-            if (gameTime % 1200 < 600)
-                drawSheet(120 + (4 * this.type) + teamID, offset.add(this.position), scale);
-            else
-                drawSheet(100 + (4 * this.type) + teamID, offset.add(this.position), scale);
+            drawSheet(getMechIndexFromType(this.type, teamID), offset.add(this.position), scale);
         }
         else if (this.isBuilding) {
-            if (gameTime % 1200 < 600)
-                drawSheet(this.type + teamID, offset.add(this.position), scale);
-            else
-                drawSheet(20 + this.type + teamID, offset.add(this.position), scale);
+            drawSheet(getTeamIndex(this.type, teamID), offset.add(this.position), scale);
         }
     }
 }
