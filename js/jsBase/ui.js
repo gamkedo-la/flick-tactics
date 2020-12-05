@@ -302,7 +302,7 @@ class Button extends UIObject {
                 if (this.output != UIOUTPUT_DISABLED && this.touchId != -1 && this.prevTouchId == -1) {
                     this.btnColor = this.selectColor;
                     this.output = UIOUTPUT_SELECT;
-                    isTouched = false;
+                    //isTouched = false;
                 }
                 else if (this.output != UIOUTPUT_DISABLED && hover(this.transform)) {
                     this.btnColor = this.hoverColor;

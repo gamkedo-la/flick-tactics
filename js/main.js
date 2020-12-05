@@ -61,7 +61,7 @@ function frame() {
         draw(deltaTime);
         inputTimer -= deltaTime;
         gameTime += deltaTime;
-        isTouched = false;
+        if(ui.stateIndex != EDITOR) isTouched = false;
     }
     setTimeout(frame, 15);
 }
