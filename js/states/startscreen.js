@@ -8,7 +8,7 @@ function startscreenSetup() {
     titleSprite.transform.scale = vec2((sizeFactor / 1.8) / titleSprite.imageObject.image.width, (sizeFactor / 4) / titleSprite.imageObject.image.height);
     titleSprite.transform.position = vec2(gameWidth / 2, gameHeight / 4);
 
-    worldmapSprite = new Sprite(tr(), new ImageObject("images/worldmap.png"));
+    worldmapSprite = new Sprite(tr(), new ImageObject("images/worldMap.png"));
     worldmapSprite.transform.scale = toVec2(pixelSize);
     worldmapAnimationPoints = [
         {pos: vec2(gameWidth/1.25, gameWidth/2.0), sc: pixelSize},

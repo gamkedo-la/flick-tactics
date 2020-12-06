@@ -22,7 +22,7 @@ var missionPoints = [
 ];
 
 function worldmapSetup() {
-    worldmapFlagSprite = new Sprite(tr(), new ImageObject("images/worldmapFlags.png"));
+    worldmapFlagSprite = new Sprite(tr(), new ImageObject("images/worldMapFlags.png"));
     dialogueSetup(worldmap);
 }
 
