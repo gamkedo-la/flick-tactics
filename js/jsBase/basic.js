@@ -476,10 +476,33 @@ function downloadString(text, fileType, fileName) {
   setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
 }
 
+function saveFile(textToSave, fileNameToSaveAs)
+{
+    var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
+    var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+ 
+    var downloadLink = document.createElement("a");
+    downloadLink.download = fileNameToSaveAs;
+    downloadLink.innerHTML = "Download File";
+    downloadLink.href = textToSaveAsURL;
+    downloadLink.onclick = destroyClickedElement;
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+ 
+    downloadLink.click();
+}
+ 
+function destroyClickedElement(e)
+{
+    document.body.removeChild(e.target);
+}
+ 
+/*
 function writeFile(file, str) {
   if (!file || !file.length || !str || !str.length) return;
   downloadString(str, "text/plain", file);
 }
+*/
 
 function readFile(file) {
   var text = "";

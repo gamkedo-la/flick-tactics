@@ -3,7 +3,6 @@ var editor = [];
 var editorCam = vec2();
 var editorCamMove = 0.5;
 var editorSelectedIndex = 0;
-var currentEditorMap = 0;
 var editorTeamID = RED_TEAM;
 
 const EDIT_TERRAIN = 0;
@@ -29,29 +28,30 @@ var defaultEditorMapString =
     "00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00." +
     "00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00";
 
-var editorMapData = [
-    defaultEditorMapString,
-    defaultEditorMapString,
-    defaultEditorMapString,
-    defaultEditorMapString,
-    defaultEditorMapString
-];
+var editorMapData = defaultEditorMapString;
 
 function editorSaveMap() {
-
-    //TODO [WIP]
-    //PROPER SAVE MAP
-
-    editorMapData[currentEditorMap] = editorMap.getMapString();
-    console.log(map.getMapString());
+    editorMapData = editorMap.getMapString();
+    saveFile(editorMapData, "flickTacticsMap.txt");
+    console.log(editorMapData);
 }
 
 function editorLoadMap() {
-    editorMap = new GameMap(editorMapData[currentEditorMap], 28, 16);
+    editorLoadBtn.click();
 }
 
 function editorSetup() {
-    editorLoadMap();
+    editorLoadBtn = document.getElementById('file-input');
+    editorLoadBtn.onchange = e => {
+        let reader = new FileReader();
+        reader.readAsText(e.target.files[0]);
+        reader.addEventListener('load', e => {
+            editorMapData = e.target.result;
+            editorMap = new GameMap(editorMapData, 28, 16);
+        });
+    }
+
+    editorMap = new GameMap(editorMapData, 28, 16);
 
     leftMoveBtn = new TextButton(tr(vec2(0.01, ((gameHeight - (64 * pixelSize)) / 2) - (64 * pixelSize)), vec2(32 * pixelSize, 128 * pixelSize)),
         new Label(tr(), "<"),
@@ -82,16 +82,8 @@ function editorSetup() {
         new Label(tr(), "TERRAIN", undefined, "black"),
         new Button(tr(), "#FFFF88BB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(mapBuildingUnitToggleBtn);
-    prevMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "PREV", undefined, "black"),
-        new Button(tr(), "#BBFFFFBB", "#000000FF", "#FFFFFFFF"));
-    editorBtnGroup.push(prevMapBtn);
-    nextMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 5, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "NEXT", undefined, "black"),
-        new Button(tr(), "#BBFFFFBB", "#000000FF", "#FFFFFFFF"));
-    editorBtnGroup.push(nextMapBtn);
     resetMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "RESET", undefined, "black"),
+        new Label(tr(), "RESET POS", undefined, "black"),
         new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(resetMapBtn);
     editorTeamBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
@@ -106,6 +98,10 @@ function editorSetup() {
         new Label(tr(), "LOAD", undefined, "black"),
         new Button(tr(), "#FF8888BB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(loadMapBtn);
+    clearMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
+        new Label(tr(), "CLEAR", undefined, "black"),
+        new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
+    editorBtnGroup.push(clearMapBtn);
 
     editor.push(new FlexGroup(tr(vec2(0.001, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), vec2(gameWidth/2, editorBtnSize.y * 2)),
         new SubState(tr(), editorBtnGroup), false, toVec2(pixelSize), vec2(4, 2), true));
@@ -223,40 +219,6 @@ function editorEvent(deltaTime) {
 
             mapBuildingUnitToggleBtn.button.resetOutput();
     }
-    switch (prevMapBtn.button.output)
-    {
-        case UIOUTPUT_HOVER:
-            if(prevMapBtn.button.hoverTrigger)
-            {
-                playSFX(SFX_BUTTON_HOVER);
-                prevMapBtn.button.hoverTrigger = false;
-            }
-            break;
-
-        case UIOUTPUT_SELECT:
-            playSFX(SFX_BUTTON_CLICK);
-            currentEditorMap--;
-            if(currentEditorMap < 0) currentEditorMap = editorMapData.length - 1;
-            editorLoadMap();
-            prevMapBtn.button.resetOutput();
-    }
-    switch (nextMapBtn.button.output)
-    {
-        case UIOUTPUT_HOVER:
-            if(nextMapBtn.button.hoverTrigger)
-            {
-                playSFX(SFX_BUTTON_HOVER);
-                nextMapBtn.button.hoverTrigger = false;
-            }
-            break;
-
-        case UIOUTPUT_SELECT:
-            playSFX(SFX_BUTTON_CLICK);
-            currentEditorMap++;
-            if(currentEditorMap > editorMapData.length - 1) currentEditorMap = 0;
-            editorLoadMap();
-            nextMapBtn.button.resetOutput();
-    }
     switch (resetMapBtn.button.output)
     {
         case UIOUTPUT_HOVER:
@@ -337,5 +299,21 @@ function editorEvent(deltaTime) {
             playSFX(SFX_BUTTON_CLICK);
             editorLoadMap();
             loadMapBtn.button.resetOutput();
+    }
+    switch (clearMapBtn.button.output)
+    {
+        case UIOUTPUT_HOVER:
+            if(clearMapBtn.button.hoverTrigger)
+            {
+                playSFX(SFX_BUTTON_HOVER);
+                clearMapBtn.button.hoverTrigger = false;
+            }
+            break;
+
+        case UIOUTPUT_SELECT:
+            playSFX(SFX_BUTTON_CLICK);
+            editorMapData = defaultEditorMapString;
+            editorMap = new GameMap(editorMapData, 28, 16);
+            clearMapBtn.button.resetOutput();
     }
 }
