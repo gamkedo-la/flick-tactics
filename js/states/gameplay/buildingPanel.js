@@ -140,5 +140,46 @@ function buildingPanelDraw() {
 }
 
 function buildingPanelEvent() {
+    var SFXTextButton = buildingPanelTab5Objects[3];
+    var BGMTextButton = buildingPanelTab5Objects[4];
 
+
+    // These button label checks  could probably be 
+    // moved up into buildingPanelSetup() at some point,
+    // rather than checking every frame. If/when that happens,
+    // the label.text lines in the button output checks should
+    // be un-commented so the buttons continue to update on click
+    // properly!
+    if(gameOptions.SFXEnabled) {
+        SFXTextButton.label.text = "SFX: ON";
+    } else {
+        SFXTextButton.label.text = "SFX: OFF";
+    }
+
+    if(gameOptions.BGMEnabled) {
+        BGMTextButton.label.text = "BGM: ON";
+    } else {
+        BGMTextButton.label.text = "BGM: OFF";
+    }
+    // end button label checks (see above)
+
+    if(SFXTextButton.button.output == UIOUTPUT_SELECT) {
+        if(gameOptions.SFXEnabled) {
+            gameOptions.SFXEnabled = false;
+            //SFXTextButton.label.text = "SFX: OFF";
+        } else {
+            gameOptions.SFXEnabled = true;
+            //SFXTextButton.label.text = "SFX: ON";
+        }
+    }
+
+    if(BGMTextButton.button.output == UIOUTPUT_SELECT) {
+        if(gameOptions.BGMEnabled) {
+            gameOptions.BGMEnabled = false;
+            //BGMTextButton.label.text = "BGM: OFF";
+        } else {
+            gameOptions.BGMEnabled = true;
+            //BGMTextButton.label.text = "BGM: ON";
+        }
+    }
 }

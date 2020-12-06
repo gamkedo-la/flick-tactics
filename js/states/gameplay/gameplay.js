@@ -154,4 +154,5 @@ function gameplayEvent(deltaTime) {
     }
 
     map.event();
+    buildingPanelEvent();
 }
