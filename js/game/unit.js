@@ -22,7 +22,7 @@ function getMechIndexFromType(type, teamNo)
 
 function getBuildingIndexFromType(type, teamNo)
 {
-    return (gameTime % 1200 < 600 ? 20 : 0) + 60 + (4 * type) + teamNo;
+    return 60 + (4 * type) + teamNo;
 }
 
 function getTeamIndex(index, teamNo)

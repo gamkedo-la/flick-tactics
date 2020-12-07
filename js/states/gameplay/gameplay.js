@@ -26,12 +26,8 @@ function getActiveTeamColor() {
 }
 
 function gameplaySetup() {
-    mapDefinitions();
-    map = new GameMap(mapList[currentMapNumber].levelData, mapList[currentMapNumber].levelCol, mapList[currentMapNumber].levelRow);
-    manager = new PlayerManager([
-        new Player(RED_TEAM, mapList[currentMapNumber].redTeam),
-        new Player(BLACK_TEAM, mapList[currentMapNumber].blackTeam)
-    ]);
+    map = new GameMap(maps[currentMapIndex]);
+    manager = new PlayerManager(map);
 
     cam = vec2(Math.floor((gameWidth / maxDisplayTilesPerRow) / 2), Math.floor((gameWidth / maxDisplayTilesPerRow) / 2));
 
