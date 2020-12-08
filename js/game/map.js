@@ -98,7 +98,7 @@ class GameMap {
 
                 if(unit <= 0) continue;
                 else if(unit > 0 && unit < 6) unit--;
-                else if(unit >= 6) unit = getBuildingIndexFromType(unit - 6, 0);
+                else if(unit >= 6) unit = getBuildingIndexFromType(unit - 6);
 
                 switch(teamID)
                 {
@@ -124,13 +124,42 @@ class GameMap {
         this.cursorTile = vec2(0, 0);
     }
 
-    getMapString()
-    {
+    getMapString(manager) {
         var mapString = "";
 
-        for (let y = 0; y < MAP_SIZE.y; y++) {
-            for (let x = 0; x < MAP_SIZE.x; x++) {
-                mapString += this.indexes[x + (y * MAP_SIZE.x)].toString() + ".";
+        if(typeof manager != "undefined") {
+            for (let y = 0; y < MAP_SIZE.y; y++) {
+                for (let x = 0; x < MAP_SIZE.x; x++) {
+                    var unitTeamString = "";
+                    var PU = manager.getPlayerAndUnitIndexOnTile(vec2(x, y));
+
+                    if(PU[0] <= -1)
+                    {
+                        unitTeamString = "_0_0";
+                    }
+                    else
+                    {
+                        var team = manager.players[PU[0]].unitGroup.teamID;
+                        var unit = manager.players[PU[0]].unitGroup.mapUnits[PU[1]].unit.type + 1;
+
+                        if(unit == HQ_BUILDING+1) unit = 6;
+                        else if(unit == CITY_BUILDING+1) unit = 7;
+                        else if(unit == WAR_BUILDING+1) unit = 8;
+                        else if(unit == RUIN_BUILDING+1) unit = 9;
+
+                        unitTeamString = "_" + unit.toString() + "_" + team.toString();
+                    }
+
+                    mapString += this.indexes[x + (y * MAP_SIZE.x)].toString() + unitTeamString + ".";
+                }
+            }
+        }
+        else
+        {
+            for (let y = 0; y < MAP_SIZE.y; y++) {
+                for (let x = 0; x < MAP_SIZE.x; x++) {
+                    mapString += this.indexes[x + (y * MAP_SIZE.x)].toString() + "_0_0" + ".";
+                }
             }
         }
 

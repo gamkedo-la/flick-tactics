@@ -11,27 +11,27 @@ const EDIT_MECH = 2;
 var editMode = EDIT_TERRAIN;
 
 var defaultEditorMapString =
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0." +
-    "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0";
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0." +
+    "0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_0_0";
 
 var editorMapData = defaultEditorMapString;
 
 function editorSaveMap() {
-    editorMapData = editorMap.getMapString();
+    editorMapData = editorMap.getMapString(editorManager);
     saveFile(editorMapData, "flickTacticsMap.txt");
     console.log(editorMapData);
 }
@@ -48,10 +48,12 @@ function editorSetup() {
         reader.addEventListener('load', e => {
             editorMapData = e.target.result;
             editorMap = new GameMap(editorMapData, 28, 16);
+            editorManager = new PlayerManager(editorMap, 1);
         });
     }
 
     editorMap = new GameMap(editorMapData, 28, 16);
+    editorManager = new PlayerManager(editorMap, 1);
 
     leftMoveBtn = new TextButton(tr(vec2(0.01, ((gameHeight - (64 * pixelSize)) / 2) - (64 * pixelSize)), vec2(32 * pixelSize, 128 * pixelSize)),
         new Label(tr(), "<"),
@@ -73,23 +75,27 @@ function editorSetup() {
     var editorBtnSize = toVec2(pixelSize - (pixelSize/8.0)).multiply(toVec2(64.0));
     editorBtnSize.y /= 2.0;
 
-    var editorBtnGroup = [];
-    editorToMenuBtn = new TextButton(tr(vec2(0.001, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "BACK", undefined, "black"),
-        new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFBBBBFF"));
-    editorBtnGroup.push(editorToMenuBtn);
+    editorBtnGroup = [];
+    overviewMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
+        new Label(tr(), "OVERVIEW", undefined, "black"),
+        new Button(tr(), "#FFFFFFBB", "#00000022", "#FFFFFF22"));
+    editorBtnGroup.push(overviewMapBtn);
     mapBuildingUnitToggleBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 1, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
         new Label(tr(), "TERRAIN", undefined, "black"),
         new Button(tr(), "#FFFF88BB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(mapBuildingUnitToggleBtn);
-    resetMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "RESET POS", undefined, "black"),
-        new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
-    editorBtnGroup.push(resetMapBtn);
     editorTeamBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
         new Label(tr(), "RED", undefined, "black"),
         new Button(tr(), "#FFBBBBBB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(editorTeamBtn);
+    resetMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
+        new Label(tr(), "RESET POS", undefined, "black"),
+        new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
+    editorBtnGroup.push(resetMapBtn);
+    editorToMenuBtn = new TextButton(tr(vec2(0.001, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
+        new Label(tr(), "BACK", undefined, "black"),
+        new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFBBBBFF"));
+    editorBtnGroup.push(editorToMenuBtn);
     saveMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 3, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
         new Label(tr(), "SAVE", undefined, "black"),
         new Button(tr(), "#88FF88BB", "#000000FF", "#FFFFFFFF"));
@@ -112,25 +118,29 @@ function editorResize() {
 
 function editorDraw(deltaTime) {
     editorMap.draw(editorCam);
+    editorManager.draw(editorCam);
 
-    drawRect(renderer, vec2(0, gameHeight - (64.0 * pixelSize)), vec2(gameWidth, 64.0 * pixelSize), true, "#000000BB");
-    for(let i = 0; i < 6 - (editMode == EDIT_BUILDING ? 2 : 0); i++)
+    if(maxDisplayTilesPerRow != totalTilesInRow)
     {
-        if(editorSelectedIndex == -1 || editorSelectedIndex == i)
+        drawRect(renderer, vec2(0, gameHeight - (64.0 * pixelSize)), vec2(gameWidth, 64.0 * pixelSize), true, "#000000BB");
+        for(let i = 0; i < 6 - (editMode == EDIT_BUILDING ? 2 : (editMode == EDIT_MECH ? 1 : 0)); i++)
+        {
+            if(editorSelectedIndex == -1 || editorSelectedIndex == i)
+                renderer.globalAlpha = 1.0;
+            else
+                renderer.globalAlpha = 0.4;
+
+            var index = i;
+            if(editMode == EDIT_BUILDING) index = getBuildingIndexFromType(i) + editorTeamID;
+            else if(editMode == EDIT_MECH) index = getMechIndexFromType(i, editorTeamID);
+            drawSheet(index, vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (32.0 * pixelSize)), toVec2(pixelSize - (pixelSize/8.0)));
+            
             renderer.globalAlpha = 1.0;
-        else
-            renderer.globalAlpha = 0.4;
 
-        var index = i;
-        if(editMode == EDIT_BUILDING) index = getBuildingIndexFromType(i, editorTeamID);
-        else if(editMode == EDIT_MECH) index = getMechIndexFromType(i, editorTeamID);
-        drawSheet(index, vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (32.0 * pixelSize)), toVec2(pixelSize - (pixelSize/8.0)));
-        
-        renderer.globalAlpha = 1.0;
-
-        renderer.font = (uiContext.fontSize * 2.0).toString() + "px " + uiContext.fontFamily;
-        drawText(renderer, i.toString(), vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize) - pixelSize, gameHeight - (31.0 * pixelSize)), "black");
-        drawText(renderer, i.toString(), vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (32.0 * pixelSize)), "white");
+            renderer.font = (uiContext.fontSize * 2.0).toString() + "px " + uiContext.fontFamily;
+            drawText(renderer, (i+1).toString(), vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize) - pixelSize, gameHeight - (31.0 * pixelSize)), "black");
+            drawText(renderer, (i+1).toString(), vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (32.0 * pixelSize)), "white");
+        }
     }
 }
 
@@ -152,9 +162,44 @@ function editorEvent(deltaTime) {
         }
     }
 
+    var playerAndUnitIndex = editorManager.getPlayerAndUnitIndexOnTile(editorMap.cursorTile);
+
+    if(wheelScroll != 0)
+    {
+        if(playerAndUnitIndex[0] >= 0)
+        {
+            var unit = editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]];
+            unit.hp -= wheelScroll / 100.0;
+            if(unit.hp <= 0.0) editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
+            else if(unit.hp > 10.0) unit.hp = 10.0;
+        }
+    }
+    wheelScroll = 0.0;
+
     if(isTouched && touchPos[0].y < gameHeight - (64.0 * pixelSize))
     {
-        editorMap.indexes[editorMap.cursorTile.x + (editorMap.cursorTile.y * editorMap.cols)] = editorSelectedIndex;
+        switch(editMode)
+        {
+            case EDIT_TERRAIN:
+                editorMap.indexes[editorMap.cursorTile.x + (editorMap.cursorTile.y * MAP_SIZE.x)] = editorSelectedIndex;
+                break;
+
+            case EDIT_BUILDING:
+                if(playerAndUnitIndex[0] >= 0) editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
+                if(editorSelectedIndex <= 3)
+                    editorManager.players[editorTeamID].unitGroup.mapUnits
+                        .push(new MapUnit(getBuildingIndexFromType(editorSelectedIndex),
+                        vec2(editorMap.cursorTile.x, editorMap.cursorTile.y)));
+                break;
+
+            case EDIT_MECH:
+                if(playerAndUnitIndex[0] >= 0) editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
+                if(editorSelectedIndex <= 4)
+                    editorManager.players[editorTeamID].unitGroup.mapUnits
+                        .push(new MapUnit(editorSelectedIndex,
+                        vec2(editorMap.cursorTile.x, editorMap.cursorTile.y)));
+                break;
+        }
     }
 
     if(leftMoveBtn.button.output == UIOUTPUT_HOVER)
@@ -186,6 +231,7 @@ function editorEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
+            maxDisplayTilesPerRow = defaultTilesPerRow;
             ui.transitionToState = STARTSCREEN;
             editorToMenuBtn.button.resetOutput();
     }
@@ -314,6 +360,29 @@ function editorEvent(deltaTime) {
             playSFX(SFX_BUTTON_CLICK);
             editorMapData = defaultEditorMapString;
             editorMap = new GameMap(editorMapData, 28, 16);
+            editorManager = new PlayerManager(editorMap, 1);
             clearMapBtn.button.resetOutput();
+    }
+    switch (overviewMapBtn.button.output)
+    {
+        case UIOUTPUT_HOVER || UIOUTPUT_SELECT:
+            if(overviewMapBtn.button.hoverTrigger)
+            {
+                playSFX(SFX_BUTTON_HOVER);
+                for(let i = 1; i < editorBtnGroup.length; i++) editorBtnGroup[i].enabled = false;
+                leftMoveBtn.enabled = rightMoveBtn.enabled = upMoveBtn.enabled = downMoveBtn.enabled = false;
+                maxDisplayTilesPerRow = totalTilesInRow;
+                updateTileSizes();
+                editorCam.x = tilePixels * pixelSize;
+                editorCam.y = tilePixels * pixelSize;
+                //overviewMapBtn.button.hoverTrigger = false;
+            }
+            break;
+
+        default:
+            for(let i = 1; i < editorBtnGroup.length; i++) editorBtnGroup[i].enabled = true;
+            leftMoveBtn.enabled = rightMoveBtn.enabled = upMoveBtn.enabled = downMoveBtn.enabled = true;
+            maxDisplayTilesPerRow = defaultTilesPerRow;
+            updateTileSizes();
     }
 }

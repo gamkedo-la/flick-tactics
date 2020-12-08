@@ -2,12 +2,16 @@
 var actionPointsPerTurn = 3;
 
 class PlayerManager {
-    constructor(map) {
+    constructor(map, forceAllPlayers = 0) {
         this.players = []
         if(map.redData.length > 0) this.players.push(new Player(RED_TEAM, map.redData));
+        else if(forceAllPlayers > 0) this.players.push(new Player(RED_TEAM, []));
         if(map.blueData.length > 0) this.players.push(new Player(BLUE_TEAM, map.blueData));
+        else if(forceAllPlayers > 0) this.players.push(new Player(BLUE_TEAM, []));
         if(map.greenData.length > 0) this.players.push(new Player(GREEN_TEAM, map.greenData));
+        else if(forceAllPlayers > 0) this.players.push(new Player(GREEN_TEAM, []));
         if(map.blackData.length > 0) this.players.push(new Player(BLACK_TEAM, map.blackData));
+        else if(forceAllPlayers > 0) this.players.push(new Player(BLACK_TEAM, []));
         this.index = typeof index == "undefined" ? 0 : index;
     }
 
