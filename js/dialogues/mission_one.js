@@ -57,6 +57,57 @@ const mission_one = [
         dialogue: "On it's GURU SIR!",
         face: FACE_NEUTRAL
 
-        //event: centered on unit, player needs to move the unit to another position.
+        //event: centered on unit, player needs to move the unit to another position. Text should still display Guru's instructions so player knows what to do.
+    },
+    {
+        speaker: GURU,
+        dialogue: "Good job, now select where you want to move to",
+        face: FACE_NEUTRAL
+    },
+    {
+        speaker: ZAREEM,
+        dialogue: "Here?",
+        face: FACE_NEUTRAL
+    },
+    {
+        speaker: GURU,
+        dialogue: "That's a good spot!",
+        face: FACE_HAPPY
+    },
+    {
+        speaker: ZAREEM,
+        dialogue: "Err.... thank you sir... I guess?",
+        face: FACE_NEUTRAL
+    },
+    {
+        speaker: GURU,
+        dialogue: "Nonsense - I said it's good, so it's good, Got it!?",
+        face: FACE_UPSET    
+    },
+    {
+        speaker: ZAREEM,
+        dialogue: "?? Whispers, This old geezer....",
+        face: FACE_NEUTRAL
+    },
+    {
+        speaker: GURU,
+        dialogue: "What did you say!",
+        face: FACE_UPSET    
+    },
+    {
+        speaker: ZAREEM,
+        dialogue: "Nothing, nothing.  Are you going to teach me anything?",
+        face: FACE_NEUTRAL
+    },
+        //Event, Terrain Tutorial Begins
+    {
+        speaker: GURU,
+        dialogue: "This kid...., Look at where you placed the units",
+        face: FACE_NEUTRAL   
+    },
+    {
+        speaker: ZAREEM,
+        dialogue: "Where?",
+        face: FACE_NEUTRAL
     },
 ];
