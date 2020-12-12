@@ -144,12 +144,15 @@ class MapUnit {
             }
         }
 
-        this.unit.draw(teamID, offset, sc);
+        if (this.hp > 0)
+        {
+            this.unit.draw(teamID, offset, sc);
 
-        if (ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
-            spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
-            drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-31.6 * pixelSize, -16.6 * pixelSize))), "black");
-            drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-30 * pixelSize, -18 * pixelSize))), "white");
+            if (ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
+                spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
+                drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-31.6 * pixelSize, -16.6 * pixelSize))), "black");
+                drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-30 * pixelSize, -18 * pixelSize))), "white");
+            }
         }
     }
 
