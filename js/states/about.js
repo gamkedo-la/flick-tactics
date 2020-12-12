@@ -43,6 +43,8 @@ function aboutResize() {
 }
 
 function aboutDraw(deltaTime) {
+    drawWorldMapBG("#221111EE");
+    drawPerspectiveUnitsBG(WAR_BUILDING, CITY_BUILDING, SUPPORT_MECH, BLUE_TEAM);
     htgdLogo.drawSc();
 }
 

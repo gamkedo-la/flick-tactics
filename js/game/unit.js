@@ -129,6 +129,7 @@ class MapUnit {
             this.unit.position = lerpVec2(this.unit.position, vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
                 Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap)), 0.3);
 
+        //Unit Movement
         if (this.mapPathIndex > -1) {
             if (this.mapPosition.distance(this.mapPath[this.mapPathIndex]) < 0.01) {
                 this.mapPathIndex++;
@@ -151,6 +152,20 @@ class MapUnit {
             drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-30 * pixelSize, -18 * pixelSize))), "white");
         }
     }
+
+    drawInRect(teamID, pos, size) {
+        tileSize = size.x / MAP_SIZE.x;
+        tileGap = 0;
+
+        var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
+            (tileSize / 64) + gridBlackLinesFixFactor);
+
+        this.unit.position = vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
+            Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap));
+        this.unit.position = this.unit.position.add(pos);
+
+        this.unit.draw(teamID, vec2(), sc);
+    }
 }
 
 class MapUnitGroup {
@@ -168,6 +183,12 @@ class MapUnitGroup {
     draw(offset) {
         for (let i = 0; i < this.mapUnits.length; i++) {
             this.mapUnits[i].draw(this.teamID, offset);
+        }
+    }
+
+    drawInRect(pos, size) {
+        for (let i = 0; i < this.mapUnits.length; i++) {
+            this.mapUnits[i].drawInRect(this.teamID, pos, size);
         }
     }
 }

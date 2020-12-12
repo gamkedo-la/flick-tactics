@@ -36,4 +36,8 @@ class Player {
     draw(cam) {
         this.unitGroup.draw(cam);
     }
+
+    drawInRect(pos, size) {
+        this.unitGroup.drawInRect(pos, size);
+    }
 }

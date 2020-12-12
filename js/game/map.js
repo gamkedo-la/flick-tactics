@@ -170,6 +170,28 @@ class GameMap {
         return this.indexes[pos.x + (pos.y * MAP_SIZE.x)];
     }
 
+    drawInRect(pos, size) {
+        tileSize = size.x / MAP_SIZE.x;
+        tileGap = 0;
+
+        for (let y = 0; y < MAP_SIZE.y; y++) {
+            for (let x = 0; x < MAP_SIZE.x; x++) {
+                var index = this.getTileTypeFromPosition(vec2(x, y));
+
+                var posi = vec2(Math.floor(pos.x + (x * tileSize) + (x * tileGap)),
+                    Math.floor(pos.y + (y * tileSize) + (y * tileGap)));
+                var sc = toVec2((tileSize / 64) + gridBlackLinesFixFactor);
+
+                if (index == SEA_TILE || index == TOXIC_TILE) {
+                    if (gameTime % 2000 < 1000)
+                        index += 20;
+                }
+
+                drawSheet(index, posi, sc);
+            }
+        }
+    }
+
     draw(offset) {
         for (let y = 0; y < MAP_SIZE.y; y++) {
             for (let x = 0; x < MAP_SIZE.x; x++) {
@@ -177,8 +199,7 @@ class GameMap {
 
                 var pos = vec2(Math.floor(offset.x + (x * tileSize) + (x * tileGap)),
                     Math.floor(offset.y + (y * tileSize) + (y * tileGap)));
-                var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
-                    (tileSize / 64) + gridBlackLinesFixFactor);
+                var sc = toVec2((tileSize / 64) + gridBlackLinesFixFactor);
 
                 if (index == SEA_TILE || index == TOXIC_TILE) {
                     if (gameTime % 2000 < 1000)

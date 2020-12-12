@@ -66,37 +66,49 @@ function startscreenResize() {
     startscreen[1].updateCellSize();
 }
 
+function drawWorldMapBG(tint = "#661111DD")
+{
+    worldmapSprite.transform.position = moveToVec2(worldmapSprite.transform.position, worldmapAnimationPoints[worldmapPositionIndex].pos, 1.5);
+    worldmapSprite.transform.scale = lerpVec2(worldmapSprite.transform.scale, toVec2(worldmapAnimationPoints[worldmapPositionIndex].sc), 0.005);
+    if(worldmapSprite.transform.position.distance(worldmapAnimationPoints[worldmapPositionIndex].pos) < 10)
+    {
+        worldmapPositionIndex++;
+        if(worldmapPositionIndex >= worldmapAnimationPoints.length) worldmapPositionIndex = 0;
+    }
+    worldmapSprite.drawSc();
+    drawRect(renderer, vec2(), vec2(gameWidth, gameHeight), true, tint);
+}
+
+function drawPerspectiveUnitsBG(unit1, unit2, unit3, team = RED_TEAM)
+{
+    startscreenUnit.type = unit1;
+    startscreenUnit.setupUnitProperties();
+    startscreenUnit.draw(team, vec2(-gameWidth/4.0), toVec2(pixelSize/1.25));
+    startscreenUnit.type = unit2;
+    startscreenUnit.setupUnitProperties();
+    startscreenUnit.draw(team, vec2(-gameWidth/3.25, gameHeight/20.0), toVec2(pixelSize));
+    startscreenUnit.type = unit3;
+    startscreenUnit.setupUnitProperties();
+    startscreenUnit.draw(team, vec2(-gameWidth/2.5, gameHeight/10.0), toVec2(pixelSize*1.5));
+
+    renderer.setTransform(-1, 0, 0, 1, gameWidth - 15, 0);
+    startscreenUnit.type = unit1;
+    startscreenUnit.setupUnitProperties();
+    startscreenUnit.draw(team, vec2(-gameWidth/4.0), toVec2(pixelSize/1.25));
+    startscreenUnit.type = unit2;
+    startscreenUnit.setupUnitProperties();
+    startscreenUnit.draw(team, vec2(-gameWidth/3.25, gameHeight/20.0), toVec2(pixelSize));
+    startscreenUnit.type = unit3;
+    startscreenUnit.setupUnitProperties();
+    startscreenUnit.draw(team, vec2(-gameWidth/2.5, gameHeight/10.0), toVec2(pixelSize*1.5));
+    renderer.setTransform(1, 0, 0, 1, 0, 0);
+}
+
 function startscreenDraw(deltaTime) {
     if(startscreen[1].enabled)
     {
-        drawRect(renderer, vec2(0, 0), vec2(window.innerWidth, window.innerHeight), true, "#5599ff");
-        
-        worldmapSprite.transform.position = moveToVec2(worldmapSprite.transform.position, worldmapAnimationPoints[worldmapPositionIndex].pos, 1.5);
-        worldmapSprite.transform.scale = lerpVec2(worldmapSprite.transform.scale, toVec2(worldmapAnimationPoints[worldmapPositionIndex].sc), 0.005);
-        if(worldmapSprite.transform.position.distance(worldmapAnimationPoints[worldmapPositionIndex].pos) < 10)
-        {
-            worldmapPositionIndex++;
-            if(worldmapPositionIndex >= worldmapAnimationPoints.length) worldmapPositionIndex = 0;
-        }
-        worldmapSprite.drawSc();
-        drawRect(renderer, vec2(), vec2(gameWidth, gameHeight), true, "#661111DD");
-        
-        startscreenUnit.type = RIFLE_MECH;
-        startscreenUnit.draw(RED_TEAM, vec2(-gameWidth/4.0), toVec2(pixelSize/1.25));
-        startscreenUnit.type = CANNON_MECH;
-        startscreenUnit.draw(RED_TEAM, vec2(-gameWidth/3.25, gameHeight/20.0), toVec2(pixelSize));
-        startscreenUnit.type = ARTILLERY_MECH;
-        startscreenUnit.draw(RED_TEAM, vec2(-gameWidth/2.5, gameHeight/10.0), toVec2(pixelSize*1.5));
-
-        renderer.setTransform(-1, 0, 0, 1, gameWidth - 15, 0);
-        startscreenUnit.type = RIFLE_MECH;
-        startscreenUnit.draw(BLACK_TEAM, vec2(-gameWidth/4.0), toVec2(pixelSize/1.25));
-        startscreenUnit.type = CANNON_MECH;
-        startscreenUnit.draw(BLACK_TEAM, vec2(-gameWidth/3.25, gameHeight/20.0), toVec2(pixelSize));
-        startscreenUnit.type = ARTILLERY_MECH;
-        startscreenUnit.draw(BLACK_TEAM, vec2(-gameWidth/2.5, gameHeight/10.0), toVec2(pixelSize*1.5));
-        renderer.setTransform(1, 0, 0, 1, 0, 0);
-        
+        drawWorldMapBG();
+        drawPerspectiveUnitsBG(HQ_BUILDING, RIFLE_MECH, CANNON_MECH);
         titleSprite.drawSc();
     }
     else

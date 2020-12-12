@@ -43,4 +43,13 @@ class PlayerManager {
             }
         }
     }
+
+    drawInRect(pos, size, index) {
+        if (typeof index == "undefined")
+        {
+            for (let i = 0; i < this.players.length; i++) {
+                this.players[i].drawInRect(pos, size);
+            }
+        }
+    }
 }

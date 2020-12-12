@@ -47,12 +47,13 @@ function editorSetup() {
         reader.readAsText(e.target.files[0]);
         reader.addEventListener('load', e => {
             editorMapData = e.target.result;
-            editorMap = new GameMap(editorMapData, 28, 16);
+            editorMap = new GameMap(editorMapData);
             editorManager = new PlayerManager(editorMap, 1);
+            editorLoadBtn = document.getElementById('file-input');
         });
     }
 
-    editorMap = new GameMap(editorMapData, 28, 16);
+    editorMap = new GameMap(editorMapData);
     editorManager = new PlayerManager(editorMap, 1);
 
     leftMoveBtn = new TextButton(tr(vec2(0.01, ((gameHeight - (64 * pixelSize)) / 2) - (64 * pixelSize)), vec2(32 * pixelSize, 128 * pixelSize)),
@@ -291,6 +292,7 @@ function editorEvent(deltaTime) {
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
             maxDisplayTilesPerRow = defaultTilesPerRow;
+            updateTileSizes();
             ui.transitionToState = STARTSCREEN;
             editorToMenuBtn.button.resetOutput();
     }
@@ -418,7 +420,7 @@ function editorEvent(deltaTime) {
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
             editorMapData = defaultEditorMapString;
-            editorMap = new GameMap(editorMapData, 28, 16);
+            editorMap = new GameMap(editorMapData);
             editorManager = new PlayerManager(editorMap, 1);
             clearMapBtn.button.resetOutput();
     }
