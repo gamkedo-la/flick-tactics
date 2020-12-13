@@ -424,6 +424,30 @@ class GameMap {
                 }
                 break;
         }
+
+        if (munit2.hp <= 0)
+        {
+            // Get player and unit index for player owning munit2
+            var munit2PlayerAndUnit = manager.getPlayerAndUnitIndexOnTile(munit2.mapPosition);
+            
+            // Array of units for player owning munit2
+            var munit2PlayerUnits = manager.players[munit2PlayerAndUnit[0]].unitGroup.mapUnits;
+
+            // Unit to remove from array
+            var unitIndexToRemove = munit2PlayerAndUnit[1];
+
+            // Remove unit from array
+            for(var i = 0; i < munit2PlayerUnits.length; i++) { 
+    
+                if (munit2PlayerUnits[i] === munit2PlayerUnits[unitIndexToRemove]) {            
+                    munit2PlayerUnits.splice(i, 1); 
+                }            
+            }
+
+            // Get player owning munit2 units and set array to modified value
+            manager.players[munit2PlayerAndUnit[0]].unitGroup.mapUnits = munit2PlayerUnits;
+        }
+
     }
 
     eventUnitAttack(mapUnit) {
