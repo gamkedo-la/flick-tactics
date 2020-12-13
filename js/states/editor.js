@@ -442,7 +442,7 @@ function editorEvent(deltaTime) {
         case UIOUTPUT_HOVER || UIOUTPUT_SELECT:
             if(overviewMapBtn.button.hoverTrigger)
             {
-                playSFX(SFX_BUTTON_HOVER);
+                if(maxDisplayTilesPerRow != totalTilesInRow) playSFX(SFX_BUTTON_HOVER);
                 for(let i = 1; i < editorBtnGroup.length; i++) editorBtnGroup[i].enabled = false;
                 leftMoveBtn.enabled = rightMoveBtn.enabled = upMoveBtn.enabled = downMoveBtn.enabled = false;
                 maxDisplayTilesPerRow = totalTilesInRow;
