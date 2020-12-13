@@ -120,6 +120,7 @@ function editorResize() {
 function editorDraw(deltaTime) {
     editorMap.draw(editorCam);
     editorManager.draw(editorCam);
+    drawTileParticles(deltaTime, editorCam);
 
     if(maxDisplayTilesPerRow != totalTilesInRow)
     {
@@ -171,7 +172,11 @@ function editorEvent(deltaTime) {
         {
             var unit = editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]];
             unit.hp -= wheelScroll / 100.0;
-            if(unit.hp <= 0.0) editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
+            if(unit.hp <= 0.0)
+            {
+                new TileParticle(editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]].unit.position, unitDestroySequence);
+                editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
+            }
             else if(unit.hp > 10.0) unit.hp = 10.0;
         }
     }
@@ -186,7 +191,11 @@ function editorEvent(deltaTime) {
                 break;
 
             case EDIT_BUILDING:
-                if(playerAndUnitIndex[0] >= 0) editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
+                if(playerAndUnitIndex[0] >= 0)
+                {
+                    new TileParticle(editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]].unit.position, unitDestroySequence);
+                    editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
+                }
                 if(editorSelectedIndex <= 3)
                     editorManager.players[editorTeamID].unitGroup.mapUnits
                         .push(new MapUnit(getBuildingIndexFromType(editorSelectedIndex),
@@ -194,7 +203,11 @@ function editorEvent(deltaTime) {
                 break;
 
             case EDIT_MECH:
-                if(playerAndUnitIndex[0] >= 0) editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
+                if(playerAndUnitIndex[0] >= 0)
+                {
+                    new TileParticle(editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]].unit.position, unitDestroySequence);
+                    editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
+                }
                 if(editorSelectedIndex <= 4)
                     editorManager.players[editorTeamID].unitGroup.mapUnits
                         .push(new MapUnit(editorSelectedIndex,

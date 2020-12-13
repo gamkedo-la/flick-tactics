@@ -61,6 +61,7 @@ function gameplayResize() {
 function gameplayDraw(deltaTime) {
     map.draw(cam);
     manager.draw(cam);
+    drawTileParticles(deltaTime, cam);
 
     if (getPlayer().getSelectedMapUnit().up == 0) {
         map.drawUnitMovement(cam, getPlayer().getSelectedMapUnit());
