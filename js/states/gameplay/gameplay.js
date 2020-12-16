@@ -42,6 +42,10 @@ function gameplaySetup() {
         new Label(tr(), ">>"),
         new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
     gameplay.push(rightUnitChangeBtn);
+    helpBtn = new TextButton(tr(vec2(gameWidth - (50 * pixelSize), 0), vec2(50 * pixelSize, 50 * pixelSize)),
+    new Label(tr(), "Help"),
+    new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
+    gameplay.push(helpBtn);
     unitActionUISetup();
     overviewUISetup(fontSize);
     buildingPanelSetup();
