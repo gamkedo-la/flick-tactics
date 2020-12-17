@@ -42,9 +42,9 @@ function gameplaySetup() {
         new Label(tr(), ">>"),
         new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
     gameplay.push(rightUnitChangeBtn);
-    helpBtn = new TextButton(tr(vec2(gameWidth - (50 * pixelSize), 0), vec2(50 * pixelSize, 50 * pixelSize)),
-    new Label(tr(), "Help"),
-    new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
+    helpBtn = new TextButton(tr(vec2(gameWidth - (50 * pixelSize), 0.1), vec2(50 * pixelSize, 50 * pixelSize)),
+        new Label(tr(), "Help"),
+        new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
     gameplay.push(helpBtn);
     unitActionUISetup();
     overviewUISetup(fontSize);
@@ -152,6 +152,9 @@ function gameplayEvent(deltaTime) {
     else if (unitRightBtn.button.output == UIOUTPUT_SELECT) {
         getPlayer().getSelectedMapUnit().right = 0;
         unitRightBtn.button.resetOutput();
+    }
+    else if(helpBtn.button.output == UIOUTPUT_SELECT) {
+        // TODO(Allan): Add menu
     }
 
     map.event();
