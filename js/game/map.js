@@ -103,10 +103,15 @@ class GameMap {
                 switch(teamID)
                 {
                     case RED_TEAM:
+                        if(unit < 5){
+                            totalPlayerUnits++;
+                        }
+                        console.log(totalPlayerUnits);
                         this.redData.push(new MapUnit(unit, vec2(x, y)));
                         break;
 
                     case BLUE_TEAM:
+
                         this.blueData.push(new MapUnit(unit, vec2(x, y)));
                         break;
 

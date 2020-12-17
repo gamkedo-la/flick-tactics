@@ -1,5 +1,9 @@
 
+
 var gameTime = 0;
+
+//making these stat variables global for right now, but I guess they should live elsewhere
+let totalPlayerUnits = 0;
 
 window.onload = function () {
     init();
