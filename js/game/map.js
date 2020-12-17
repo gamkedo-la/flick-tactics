@@ -105,8 +105,12 @@ class GameMap {
                     case RED_TEAM:
                         if(unit < 5){
                             totalPlayerUnits++;
+                        } 
+                        else if(unit > 59){
+                            totalPlayerBuildings++;
                         }
-                        console.log(totalPlayerUnits);
+                        //console.log(unit);
+                        //console.log(totalPlayerBuildings); //unsure why this is counting up so much
                         this.redData.push(new MapUnit(unit, vec2(x, y)));
                         break;
 
