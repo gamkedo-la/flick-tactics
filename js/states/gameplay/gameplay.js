@@ -71,7 +71,7 @@ function gameplayDraw(deltaTime) {
 }
 
 function gameplayUpdate(deltaTime) {
-
+    playBGM(BGM_WORLDMAP);
     if (maxDisplayTilesPerRow == defaultTilesPerRow)
         cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.25);
 

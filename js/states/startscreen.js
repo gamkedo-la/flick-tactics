@@ -186,4 +186,10 @@ function startscreenEvent(deltaTime) {
             ui.transitionToState = ABOUT;
             aboutButton.button.resetOutput();
     }
+    
+    // Skip to gameplay
+    if(isKeyPressed('`')) {
+        resetKeyPressed();
+        ui.transitionToState = GAMEPLAY;
+    }
 }

@@ -28,7 +28,7 @@ var inputDelay = 200;
 function isKeyPressed(key) {
     for (let i = 0; i < keysPressed.length; i++)
         if (keysPressed[i] == key) return true;
-    keysPressed.push(key);
+    //keysPressed.push(key);
     return false;
 }
 function removeKeyPressed(key) {
@@ -147,7 +147,7 @@ function inputSetup() {
 
     window.addEventListener("wheel", onMouseWheelScroll);
     window.addEventListener("keydown", onKeyDown);
-    //window.addEventListener("keypress", onKeyPress);
+    window.addEventListener("keypress", onKeyPress);
     window.addEventListener("keyup", onKeyUp);
 }
 
