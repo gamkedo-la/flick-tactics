@@ -36,15 +36,15 @@ function gameplaySetup() {
     controlBarUISetup(fontSize);
     leftUnitChangeBtn = new TextButton(tr(vec2(0.01, gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
         new Label(tr(), "<<"),
-        new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
+        new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
     gameplay.push(leftUnitChangeBtn);
     rightUnitChangeBtn = new TextButton(tr(vec2(gameWidth - (50 * pixelSize), gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
         new Label(tr(), ">>"),
-        new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
+        new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
     gameplay.push(rightUnitChangeBtn);
-    helpBtn = new TextButton(tr(vec2(gameWidth - (50 * pixelSize), 0.1), vec2(50 * pixelSize, 50 * pixelSize)),
+    helpBtn = new TextButton(tr(vec2(gameWidth - (50 * pixelSize), 0.001), vec2(50 * pixelSize, 50 * pixelSize)),
         new Label(tr(), "Help"),
-        new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
+        new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
     gameplay.push(helpBtn);
     unitActionUISetup();
     overviewUISetup(fontSize);
@@ -66,14 +66,7 @@ function gameplayDraw(deltaTime) {
     map.draw(cam);
     manager.draw(cam);
     drawTileParticles(deltaTime, cam);
-
-    if (getPlayer().getSelectedMapUnit().up == 0) {
-        map.drawUnitMovement(cam, getPlayer().getSelectedMapUnit());
-    }
-    else if (getPlayer().getSelectedMapUnit().right == 0) {
-        map.drawUnitAttack(cam, getPlayer().getSelectedMapUnit());
-    }
-
+    map.drawUnitExtras();
     overviewUIDraw(cam);
 }
 
@@ -82,7 +75,7 @@ function gameplayUpdate(deltaTime) {
     if (maxDisplayTilesPerRow == defaultTilesPerRow)
         cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.25);
 
-    if (!getPlayer().unitGroup.mapUnits[getPlayer().selectedIndex].unit.isBuilding) {
+    if (!getPlayer().getSelectedMapUnit().unit.isBuilding) {
         buildingPanel.enabled = false;
         // Disabling Unit Action Buttons and Left/Right Unit Buttons START
         unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled =
@@ -98,7 +91,7 @@ function gameplayUpdate(deltaTime) {
         }
     }
     else {
-        buildingPanelUpdate();
+        buildingPanelUpdate(getPlayer().getSelectedMapUnit());
     }
 
     if (unitUpBtn.button.output != UIOUTPUT_SELECT)

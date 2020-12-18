@@ -123,7 +123,50 @@ function buildingPanelSetup() {
         ]));
 }
 
-function buildingPanelUpdate() {
+function buildingPanelUpdate(buildingMapUnit) {
+
+    switch(buildingMapUnit.unit.type)
+    {
+        case HQ_BUILDING:
+            for(let i = 0; i < buildingPanelTabs.length; i++)
+                buildingPanelTabs[i].textButton.label.text = "HQ";
+            for(let i = 0; i < buildingPanelLabels.length; i++)
+                buildingPanelLabels[i].text = "HQ";
+            for(let i = 0; i < buildingPanelButtons.length; i++)
+                buildingPanelButtons[i].label.text = "HQ";
+
+            buildingPanelLabels[0].text = "Total Player Mech: " + getPlayer().getTotalNumberOfMechs().toString();
+            buildingPanelLabels[1].text = "Total Player Buildings: " + getPlayer().getTotalNumberOfBuildings().toString();
+        break;
+
+        case CITY_BUILDING:
+            for(let i = 0; i < buildingPanelTabs.length; i++)
+                buildingPanelTabs[i].textButton.label.text = "CITY";
+            for(let i = 0; i < buildingPanelLabels.length; i++)
+                buildingPanelLabels[i].text = "CITY";
+            for(let i = 0; i < buildingPanelButtons.length; i++)
+                buildingPanelButtons[i].label.text = "CITY";
+        break;
+
+        case WAR_BUILDING:
+            for(let i = 0; i < buildingPanelTabs.length; i++)
+                buildingPanelTabs[i].textButton.label.text = "WAR";
+            for(let i = 0; i < buildingPanelLabels.length; i++)
+                buildingPanelLabels[i].text = "WAR";
+            for(let i = 0; i < buildingPanelButtons.length; i++)
+                buildingPanelButtons[i].label.text = "WAR";
+        break;
+
+        case RUIN_BUILDING:
+            for(let i = 0; i < buildingPanelTabs.length; i++)
+                buildingPanelTabs[i].textButton.label.text = "RUIN";
+            for(let i = 0; i < buildingPanelLabels.length; i++)
+                buildingPanelLabels[i].text = "RUIN";
+            for(let i = 0; i < buildingPanelButtons.length; i++)
+                buildingPanelButtons[i].label.text = "RUIN";
+        break;
+    }
+
     if (maxDisplayTilesPerRow == defaultTilesPerRow) {
         unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
         buildingPanel.enabled = true;

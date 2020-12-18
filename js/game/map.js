@@ -103,19 +103,10 @@ class GameMap {
                 switch(teamID)
                 {
                     case RED_TEAM:
-                        if(unit < 5){
-                            totalPlayerUnits++;
-                        } 
-                        else if(unit > 59){
-                            totalPlayerBuildings++;
-                        }
-                        //console.log(unit);
-                        //console.log(totalPlayerBuildings); //unsure why this is counting up so much
                         this.redData.push(new MapUnit(unit, vec2(x, y)));
                         break;
 
                     case BLUE_TEAM:
-
                         this.blueData.push(new MapUnit(unit, vec2(x, y)));
                         break;
 
@@ -226,6 +217,16 @@ class GameMap {
         drawRect(spritesRenderer, vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
             Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))),
             vec2(tileSize, tileSize), true, "#FFFFFF44");
+    }
+
+    drawUnitExtras()
+    {
+        if (getPlayer().getSelectedMapUnit().up == 0) {
+            map.drawUnitMovement(cam, getPlayer().getSelectedMapUnit());
+        }
+        else if (getPlayer().getSelectedMapUnit().right == 0) {
+            map.drawUnitAttack(cam, getPlayer().getSelectedMapUnit());
+        }
     }
 
     //UNIT MOVEMENT START // //

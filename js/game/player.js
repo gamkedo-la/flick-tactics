@@ -16,6 +16,20 @@ class Player {
         return this.unitGroup.mapUnits[this.selectedIndex];
     }
 
+    getTotalNumberOfMechs() {
+        var no = 0;
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
+            if(!this.unitGroup.mapUnits[i].unit.isBuilding) no++;
+        return no;
+    }
+
+    getTotalNumberOfBuildings() {
+        var no = 0;
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
+            if(this.unitGroup.mapUnits[i].unit.isBuilding) no++;
+        return no;
+    }
+
     getCameraPosition() {
         return this.unitGroup.mapUnits[this.selectedIndex].getCameraPosition();
     }
