@@ -50,6 +50,8 @@ function gameplaySetup() {
     overviewUISetup(fontSize);
     buildingPanelSetup();
     gameplay.push(buildingPanel);
+    helpMenuSetup();
+    gameplay.push(helpMenu);
     //Gameplay UI END
 
     updateUnitActionButtons();
@@ -147,7 +149,11 @@ function gameplayEvent(deltaTime) {
         unitRightBtn.button.resetOutput();
     }
     else if(helpBtn.button.output == UIOUTPUT_SELECT) {
-        // TODO(Allan): Add menu
+        if(helpMenu.enabled) {
+            helpMenu.enabled = false;
+        } else {
+            helpMenu.enabled = true;
+        }
     }
 
     map.event();
