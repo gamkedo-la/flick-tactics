@@ -171,6 +171,10 @@ function defUIEvent(output, transform, touchId) {
 //interface class
 class UIObject {
     constructor(transform) {
+        //NASTY BUG FIX! MIGHT END UP CREATING MORE BUGS!
+        if(transform.position.x == 0.0) transform.position.x = 0.0000001;
+        else if(transform.position.y == 0.0) transform.position.y = 0.0000001;
+
         this.transform = transform;
 
         this.event = function () { defUIEvent(this.output, this.transform, this.touchId); };
@@ -302,7 +306,7 @@ class Button extends UIObject {
                 if (this.output != UIOUTPUT_DISABLED && this.touchId != -1 && this.prevTouchId == -1) {
                     this.btnColor = this.selectColor;
                     this.output = UIOUTPUT_SELECT;
-                    //isTouched = false;
+                    isTouched = false;
                 }
                 else if (this.output != UIOUTPUT_DISABLED && hover(this.transform)) {
                     this.btnColor = this.hoverColor;
@@ -655,8 +659,7 @@ class FlexGroup extends UIObject {
                 var cellPos = vec2(this.transform.position.x, this.transform.position.y);
                 var gridSizeCounter = vec2(0, 0);
                 for (let i = 0; i < this.subState.uiObjects.length; i++) {
-                    if (!this.subState.uiObjects[i].enabled
-                        || !this.subState.uiObjects[i].visible) continue;
+                    if (!this.subState.uiObjects[i].enabled) continue;
 
                     this.subState.uiObjects[i].transform.position = vec2(cellPos.x, cellPos.y);
 
@@ -664,7 +667,7 @@ class FlexGroup extends UIObject {
                         this.subState.uiObjects[i].transform.scale.x -= this.gridSpace.x;
                     if (gridSizeCounter.y == this.gridSize.y - 1)
                         this.subState.uiObjects[i].transform.scale.y -= this.gridSpace.y;
-
+                    
                     this.subState.uiObjects[i].draw();
 
                     if (gridSizeCounter.x == this.gridSize.x - 1)

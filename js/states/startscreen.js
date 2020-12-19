@@ -46,7 +46,7 @@ function startscreenSetup() {
     menuUI.push(aboutButton);
 
     startscreen.push(new FlexGroup(tr(vec2((gameWidth / 2) - (gameWidth / 6), gameHeight / 2.25), vec2(gameWidth / 3, gameHeight / 2.25)),
-        new SubState(tr(), menuUI), false, vec2(0.001, sizeFactor * 0.025), vec2(1, 5), true));
+        new SubState(tr(), menuUI), false, vec2(0, sizeFactor * 0.025), vec2(1, 5), true));
     startscreen[1].enabled = false;
 
     startscreenUnit = new Unit(RIFLE_MECH, vec2(gameWidth/2, gameHeight/1.75));
@@ -113,7 +113,7 @@ function startscreenDraw(deltaTime) {
     }
     else
     {
-        drawRect(renderer, vec2(0, 0), vec2(window.innerWidth, window.innerHeight), true, "black");
+        drawRect(renderer, vec2(), vec2(window.innerWidth, window.innerHeight), true, "black");
     }
 }
 

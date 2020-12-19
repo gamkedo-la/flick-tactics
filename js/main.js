@@ -8,6 +8,7 @@ window.onload = function () {
 };
 
 function event(deltaTime) {
+    ui.event();
     switch (ui.stateIndex) {
         case STARTSCREEN: startscreenEvent(deltaTime); break;
         case GAMEPLAY: gameplayEvent(deltaTime); break;
@@ -17,7 +18,6 @@ function event(deltaTime) {
         case VERSUS: versusEvent(deltaTime); break;
         case EDITOR: editorEvent(deltaTime); break;
     }
-    ui.event();
 }
 
 function update(deltaTime) {

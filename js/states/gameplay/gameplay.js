@@ -34,7 +34,7 @@ function gameplaySetup() {
     //Gameplay UI START
     var fontSize = 18.0 * pixelSize;
     controlBarUISetup(fontSize);
-    leftUnitChangeBtn = new TextButton(tr(vec2(0.01, gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
+    leftUnitChangeBtn = new TextButton(tr(vec2(0, gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
         new Label(tr(), "<<"),
         new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
     gameplay.push(leftUnitChangeBtn);
@@ -42,10 +42,6 @@ function gameplaySetup() {
         new Label(tr(), ">>"),
         new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
     gameplay.push(rightUnitChangeBtn);
-    helpBtn = new TextButton(tr(vec2(gameWidth - (50 * pixelSize), 0.001), vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), "Help"),
-        new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
-    gameplay.push(helpBtn);
     unitActionUISetup();
     overviewUISetup(fontSize);
     buildingPanelSetup();
@@ -147,13 +143,6 @@ function gameplayEvent(deltaTime) {
     else if (unitRightBtn.button.output == UIOUTPUT_SELECT) {
         getPlayer().getSelectedMapUnit().right = 0;
         unitRightBtn.button.resetOutput();
-    }
-    else if(helpBtn.button.output == UIOUTPUT_SELECT) {
-        if(helpMenu.enabled) {
-            helpMenu.enabled = false;
-        } else {
-            helpMenu.enabled = true;
-        }
     }
 
     map.event();
