@@ -6,6 +6,7 @@
 
 var buildingPanelDefaultBtnColor = "#00000088";
 var buildingPanelHoverBtnColor = "#000000DD";
+var buildingPanelPrevSelected = null;
 
 function buildingPanelSetup() {
     var panelX = 120 * pixelSize;
@@ -15,44 +16,59 @@ function buildingPanelSetup() {
     var tabGap = 4 * pixelSize;
 
     buildingPanelTab1Objects = [];
-    buildingPanelTab1Objects.push(new Label(tr(), "WIN: Destroy the Enemy HQ or destroy all enemy units."));
-    buildingPanelTab1Objects.push(new Label(tr(), "LOSE: This HQ gets destroyed."));
-    buildingPanelTab1Objects.push(new Label(tr(), "Protect HQ building at all costs!"));
-    buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), ""), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
-    buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), ""), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
-    buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), ""), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab1Objects.push(new Label(tr(), ""));
+    buildingPanelTab1Objects.push(new Label(tr(), ""));
+    buildingPanelTab1Objects.push(new Label(tr(), ""));
+    buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
 
     buildingPanelTab2Objects = [];
-    buildingPanelTab2Objects.push(new Label(tr(), "Player CO: Zareem."));
-    buildingPanelTab2Objects.push(new Label(tr(), "CO Power: Rifle Boomer."));
-    buildingPanelTab2Objects.push(new Label(tr(), "All your buildings deploys a Rifle Mech."));
-    buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), ""), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
-    buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), "More Info"), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
-    buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), "Use Power"), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab2Objects.push(new Label(tr(), ""));
+    buildingPanelTab2Objects.push(new Label(tr(), ""));
+    buildingPanelTab2Objects.push(new Label(tr(), ""));
+    buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
 
     buildingPanelTab3Objects = [];
-    buildingPanelTab3Objects.push(new Label(tr(), "Enemy CO: Guru."));
-    buildingPanelTab3Objects.push(new Label(tr(), "CO Power: Extra Action."));
-    buildingPanelTab3Objects.push(new Label(tr(), "You get 3 more Action Points."));
-    buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), "Use Power"), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
-    buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), "Use Power"), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
-    buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), "Use Power"), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab3Objects.push(new Label(tr(), ""));
+    buildingPanelTab3Objects.push(new Label(tr(), ""));
+    buildingPanelTab3Objects.push(new Label(tr(), ""));
+    buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
 
     buildingPanelTab4Objects = [];
-    buildingPanelTab4Objects.push(new Label(tr(), "Total Player Units: XX, Total Enemy Units: XX"));
-    buildingPanelTab4Objects.push(new Label(tr(), "Total Turns: XX, Your Action Points: XX"));
-    buildingPanelTab4Objects.push(new Label(tr(), "Total Income: XX, Total Buildings: XX"));
-    buildingPanelTab4Objects.push(new TextButton(tr(), new Label(tr(), ""), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
-    buildingPanelTab4Objects.push(new TextButton(tr(), new Label(tr(), ""), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
-    buildingPanelTab4Objects.push(new TextButton(tr(), new Label(tr(), ""), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab4Objects.push(new Label(tr(), ""));
+    buildingPanelTab4Objects.push(new Label(tr(), ""));
+    buildingPanelTab4Objects.push(new Label(tr(), ""));
+    buildingPanelTab4Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab4Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab4Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
 
     buildingPanelTab5Objects = [];
     buildingPanelTab5Objects.push(new Label(tr(), ""));
-    buildingPanelTab5Objects.push(new Label(tr(), "Tip: Try to move rifle mechs to mountains in order to gain defense."));
     buildingPanelTab5Objects.push(new Label(tr(), ""));
-    buildingPanelTab5Objects.push(new TextButton(tr(), new Label(tr(), "SFX: ON"), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
-    buildingPanelTab5Objects.push(new TextButton(tr(), new Label(tr(), "BGM: ON"), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
-    buildingPanelTab5Objects.push(new TextButton(tr(), new Label(tr(), "Restart"), new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab5Objects.push(new Label(tr(), ""));
+    buildingPanelTab5Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab5Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+    buildingPanelTab5Objects.push(new TextButton(tr(), new Label(tr(), ""),
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
 
     buildingPanelTabs = [];
     buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW / 5) - tabGap, panelH / 4)), buildingPanelTab1Objects, undefined,
@@ -173,8 +189,32 @@ function setBButton(tabIndex, index, text)
         buildingPanelButtons[tIndex].label.text = text;
     }
 }
+function getBButton(tabIndex, index, type)
+{
+    var tIndex = (tabIndex * 3) + index;
+    if(buildingPanelButtons[tIndex].visible && buildingPanelPrevSelected != null && buildingPanelPrevSelected.unit.type == type)
+        return buildingPanelButtons[tIndex];
+    return 0;
+}
 
 function buildingPanelUpdate(buildingMapUnit) {
+
+    if(buildingPanelPrevSelected == null
+    || buildingPanelPrevSelected != buildingMapUnit)
+    {
+        buildingPanelPrevSelected = buildingMapUnit;
+        buildingPanelTabs[0].select();
+    }
+
+    if (maxDisplayTilesPerRow == defaultTilesPerRow) {
+        unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
+        buildingPanel.enabled = true;
+    }
+    else {
+        buildingPanel.enabled = false;
+    }
+
+    buildingPanel.color = getActiveTeamColor();
 
     switch(buildingMapUnit.unit.type)
     {
@@ -209,26 +249,47 @@ function buildingPanelUpdate(buildingMapUnit) {
 
         case CITY_BUILDING:
             resetB();
+
+            setBTab(0, "CITY");
+            setBTab(4, "LEVEL");
+
+            setBLabel(0, 0, "Generates Income with which new mechs are deployed via War Building.");
+            setBLabel(0, 1, "Cost is also a requirement for supply/repair. Income Generation per turn: " + buildingMapUnit.hp * 200 + ".");
+            setBLabel(0, 2, "Use BOOST to get 2 times the income for a turn (Uses 1 AP, 5 Cooldown Turns).");
+            setBLabel(4, 0, "Current City Level: 1. Next Upgrade's Cost: 4000.");
+            setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + buildingMapUnit.hp * 400 + ".");
+            setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: 4.");
+
+            setBButton(0, 2, "Boost");
+            setBButton(4, 2, "Upgrade");
         break;
 
         case WAR_BUILDING:
             resetB();
+
+            setBTab(0, "WAR BUILDING");
+            setBTab(1, "ATTACK MECHS");
+            setBTab(2, "ABILITY MECHS");
+            setBTab(4, "LEVEL");
+
+            setBLabel(4, 0, "Current War Building Level: 1. Next Upgrade's Cost: 8000.");
+            setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + buildingMapUnit.hp * 400 + ".");
+            setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: 4.");
+
+            setBButton(0, 2, "Boost");
+            setBButton(1, 0, "Buy Rifle");
+            setBButton(1, 1, "Buy Cannon");
+            setBButton(1, 2, "Buy Artillery");
+            setBButton(2, 1, "Buy Support");
+            setBButton(2, 2, "Buy Teleport");
+            setBButton(4, 2, "Upgrade");
         break;
 
         case RUIN_BUILDING:
             resetB();
+            buildingPanel.enabled = false;
         break;
     }
-
-    if (maxDisplayTilesPerRow == defaultTilesPerRow) {
-        unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
-        buildingPanel.enabled = true;
-    }
-    else {
-        buildingPanel.enabled = false;
-    }
-
-    buildingPanel.color = getActiveTeamColor();
 }
 
 function buildingPanelDraw() {
@@ -238,7 +299,6 @@ function buildingPanelDraw() {
 function buildingPanelEvent() {
     var SFXTextButton = buildingPanelTab5Objects[3];
     var BGMTextButton = buildingPanelTab5Objects[4];
-
 
     // These button label checks  could probably be 
     // moved up into buildingPanelSetup() at some point,
@@ -279,8 +339,34 @@ function buildingPanelEvent() {
         }
     }
 
-    if (buildingPanelButtons[2].button.output == UIOUTPUT_SELECT) {
+    var mechToBuyBtn = [
+        [1, 0, RIFLE_MECH],
+        [1, 1, CANNON_MECH],
+        [1, 2, ARTILLERY_MECH],
+        [2, 1, SUPPORT_MECH],
+        [2, 2, TELEPORT_MECH]
+    ];
+    for(let i = 0; i < mechToBuyBtn.length; i++)
+    {
+        var warBuilding_buyBtn = getBButton(mechToBuyBtn[i][0], mechToBuyBtn[i][1], WAR_BUILDING);
+        if (warBuilding_buyBtn != 0 && warBuilding_buyBtn.button.output == UIOUTPUT_SELECT)
+        {
+            var pos = buildingPanelPrevSelected.mapPosition;
+            if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, 1)))[0] == -1)
+                getPlayer().unitGroup.mapUnits.push(new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, 1))));
+            else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(1, 0)))[0] == -1)
+                getPlayer().unitGroup.mapUnits.push(new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(1, 0))));
+            else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, -1)))[0] == -1)
+                getPlayer().unitGroup.mapUnits.push(new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, -1))));
+            else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(-1, 0)))[0] == -1)
+                getPlayer().unitGroup.mapUnits.push(new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(-1, 0))));
+            warBuilding_buyBtn.button.resetOutput();
+        }
+    }
+
+    var hqBuilding_helpBtn = getBButton(0, 2, HQ_BUILDING);
+    if (hqBuilding_helpBtn != 0 && hqBuilding_helpBtn.button.output == UIOUTPUT_SELECT) {
         helpMenu.enabled = !helpMenu.enabled;
-        buildingPanelButtons[2].button.resetOutput();
+        hqBuilding_helpBtn.button.resetOutput();
     }
 }

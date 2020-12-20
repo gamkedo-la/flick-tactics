@@ -514,7 +514,8 @@ class GameMap {
         if (isTouched) {
             var playerAndUnit = manager.getPlayerAndUnitIndexOnTile(this.cursorTile);
             if (playerAndUnit[0] != -1
-                && manager.players[playerAndUnit[0]].unitGroup.teamID == getPlayer().unitGroup.teamID) {
+                && manager.players[playerAndUnit[0]].unitGroup.teamID == getPlayer().unitGroup.teamID
+                && manager.players[playerAndUnit[0]].unitGroup.mapUnits[playerAndUnit[1]].unit.type != RUIN_BUILDING) {
                 getPlayer().selectedIndex = playerAndUnit[1];
                 updateUnitActionButtons();
                 zoomLock = false;

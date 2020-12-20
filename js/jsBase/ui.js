@@ -776,29 +776,28 @@ class Tab extends UIObject {
 
         this.prevTouchId = -1;
 
+        this.select = function () {
+            this.selector.select();
+
+            if (this.selector.selected) {
+                for (let i = 0; i < this.selector.otherSelectors.length; i++) {
+                    if (!this.selector.otherSelectors[i].object.enabled) {
+                        for (let o = 0; o < this.selector.otherSelectors[i].object.uiObjectsToToggle.length; o++) {
+                            this.selector.otherSelectors[i].object.uiObjectsToToggle[o].enabled = false;
+                        }
+                    }
+                }
+            }
+        }
+
         this.event = function () {
             if (this.enabled) {
                 this.touchId = touched(this.transform);
 
                 if (this.touchId != -1 && this.prevTouchId == -1) {
-                    this.selector.select();
-
-                    if (this.selector.selected) {
-                        for (let i = 0; i < this.selector.otherSelectors.length; i++) {
-                            if (!this.selector.otherSelectors[i].object.enabled) {
-                                for (let o = 0; o < this.selector.otherSelectors[i].object.uiObjectsToToggle.length; o++) {
-                                    this.selector.otherSelectors[i].object.uiObjectsToToggle[o].enabled = false;
-                                }
-                            }
-                        }
-                    }
-
+                    this.select();
                     this.output = UIOUTPUT_SELECT;
                 }
-
-                if (typeof this.uiObjectsToToggle != "undefined")
-                    for (let i = 0; i < this.uiObjectsToToggle.length; i++)
-                        this.uiObjectsToToggle[i].enabled = this.selector.selected;
 
                 this.textButton.transform = this.transform;
 
@@ -811,6 +810,9 @@ class Tab extends UIObject {
 
     draw() {
         if (this.enabled) {
+            if (typeof this.uiObjectsToToggle != "undefined")
+                for (let i = 0; i < this.uiObjectsToToggle.length; i++)
+                    this.uiObjectsToToggle[i].enabled = this.selector.selected;
             if (this.visible) {
                 this.textButton.button.btnColor = this.selector.selected ? this.enableColor : this.disableColor;
                 this.textButton.draw();

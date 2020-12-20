@@ -143,11 +143,11 @@ class MapUnit {
                 this.mapPosition = lerpVec2(this.mapPosition, this.mapPath[this.mapPathIndex], 0.3);
             }
         }
+        
+        this.unit.draw(teamID, offset, sc);
 
-        if (this.hp > 0)
+        if (this.hp > 0 && !this.unit.type == RUIN_BUILDING)
         {
-            this.unit.draw(teamID, offset, sc);
-
             if (ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
                 spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
                 drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-31.6 * pixelSize, -16.6 * pixelSize))), "black");
