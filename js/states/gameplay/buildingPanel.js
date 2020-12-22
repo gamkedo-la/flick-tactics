@@ -10,9 +10,9 @@ var buildingPanelPrevSelected = null;
 
 function buildingPanelSetup() {
     panelX = 160 * pixelSize;
-    panelY = (gameHeight / 2) + (100 * pixelSize);
+    panelH = gameBottomBarHeight;
+    panelY = gameHeight - panelH;
     panelW = gameWidth - (panelX * 2);
-    panelH = 140 * pixelSize;
     var tabGap = 4 * pixelSize;
 
     buildingPanelTab1Objects = [];

@@ -26,6 +26,8 @@ function getActiveTeamColor() {
 }
 
 function gameplaySetup() {
+    gameBottomBarHeight = 140 * pixelSize;
+
     map = new GameMap(maps[currentMapIndex]);
     manager = new PlayerManager(map);
 
@@ -42,6 +44,7 @@ function gameplaySetup() {
         new Label(tr(), ">>"),
         new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
     gameplay.push(rightUnitChangeBtn);
+    quickStatsUISetup();
     unitActionUISetup();
     overviewUISetup(fontSize);
     buildingPanelSetup();
@@ -66,6 +69,7 @@ function gameplayDraw(deltaTime) {
     drawTileParticles(deltaTime, cam);
     map.drawUnitExtras();
     overviewUIDraw(cam);
+    qStatsPanel.color = getActiveTeamColor() + "BB";
 }
 
 function gameplayUpdate(deltaTime) {
