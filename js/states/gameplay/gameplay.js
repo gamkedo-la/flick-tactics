@@ -111,12 +111,7 @@ function gameplayEvent(deltaTime) {
     overviewUIEvents();
 
     //Gameplay UI Button Events
-    if (endTurnBtn.button.output == UIOUTPUT_SELECT) {
-        manager.endTurn();
-        actionPointsLabel.text = "AP: " + getPlayer().actionPoints.toString();
-        endTurnBtn.button.resetOutput();
-    }
-    else if (leftUnitChangeBtn.button.output == UIOUTPUT_SELECT) {
+    if (leftUnitChangeBtn.button.output == UIOUTPUT_SELECT) {
         getPlayer().selectedIndex--;
         if (getPlayer().selectedIndex <= -1) getPlayer().selectedIndex = getPlayer().unitGroup.mapUnits.length - 1;
         updateUnitActionButtons();

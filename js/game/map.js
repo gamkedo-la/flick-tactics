@@ -511,7 +511,7 @@ class GameMap {
         }
 
         //Select unit on click/touch
-        if (isTouched) {
+        if (isTouched && !isTouchInsideBPanel()) {
             var playerAndUnit = manager.getPlayerAndUnitIndexOnTile(this.cursorTile);
             if (playerAndUnit[0] != -1
                 && manager.players[playerAndUnit[0]].unitGroup.teamID == getPlayer().unitGroup.teamID
