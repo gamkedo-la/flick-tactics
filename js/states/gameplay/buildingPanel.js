@@ -236,21 +236,18 @@ function buildingPanelUpdate(buildingMapUnit) {
             setBButton(0, 1, "Need Help?");
             setBButton(0, 2, "End Turn");
 
-            setBTab(1, "PLAYER CO");
+            setBTab(1, "CO");
             setBLabel(1, 0, "Player CO: Zareem.");
             setBLabel(1, 1, "CO Power: Rifle Boomer.");
             setBLabel(1, 2, "All your buildings deploys a Rifle Mech.");
-            setBButton(1, 2, "Use Power!");
-
-            setBTab(2, "ENEMY CO");
-            setBLabel(2, 0, "Enemy CO: Guru.");
-            setBLabel(2, 1, "CO Power: Extra Action.");
-            setBLabel(2, 2, "You get 3 more Action Points.");
+            setBButton(1, 0, "Previous CO");
+            setBButton(1, 1, "Use Power!");
+            setBButton(1, 2, "Next CO");
 
             setBTab(3, "STATS");
-            setBLabel(3, 0, "Total Player Mechs: " + getPlayer().getTotalNumberOfMechs().toString() + ", Total Player Buildings: " + getPlayer().getTotalNumberOfBuildings().toString());
-            setBLabel(3, 1, "Total Enemy Mechs: XX, Total Enemy Buildings: XX");
-            setBLabel(3, 2, "Total Player Income: XX, Total Enemy Income: XX");
+            setBLabel(3, 0, "Player Mechs: " + getPlayer().getTotalNumberOfMechs().toString() + ", Player Buildings: " + getPlayer().getTotalNumberOfBuildings().toString());
+            setBLabel(3, 1, "Enemy Mechs: XX, Enemy Buildings: XX");
+            setBLabel(3, 2, "Player Income: XX, Enemy Income: XX");
 
             setBTab(4, "OPTIONS");
             setBLabel(4, 1, "Tip: Try to move Rifle Mechs to mountains in order to gain defense.");
@@ -265,14 +262,19 @@ function buildingPanelUpdate(buildingMapUnit) {
 
             setBTab(0, "CITY");
             setBLabel(0, 0, "Generates Income with which new mechs are deployed via War Building.");
-            setBLabel(0, 1, "Cost is also a requirement for supply/repair. Income Generation per turn: " + buildingMapUnit.hp * 200 + ".");
-            setBLabel(0, 2, "Use BOOST to get 2 times the income for a turn (Uses 1 AP, 5 Cooldown Turns).");
-            setBButton(0, 2, "Boost");
+            setBLabel(0, 1, "Cost is also a requirement for supply/repair. Income Generation per turn: " + (buildingMapUnit.hp * (buildingMapUnit.unit.incomePerHp + (buildingMapUnit.unit.incomePerHp * buildingMapUnit.unit.incomeRankMultiplier * buildingMapUnit.unit.rank))).toString() + ".");
+
+            if(buildingMapUnit.unit.boost == 0) {
+                setBLabel(0, 2, "Use BOOST to get 2 times the income for a turn (Uses 1 AP, " + buildingMapUnit.unit.boostCooldown + " Cooldown Turns).");
+                setBButton(0, 2, "Boost");
+            } else {
+                setBLabel(0, 2, "It will take " + buildingMapUnit.unit.boost + " turn(s) before it can be boost can be used again.");
+            }
 
             setBTab(4, "LEVEL");
-            setBLabel(4, 0, "Current City Level: 1. Next Upgrade's Cost: 4000.");
-            setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + buildingMapUnit.hp * 400 + ".");
-            setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: 4.");
+            setBLabel(4, 0, "Current City Level: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
+            setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + (buildingMapUnit.hp * (buildingMapUnit.unit.incomePerHp + (buildingMapUnit.unit.incomePerHp * buildingMapUnit.unit.incomeRankMultiplier * (buildingMapUnit.unit.rank + 1)))).toString() + ".");
+            setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + buildingMapUnit.unit.boostCooldown + ".");
             setBButton(4, 2, "Upgrade");
         break;
 
@@ -292,9 +294,9 @@ function buildingPanelUpdate(buildingMapUnit) {
             setBButton(2, 2, "Buy Teleport");
 
             setBTab(4, "LEVEL");
-            setBLabel(4, 0, "Current War Building Level: 1. Next Upgrade's Cost: 8000.");
-            setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + buildingMapUnit.hp * 400 + ".");
-            setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: 4.");
+            setBLabel(4, 0, "Current War Building Level: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
+            //setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + buildingMapUnit.hp * 400 + ".");
+            //setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: 4.");
             setBButton(4, 2, "Upgrade");
 
         break;

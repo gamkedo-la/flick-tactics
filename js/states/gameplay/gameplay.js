@@ -2,6 +2,7 @@ const GAMEPLAY = 1;
 var gameplay = [];
 
 //Helper Function: 'manager.getActivePlayer()' => 'getPlayer()'
+
 function getPlayer() { return manager.getActivePlayer(); }
 
 function gameplayReset() {
@@ -58,7 +59,6 @@ function gameplaySetup() {
     gameplayReset();
 }
 
-
 function gameplayResize() {
 
 }
@@ -69,7 +69,6 @@ function gameplayDraw(deltaTime) {
     drawTileParticles(deltaTime, cam);
     map.drawUnitExtras();
     overviewUIDraw(cam);
-    qStatsPanel.color = getActiveTeamColor() + "BB";
 }
 
 function gameplayUpdate(deltaTime) {
@@ -108,6 +107,8 @@ function gameplayUpdate(deltaTime) {
     if (getPlayer().actionPoints <= 0)
         unitUpBtn.button.output = unitLeftBtn.button.output = unitDownBtn.button.output = unitRightBtn.button.output = UIOUTPUT_DISABLED;
     // Disabling Unit Action Buttons and Left/Right Unit Buttons END
+
+    quickStatsUIUpdate();
 }
 
 function gameplayEvent(deltaTime) {

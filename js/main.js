@@ -50,6 +50,7 @@ function draw(deltaTime) {
         case EDITOR: editorDraw(deltaTime); break;
     }
     ui.draw();
+    if(ui.stateIndex == GAMEPLAY) quickStatsUIDraw();
     //ui.debugDraw("green");
 }
 

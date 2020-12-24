@@ -42,42 +42,60 @@ class Unit {
         switch (this.type) {
             case RIFLE_MECH:
                 this.movement = 3;
+                this.rank = 0;
                 break;
 
             case CANNON_MECH:
                 this.movement = 2; //+2 on boost
+                this.rank = 0;
                 break;
 
             case ARTILLERY_MECH:
                 this.movement = 2;
+                this.rank = 0;
                 break;
 
             case SUPPORT_MECH:
                 this.movement = 5;
+                this.rank = 0;
                 break;
 
             case TELEPORT_MECH:
                 this.movement = 5;
+                this.rank = 0;
                 break;
 
             case HQ_BUILDING:
                 this.isBuilding = true;
                 this.movement = 0;
+                this.rank = 0;
                 break;
 
             case CITY_BUILDING:
                 this.isBuilding = true;
+                this.boost = 0;
+                this.boostCooldown = 3;
+                this.boostCooldownDecreasePerRank = 1;
+                this.incomePerHp = 200;
+                this.incomeRankMultiplier = 1.0;
+                this.rankUpgradeCost = 10000;
+                this.rankUpgradeCostMultiplier = 2.0;
                 this.movement = 0;
+                this.rank = 0;
                 break;
 
             case WAR_BUILDING:
                 this.isBuilding = true;
+                this.rankUpgradeCost = 20000;
+                this.rankUpgradeCostMultiplier = 1.5;
                 this.movement = 0;
+                this.rank = 0;
                 break;
 
             case RUIN_BUILDING:
                 this.isBuilding = true;
                 this.movement = 0;
+                this.rank = 0;
                 break;
         }
     }
