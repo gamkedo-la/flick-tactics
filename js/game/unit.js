@@ -42,26 +42,31 @@ class Unit {
         switch (this.type) {
             case RIFLE_MECH:
                 this.movement = 3;
+                this.ammo = -1;
                 this.rank = 0;
                 break;
 
             case CANNON_MECH:
                 this.movement = 2; //+2 on boost
+                this.ammo = -1;
                 this.rank = 0;
                 break;
 
             case ARTILLERY_MECH:
                 this.movement = 2;
+                this.ammo = -1;
                 this.rank = 0;
                 break;
 
             case SUPPORT_MECH:
                 this.movement = 5;
+                this.ammo = -1;
                 this.rank = 0;
                 break;
 
             case TELEPORT_MECH:
                 this.movement = 5;
+                this.ammo = -1;
                 this.rank = 0;
                 break;
 
@@ -164,12 +169,12 @@ class MapUnit {
         
         this.unit.draw(teamID, offset, sc);
 
-        if (this.hp > 0 && !this.unit.type == RUIN_BUILDING)
+        if (this.hp > 0 && this.unit.type != RUIN_BUILDING)
         {
             if (ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
                 spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
-                drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-31.6 * pixelSize, -16.6 * pixelSize))), "black");
-                drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-30 * pixelSize, -18 * pixelSize))), "white");
+                drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-29.6 * pixelSize, -14.6 * pixelSize))), "black");
+                drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
             }
         }
     }

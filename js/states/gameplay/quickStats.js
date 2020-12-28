@@ -61,14 +61,24 @@ function setQuickStatsForType(type)
 function quickStatsUIUpdate() {
     var plNUnitInd = manager.getPlayerAndUnitIndexOnTile(map.cursorTile);
     if (plNUnitInd[0] != -1) {
+        var mapUnit = manager.players[plNUnitInd[0]].unitGroup.mapUnits[plNUnitInd[1]];
         qStatsLabels[0].text = "HOVERED UNIT";
-        setQuickStatsForType(manager.players[plNUnitInd[0]].unitGroup.mapUnits[plNUnitInd[1]].unit.type);
+        setQuickStatsForType(mapUnit.unit.type);
+        qStatsLabels[5].text = "HP: " + mapUnit.hp.toString() + ", Rank: " + mapUnit.unit.rank.toString();
+        if(!mapUnit.unit.isBuilding) qStatsLabels[6].text = "Ammo: " + mapUnit.unit.ammo.toString();
+        else qStatsLabels[6].text = "";
+
         qStatsPanel.color = getActiveTeamColor() + "BB";
         prevQuickStatsUnit = manager.players[plNUnitInd[0]].unitGroup.mapUnits[plNUnitInd[1]].unit;
         prevQuickStatsTeamID = manager.players[plNUnitInd[0]].unitGroup.teamID;
     } else {
+        var mapUnit = manager.getActivePlayer().getSelectedMapUnit();
         qStatsLabels[0].text = "SELECTED UNIT";
-        setQuickStatsForType(manager.getActivePlayer().getSelectedMapUnit().unit.type);
+        setQuickStatsForType(mapUnit.unit.type);
+        qStatsLabels[5].text = "HP: " + mapUnit.hp.toString() + ", Rank: " + mapUnit.unit.rank.toString();
+        if(!mapUnit.unit.isBuilding) qStatsLabels[6].text = "Ammo: " + mapUnit.unit.ammo.toString();
+        else qStatsLabels[6].text = "";
+
         qStatsPanel.color = getActiveTeamColor() + "DD";
         prevQuickStatsUnit = manager.getActivePlayer().getSelectedMapUnit().unit;
         prevQuickStatsTeamID = manager.getActivePlayer().unitGroup.teamID;
