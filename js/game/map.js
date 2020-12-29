@@ -302,12 +302,11 @@ class GameMap {
 
     eventUnitMovement(mapUnit) {
         if (isTouched) {
-            isTouched = false;
-
             var path = this.calculateUnitMovement(mapUnit);
             mapUnit.mapPath = path;
             mapUnit.mapPathIndex = 0;
             mapUnit.up = -1;
+            return true;
 
             /*for (let y = -mapUnit.unit.movement; y <= mapUnit.unit.movement; y++) {
                 for (let x = -mapUnit.unit.movement; x <= mapUnit.unit.movement; x++) {

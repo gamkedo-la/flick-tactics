@@ -9,7 +9,9 @@ class Player {
         this.unitGroup = new MapUnitGroup(mapUnits);
         this.unitGroup.teamID = teamID;
         this.selectedIndex = 0;
+        
         this.actionPoints = 3;
+        this.money = 0;
     }
 
     getSelectedMapUnit() {

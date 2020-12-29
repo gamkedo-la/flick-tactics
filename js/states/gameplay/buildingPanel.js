@@ -380,5 +380,13 @@ function buildingPanelEvent() {
                 warBuilding_buyBtn.button.resetOutput();
             }
         }
+
+        // CITY BUILDING EVENTS
+        var cityBuilding_upgradeBtn = getBButton(4, 2, CITY_BUILDING);
+        if(cityBuilding_upgradeBtn != 0 && cityBuilding_upgradeBtn.button.output == UIOUTPUT_SELECT) {
+            getPlayer().getSelectedMapUnit().unit.rank++;
+            console.log("City Building Rank Increased.");
+            cityBuilding_upgradeBtn.button.resetOutput();
+        }
     }
 }
