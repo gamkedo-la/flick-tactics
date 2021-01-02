@@ -271,11 +271,13 @@ function buildingPanelUpdate(buildingMapUnit) {
                 setBLabel(0, 2, "It will take " + buildingMapUnit.unit.boost + " turn(s) before it can be boost can be used again.");
             }
 
-            setBTab(4, "LEVEL");
-            setBLabel(4, 0, "Current City Level: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
-            setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + (buildingMapUnit.hp * (buildingMapUnit.unit.incomePerHp + (buildingMapUnit.unit.incomePerHp * buildingMapUnit.unit.incomeRankMultiplier * (buildingMapUnit.unit.rank + 1)))).toString() + ".");
-            setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + buildingMapUnit.unit.boostCooldown + ".");
-            setBButton(4, 2, "Upgrade");
+            setBTab(4, "RANK");
+            if(buildingMapUnit.unit.rank < 3) {
+                setBLabel(4, 0, "Current City Rank: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
+                setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + (buildingMapUnit.hp * (buildingMapUnit.unit.incomePerHp + (buildingMapUnit.unit.incomePerHp * buildingMapUnit.unit.incomeRankMultiplier * (buildingMapUnit.unit.rank + 1)))).toString() + ".");
+                setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + buildingMapUnit.unit.boostCooldown + ".");
+                setBButton(4, 2, "Upgrade");
+            } else setBLabel(4, 0, "Current City Rank: 3. MAX Rank!");
         break;
 
         case WAR_BUILDING:
@@ -293,11 +295,11 @@ function buildingPanelUpdate(buildingMapUnit) {
             setBButton(2, 1, "Buy Support");
             setBButton(2, 2, "Buy Teleport");
 
-            setBTab(4, "LEVEL");
-            setBLabel(4, 0, "Current War Building Level: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
+            setBTab(4, "RANK");
+            if(buildingMapUnit.unit.rank < 3) setBLabel(4, 0, "Current War Building Rank: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
             //setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + buildingMapUnit.hp * 400 + ".");
             //setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: 4.");
-            setBButton(4, 2, "Upgrade");
+            if(buildingMapUnit.unit.rank < 3) setBButton(4, 2, "Upgrade");
 
         break;
 
@@ -316,12 +318,12 @@ function buildingPanelEvent() {
     if(isTouchInsideBPanel())
     {
         //HQ BUILDING EVENTS
-        var hqBuilding_helpBtn = getBButton(0, 0, HQ_BUILDING);
+        var hqBuilding_helpBtn = getBButton(0, 1, HQ_BUILDING);
         if (hqBuilding_helpBtn != 0 && hqBuilding_helpBtn.button.output == UIOUTPUT_SELECT) {
             helpMenu.enabled = !helpMenu.enabled;
             hqBuilding_helpBtn.button.resetOutput();
         }
-        var hqBuilding_restartBtn = getBButton(0, 1, HQ_BUILDING);
+        var hqBuilding_restartBtn = getBButton(0, 0, HQ_BUILDING);
         if (hqBuilding_restartBtn != 0 && hqBuilding_restartBtn.button.output == UIOUTPUT_SELECT) {
 
             //TODO: RESTART MISSION/GAME

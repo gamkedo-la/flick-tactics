@@ -15,18 +15,15 @@ const CITY_BUILDING = 64;
 const WAR_BUILDING = 68;
 const RUIN_BUILDING = 72;
 
-function getMechIndexFromType(type, teamNo)
-{
+function getMechIndexFromType(type, teamNo) {
     return (gameTime % 1200 < 600 ? 20 : 0) + 100 + (4 * type) + teamNo;
 }
 
-function getBuildingIndexFromType(type)
-{
+function getBuildingIndexFromType(type) {
     return 60 + (4 * type);
 }
 
-function getTeamIndex(index, teamNo)
-{
+function getTeamIndex(index, teamNo) {
     return (gameTime % 1200 < 600 ? 20 : 0) + index + teamNo;
 }
 
@@ -39,41 +36,36 @@ class Unit {
 
     setupUnitProperties() {
         this.isBuilding = false;
+        this.rank = 0;
         switch (this.type) {
             case RIFLE_MECH:
                 this.movement = 3;
                 this.ammo = -1;
-                this.rank = 0;
                 break;
 
             case CANNON_MECH:
                 this.movement = 2; //+2 on boost
                 this.ammo = -1;
-                this.rank = 0;
                 break;
 
             case ARTILLERY_MECH:
                 this.movement = 2;
                 this.ammo = -1;
-                this.rank = 0;
                 break;
 
             case SUPPORT_MECH:
                 this.movement = 5;
                 this.ammo = -1;
-                this.rank = 0;
                 break;
 
             case TELEPORT_MECH:
                 this.movement = 5;
                 this.ammo = -1;
-                this.rank = 0;
                 break;
 
             case HQ_BUILDING:
                 this.isBuilding = true;
                 this.movement = 0;
-                this.rank = 0;
                 break;
 
             case CITY_BUILDING:
@@ -86,7 +78,6 @@ class Unit {
                 this.rankUpgradeCost = 10000;
                 this.rankUpgradeCostMultiplier = 2.0;
                 this.movement = 0;
-                this.rank = 0;
                 break;
 
             case WAR_BUILDING:
@@ -94,13 +85,11 @@ class Unit {
                 this.rankUpgradeCost = 20000;
                 this.rankUpgradeCostMultiplier = 1.5;
                 this.movement = 0;
-                this.rank = 0;
                 break;
 
             case RUIN_BUILDING:
                 this.isBuilding = true;
                 this.movement = 0;
-                this.rank = 0;
                 break;
         }
     }
@@ -113,6 +102,14 @@ class Unit {
         }
         else if (this.isBuilding) {
             drawSheet(getTeamIndex(this.type, teamID), offset.add(this.position), scale);
+        }
+
+        if(this.rank > 0) {
+            drawSheet(56 + ((this.rank - 1) * 20), offset.add(this.position), scale);
+        }
+
+        if(this.ammo != -1 && this.ammo <= 1) {
+            if (gameTime % 600 < 300) drawSheet(36, offset.add(this.position), scale);
         }
     }
 }
@@ -167,7 +164,17 @@ class MapUnit {
             }
         }
         
+        if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1)
+        {
+            renderer.globalAlpha = 1.0;
+            renderer.globalCompositeOperation = "multiply";
+        }
         this.unit.draw(teamID, offset, sc);
+        if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1)
+        {
+            renderer.globalAlpha = 1.0;
+            renderer.globalCompositeOperation = "source-over";
+        }
 
         if (this.hp > 0 && this.unit.type != RUIN_BUILDING)
         {
