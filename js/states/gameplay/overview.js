@@ -42,12 +42,11 @@ function overviewUIDraw(offset) {
     var oPos = vec2(offset.x, offset.y).subtract(vec2(tileSize / 2, tileSize / 2));
     var oSize = vec2((tileSize * 28) + (tileGap * 28) + (gridBlackLinesFixFactor * 28),
         (tileSize * 16) + (tileGap * 16) + (gridBlackLinesFixFactor * 16));
-    //drawRect(spritesRenderer, oPos, oSize, true, "#00000044");
 }
 
 function enableOverview() {
     if (maxDisplayTilesPerRow == defaultTilesPerRow) {
-        disableControlBar();
+        controlBarDisable();
         leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = false;
         maxDisplayTilesPerRow = totalTilesInRow;
         updateTileSizes();
@@ -71,7 +70,7 @@ function overviewUIEvents() {
         enableOverview();
     }
     else if (maxDisplayTilesPerRow == totalTilesInRow && !zoomLock) {
-        enableControlBar();
+        controlBarEnable();
         leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
         maxDisplayTilesPerRow = defaultTilesPerRow;
         updateTileSizes();
@@ -80,11 +79,4 @@ function overviewUIEvents() {
         cam.x = tilePixels * pixelSize;
         cam.y = tilePixels * pixelSize;
     }
-    /*if (wheelScroll != 0.0 && zoomLock) {
-        zoomedTilesPerRow += wheelScroll / 20.0;
-        zoomedTilesPerRow = clamp(zoomedTilesPerRow, 6.0, 60.0);
-        wheelScroll = 0.0;
-        maxDisplayTilesPerRow = zoomedTilesPerRow;
-        updateTileSizes();
-    }*/
 }

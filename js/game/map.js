@@ -561,13 +561,11 @@ class GameMap {
         if (getPlayer().getSelectedMapUnit().up == 0) {
             if (this.eventUnitMovement(getPlayer().getSelectedMapUnit())) {
                 getPlayer().actionPoints--;
-                actionPointsLabel.text = "AP: " + getPlayer().actionPoints.toString();
             }
         }
         else if (getPlayer().getSelectedMapUnit().right == 0) {
             if (this.eventUnitAttack(getPlayer().getSelectedMapUnit())) {
                 getPlayer().actionPoints--;
-                actionPointsLabel.text = "AP: " + getPlayer().actionPoints.toString();
             }
         }
 

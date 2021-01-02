@@ -333,7 +333,6 @@ function buildingPanelEvent() {
         var hqBuilding_endBtn = getBButton(0, 2, HQ_BUILDING);
         if (hqBuilding_endBtn != 0 && hqBuilding_endBtn.button.output == UIOUTPUT_SELECT) {
             manager.endTurn();
-            actionPointsLabel.text = "AP: " + getPlayer().actionPoints.toString();
             hqBuilding_endBtn.button.resetOutput();
         }
 

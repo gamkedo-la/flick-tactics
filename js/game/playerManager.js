@@ -30,12 +30,28 @@ class PlayerManager {
     endTurn() {
         this.getActivePlayer().clearDisabledActions();
 
+        //Player AP replenishes
         this.getActivePlayer().actionPoints += actionPointsPerTurn;
+
         this.getActivePlayer().applyToAllMapUnits( (mapUnit) => {
+
+            //Money Increases (receives city building income)
+            if(mapUnit.unit.isBuilding && typeof mapUnit.unit.incomePerHp != "undefined") {
+                this.getActivePlayer().money += (mapUnit.hp * (mapUnit.unit.incomePerHp + (mapUnit.unit.incomePerHp * mapUnit.unit.incomeRankMultiplier * mapUnit.unit.rank)));
+            }
+
+            //Deploy Time Decreases
             if(typeof mapUnit.unit.deployTime != "undefined"
-                && mapUnit.unit.deployTime > 0)
+                && mapUnit.unit.deployTime > 0) {
                 mapUnit.unit.deployTime--;
+            }
         });
+
+        //All Players HQ are reselected
+        for (let i = 0; i < this.players.length; i++) {
+            this.players[i].selectedIndex = this.players[i].getHQUnitIndex();
+            if(this.players[i].selectedIndex == -1) this.players[i].selectedIndex = 0;
+        }
 
         this.index++;
         if (this.index >= this.players.length) this.index = 0;

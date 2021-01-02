@@ -80,7 +80,6 @@ function gameplayUpdate(deltaTime) {
         buildingPanel.enabled = false;
 
         if(getPlayer().getSelectedMapUnit().unit.deployTime <= 0) {
-            // Disabling Unit Action Buttons and Left/Right Unit Buttons START
             unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled =
                 (cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize);
 
@@ -92,6 +91,8 @@ function gameplayUpdate(deltaTime) {
             else if (controlBar[0].enabled) {
                 leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
             }
+        } else {
+            unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
         }
     }
     else {
@@ -109,13 +110,14 @@ function gameplayUpdate(deltaTime) {
 
     if (getPlayer().actionPoints <= 0)
         unitUpBtn.button.output = unitLeftBtn.button.output = unitDownBtn.button.output = unitRightBtn.button.output = UIOUTPUT_DISABLED;
-    // Disabling Unit Action Buttons and Left/Right Unit Buttons END
 
+    controlBarUIUpdate();
     quickStatsUIUpdate();
 }
 
 function gameplayEvent(deltaTime) {
 
+    controlBarUIEvents();
     overviewUIEvents();
 
     //Gameplay UI Button Events

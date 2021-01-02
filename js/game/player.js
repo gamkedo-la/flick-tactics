@@ -8,7 +8,8 @@ class Player {
     constructor(teamID, mapUnits) {
         this.unitGroup = new MapUnitGroup(mapUnits);
         this.unitGroup.teamID = teamID;
-        this.selectedIndex = 0;
+        this.selectedIndex = this.getHQUnitIndex();
+        if(this.selectedIndex == -1) this.selectedIndex = 0;
         
         this.actionPoints = 3;
         this.money = 0;
@@ -16,6 +17,14 @@ class Player {
 
     getSelectedMapUnit() {
         return this.unitGroup.mapUnits[this.selectedIndex];
+    }
+
+    getHQUnitIndex() {
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
+            if(this.unitGroup.mapUnits[i].unit.isBuilding
+            && this.unitGroup.mapUnits[i].unit.type == HQ_BUILDING)
+                return i;
+        return -1;
     }
 
     applyToAllMapUnits( toMapUnit ) {
