@@ -60,29 +60,28 @@ function setQuickStatsForType(type)
 
 function quickStatsUIUpdate() {
     var plNUnitInd = manager.getPlayerAndUnitIndexOnTile(map.cursorTile);
-    if (plNUnitInd[0] != -1) {
-        var mapUnit = manager.players[plNUnitInd[0]].unitGroup.mapUnits[plNUnitInd[1]];
-        qStatsLabels[0].text = "HOVERED UNIT";
-        setQuickStatsForType(mapUnit.unit.type);
-        qStatsLabels[5].text = "HP: " + mapUnit.hp.toString() + ", Rank: " + mapUnit.unit.rank.toString();
-        if(!mapUnit.unit.isBuilding) qStatsLabels[6].text = "Ammo: " + mapUnit.unit.ammo.toString();
-        else qStatsLabels[6].text = "";
+    var mapUnit = undefined;
 
+    if (plNUnitInd[0] != -1) {
+        mapUnit = manager.players[plNUnitInd[0]].unitGroup.mapUnits[plNUnitInd[1]];
+        qStatsLabels[0].text = "HOVERED";
         qStatsPanel.color = getActiveTeamColor() + "BB";
         prevQuickStatsUnit = manager.players[plNUnitInd[0]].unitGroup.mapUnits[plNUnitInd[1]].unit;
         prevQuickStatsTeamID = manager.players[plNUnitInd[0]].unitGroup.teamID;
     } else {
-        var mapUnit = manager.getActivePlayer().getSelectedMapUnit();
-        qStatsLabels[0].text = "SELECTED UNIT";
-        setQuickStatsForType(mapUnit.unit.type);
-        qStatsLabels[5].text = "HP: " + mapUnit.hp.toString() + ", Rank: " + mapUnit.unit.rank.toString();
-        if(!mapUnit.unit.isBuilding) qStatsLabels[6].text = "Ammo: " + mapUnit.unit.ammo.toString();
-        else qStatsLabels[6].text = "";
-
+        mapUnit = manager.getActivePlayer().getSelectedMapUnit();
+        qStatsLabels[0].text = "SELECTED";
         qStatsPanel.color = getActiveTeamColor() + "DD";
         prevQuickStatsUnit = manager.getActivePlayer().getSelectedMapUnit().unit;
         prevQuickStatsTeamID = manager.getActivePlayer().unitGroup.teamID;
     }
+
+    setQuickStatsForType(mapUnit.unit.type);
+    qStatsLabels[5].text = "HP: " + mapUnit.hp.toString() + ", Rank: " + mapUnit.unit.rank.toString();
+    if(!mapUnit.unit.isBuilding) qStatsLabels[6].text = "Ammo: " + mapUnit.unit.ammo.toString();
+    else qStatsLabels[6].text = "";
+    if(mapUnit.unit.deployTime > 0) qStatsLabels[7].text = mapUnit.unit.deployTime + " Turns to Deploy!";
+    else qStatsLabels[7].text = "";
 
     qStatsPanel.enabled = (maxDisplayTilesPerRow == defaultTilesPerRow);
 }

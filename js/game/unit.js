@@ -43,6 +43,7 @@ class Unit {
                 this.movementObstacles = [SEA_TILE];
                 this.movementReducers = [MOUNTAIN_TILE];
                 this.ammo = -1;
+                this.deployTime = 0;
                 break;
 
             case CANNON_MECH:
@@ -50,6 +51,7 @@ class Unit {
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
                 this.ammo = -1;
+                this.deployTime = 0;
                 break;
 
             case ARTILLERY_MECH:
@@ -57,6 +59,7 @@ class Unit {
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
                 this.ammo = -1;
+                this.deployTime = 0;
                 break;
 
             case SUPPORT_MECH:
@@ -64,6 +67,7 @@ class Unit {
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
                 this.ammo = -1;
+                this.deployTime = 0;
                 break;
 
             case TELEPORT_MECH:
@@ -71,6 +75,7 @@ class Unit {
                 this.movementObstacles = [MOUNTAIN_TILE];
                 this.movementReducers = [];
                 this.ammo = -1;
+                this.deployTime = 0;
                 break;
 
             case HQ_BUILDING:
@@ -92,6 +97,11 @@ class Unit {
                 this.isBuilding = true;
                 this.rankUpgradeCost = 20000;
                 this.rankUpgradeCostMultiplier = 1.5;
+                this.mechDeployDelay = [
+                    [1, 4, 4, 2, 2],
+                    [1, 3, 3, 1, 1],
+                    [0, 2, 2, 1, 0],
+                ];
                 break;
 
             case RUIN_BUILDING:
@@ -104,7 +114,14 @@ class Unit {
         if (typeof scale == "undefined") scale = vec2(1, 1);
 
         if (!this.isBuilding) {
-            drawSheet(getMechIndexFromType(this.type, teamID), offset.add(this.position), scale);
+            if(this.deployTime <= 0)
+                drawSheet(getMechIndexFromType(this.type, teamID), offset.add(this.position), scale);
+            else
+            {
+                renderer.globalAlpha = 0.8;
+                drawSheet(getMechIndexFromType(this.type, teamID) + 180, offset.add(this.position), scale);
+                renderer.globalAlpha = 1.0;
+            }
         }
         else if (this.isBuilding) {
             drawSheet(getTeamIndex(this.type, teamID), offset.add(this.position), scale);
@@ -170,20 +187,17 @@ class MapUnit {
             }
         }
         
-        if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1)
-        {
+        if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1) {
             renderer.globalAlpha = 1.0;
             renderer.globalCompositeOperation = "multiply";
         }
         this.unit.draw(teamID, offset, sc);
-        if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1)
-        {
+        if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1) {
             renderer.globalAlpha = 1.0;
             renderer.globalCompositeOperation = "source-over";
         }
 
-        if (this.hp > 0 && this.unit.type != RUIN_BUILDING)
-        {
+        if (this.hp > 0 && this.unit.type != RUIN_BUILDING) {
             if (ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
                 spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
                 drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-29.6 * pixelSize, -14.6 * pixelSize))), "black");

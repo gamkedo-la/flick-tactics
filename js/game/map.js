@@ -240,6 +240,11 @@ class GameMap {
         for(let i = 0; i < mapUnit.unit.movementObstacles.length; i++)
             if(mapUnit.unit.movementObstacles[i] == tileType)
                 return true;
+
+        //Other Player Units are Obstacles
+        var plAndUnitInd = manager.getPlayerAndUnitIndexOnTile(tilePosition);
+        if(plAndUnitInd[0] != -1 && manager.index != plAndUnitInd[0]) return true;
+
         return false;
     }
 
@@ -257,7 +262,7 @@ class GameMap {
         || destinationTile.x < 0
         || destinationTile.y < 0
         || destinationTile.x >= MAP_SIZE.x
-        || destinationTile.x >= MAP_SIZE.y)
+        || destinationTile.y >= MAP_SIZE.y)
             return -1;
 
         var path = [mapUnit.mapPosition];

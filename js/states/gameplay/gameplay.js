@@ -78,17 +78,20 @@ function gameplayUpdate(deltaTime) {
 
     if (!getPlayer().getSelectedMapUnit().unit.isBuilding) {
         buildingPanel.enabled = false;
-        // Disabling Unit Action Buttons and Left/Right Unit Buttons START
-        unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled =
-            (cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize);
 
-        if (getPlayer().getSelectedMapUnit().up == 0 || getPlayer().getSelectedMapUnit().left == 0 ||
-            getPlayer().getSelectedMapUnit().down == 0 || getPlayer().getSelectedMapUnit().right == 0) {
-            leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled =
-                unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
-        }
-        else if (controlBar[0].enabled) {
-            leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
+        if(getPlayer().getSelectedMapUnit().unit.deployTime <= 0) {
+            // Disabling Unit Action Buttons and Left/Right Unit Buttons START
+            unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled =
+                (cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize);
+
+            if (getPlayer().getSelectedMapUnit().up == 0 || getPlayer().getSelectedMapUnit().left == 0 ||
+                getPlayer().getSelectedMapUnit().down == 0 || getPlayer().getSelectedMapUnit().right == 0) {
+                leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled =
+                    unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
+            }
+            else if (controlBar[0].enabled) {
+                leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
+            }
         }
     }
     else {

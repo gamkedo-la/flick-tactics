@@ -29,7 +29,13 @@ class PlayerManager {
 
     endTurn() {
         this.getActivePlayer().clearDisabledActions();
+
         this.getActivePlayer().actionPoints += actionPointsPerTurn;
+        this.getActivePlayer().applyToAllMapUnits( (mapUnit) => {
+            if(typeof mapUnit.unit.deployTime != "undefined"
+                && mapUnit.unit.deployTime > 0)
+                mapUnit.unit.deployTime--;
+        });
 
         this.index++;
         if (this.index >= this.players.length) this.index = 0;

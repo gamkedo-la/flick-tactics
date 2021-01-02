@@ -18,6 +18,11 @@ class Player {
         return this.unitGroup.mapUnits[this.selectedIndex];
     }
 
+    applyToAllMapUnits( toMapUnit ) {
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
+            toMapUnit(this.unitGroup.mapUnits[i]);
+    }
+
     getTotalNumberOfMechs() {
         var no = 0;
         for(let i = 0; i < this.unitGroup.mapUnits.length; i++)

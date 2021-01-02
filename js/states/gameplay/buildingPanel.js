@@ -372,13 +372,29 @@ function buildingPanelEvent() {
             {
                 var pos = buildingPanelPrevSelected.mapPosition;
                 if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, 1)))[0] == -1)
-                    getPlayer().unitGroup.mapUnits.push(new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, 1))));
+                {
+                    var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, 1)));
+                    newMapUnit.unit.deployTime = getPlayer().getSelectedMapUnit().unit.mechDeployDelay[getPlayer().getSelectedMapUnit().unit.rank][mechToBuyBtn[i][2]];
+                    getPlayer().unitGroup.mapUnits.push(newMapUnit);
+                }
                 else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(1, 0)))[0] == -1)
-                    getPlayer().unitGroup.mapUnits.push(new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(1, 0))));
+                {
+                    var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(1, 0)));
+                    newMapUnit.unit.deployTime = getPlayer().getSelectedMapUnit().unit.mechDeployDelay[getPlayer().getSelectedMapUnit().unit.rank][mechToBuyBtn[i][2]];
+                    getPlayer().unitGroup.mapUnits.push(newMapUnit);
+                }
                 else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, -1)))[0] == -1)
-                    getPlayer().unitGroup.mapUnits.push(new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, -1))));
+                {
+                    var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, -1)));
+                    newMapUnit.unit.deployTime = getPlayer().getSelectedMapUnit().unit.mechDeployDelay[getPlayer().getSelectedMapUnit().unit.rank][mechToBuyBtn[i][2]];
+                    getPlayer().unitGroup.mapUnits.push(newMapUnit);
+                }
                 else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(-1, 0)))[0] == -1)
-                    getPlayer().unitGroup.mapUnits.push(new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(-1, 0))));
+                {
+                    var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(-1, 0)));
+                    newMapUnit.unit.deployTime = getPlayer().getSelectedMapUnit().unit.mechDeployDelay[getPlayer().getSelectedMapUnit().unit.rank][mechToBuyBtn[i][2]];
+                    getPlayer().unitGroup.mapUnits.push(newMapUnit);
+                }
                 warBuilding_buyBtn.button.resetOutput();
             }
         }
