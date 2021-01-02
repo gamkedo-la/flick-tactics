@@ -40,32 +40,41 @@ class Unit {
         switch (this.type) {
             case RIFLE_MECH:
                 this.movement = 3;
+                this.movementObstacles = [SEA_TILE];
+                this.movementReducers = [MOUNTAIN_TILE];
                 this.ammo = -1;
                 break;
 
             case CANNON_MECH:
                 this.movement = 2; //+2 on boost
+                this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
+                this.movementReducers = [FOREST_TILE];
                 this.ammo = -1;
                 break;
 
             case ARTILLERY_MECH:
                 this.movement = 2;
+                this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
+                this.movementReducers = [FOREST_TILE];
                 this.ammo = -1;
                 break;
 
             case SUPPORT_MECH:
                 this.movement = 5;
+                this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
+                this.movementReducers = [FOREST_TILE];
                 this.ammo = -1;
                 break;
 
             case TELEPORT_MECH:
                 this.movement = 5;
+                this.movementObstacles = [MOUNTAIN_TILE];
+                this.movementReducers = [];
                 this.ammo = -1;
                 break;
 
             case HQ_BUILDING:
                 this.isBuilding = true;
-                this.movement = 0;
                 break;
 
             case CITY_BUILDING:
@@ -77,19 +86,16 @@ class Unit {
                 this.incomeRankMultiplier = 1.0;
                 this.rankUpgradeCost = 10000;
                 this.rankUpgradeCostMultiplier = 2.0;
-                this.movement = 0;
                 break;
 
             case WAR_BUILDING:
                 this.isBuilding = true;
                 this.rankUpgradeCost = 20000;
                 this.rankUpgradeCostMultiplier = 1.5;
-                this.movement = 0;
                 break;
 
             case RUIN_BUILDING:
                 this.isBuilding = true;
-                this.movement = 0;
                 break;
         }
     }

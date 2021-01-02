@@ -235,19 +235,59 @@ class GameMap {
 
     //
 
+    isTileMovementObstacleToMapUnit(mapUnit, tilePosition) {
+        var tileType = this.getTileTypeFromPosition(tilePosition);
+        for(let i = 0; i < mapUnit.unit.movementObstacles.length; i++)
+            if(mapUnit.unit.movementObstacles[i] == tileType)
+                return true;
+        return false;
+    }
+
+    isTileMovementReducerToMapUnit(mapUnit, tilePosition) {
+        var tileType = this.getTileTypeFromPosition(tilePosition);
+        for(let i = 0; i < mapUnit.unit.movementReducers.length; i++)
+            if(mapUnit.unit.movementReducers[i] == tileType)
+                return true;
+        return false;
+    }
+
     calculateUnitMovement(mapUnit, destinationTile = vec2(this.cursorTile.x, this.cursorTile.y)) {
+        if(this.isTileMovementObstacleToMapUnit(mapUnit, destinationTile)
+        || manager.getPlayerAndUnitIndexOnTile(destinationTile)[0] != -1
+        || destinationTile.x < 0
+        || destinationTile.y < 0
+        || destinationTile.x >= MAP_SIZE.x
+        || destinationTile.x >= MAP_SIZE.y)
+            return -1;
+
         var path = [mapUnit.mapPosition];
         var totalMovement = mapUnit.unit.movement;
         do {
-            var adjacentTiles = [
-                path[path.length - 1].add(vec2(-1, 0)),
-                path[path.length - 1].add(vec2(0, -1)),
-                path[path.length - 1].add(vec2(1, 0)),
-                path[path.length - 1].add(vec2(0, 1))
-            ];
+            var adjacentTiles = [];
+
+            var adjaTile1 = path[path.length - 1].add(vec2(-1, 0));
+            var isObstacle1 = this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile1);
+            var isReducer1 = this.isTileMovementReducerToMapUnit(mapUnit, adjaTile1);
+            if(!isObstacle1) adjacentTiles.push(adjaTile1);
+
+            var adjaTile2 = path[path.length - 1].add(vec2(0, -1));
+            var isObstacle2 = this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile2);
+            var isReducer2 = this.isTileMovementReducerToMapUnit(mapUnit, adjaTile2);
+            if(!isObstacle2) adjacentTiles.push(adjaTile2);
+
+            var adjaTile3 = path[path.length - 1].add(vec2(1, 0));
+            var isObstacle3 = this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile3);
+            var isReducer3 = this.isTileMovementReducerToMapUnit(mapUnit, adjaTile3);
+            if(!isObstacle3) adjacentTiles.push(adjaTile3);
+
+            var adjaTile4 = path[path.length - 1].add(vec2(0, 1));
+            var isObstacle4 = this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile4);
+            var isReducer4 = this.isTileMovementReducerToMapUnit(mapUnit, adjaTile4);
+            if(!isObstacle4) adjacentTiles.push(adjaTile4);
+
             var shortestDist = 99999.0;
             var shortestDistTileIndex = -1;
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < adjacentTiles.length; i++) {
                 var dist = adjacentTiles[i].distance(destinationTile);
                 if (dist < shortestDist) {
                     shortestDist = dist;
@@ -255,14 +295,28 @@ class GameMap {
                 }
             }
             path.push(adjacentTiles[shortestDistTileIndex]);
-            totalMovement -= 1;
+
+            var prevTotalMovement = totalMovement;
+            if(adjacentTiles[shortestDistTileIndex].isEqual(adjaTile1) && isReducer1) totalMovement--;
+            else if(adjacentTiles[shortestDistTileIndex].isEqual(adjaTile2) && isReducer2) totalMovement--;
+            else if(adjacentTiles[shortestDistTileIndex].isEqual(adjaTile3) && isReducer3) totalMovement--;
+            else if(adjacentTiles[shortestDistTileIndex].isEqual(adjaTile4) && isReducer4) totalMovement--;
+
+            //Rifle Mech movement is double reduced by mountains
+            if(mapUnit.unit.type == RIFLE_MECH && prevTotalMovement != totalMovement) totalMovement--;
+
+            totalMovement--;
+
         } while (!path[path.length - 1].isEqual(destinationTile) && totalMovement > 0);
+
+        if(!path[path.length - 1].isEqual(destinationTile)) return -1;
 
         return path;
     }
 
     canUnitReachTile(mapUnit, tilePosition) {
         var path = this.calculateUnitMovement(mapUnit, tilePosition);
+        if(path == -1) return false;
         return path[path.length - 1].isEqual(tilePosition);
     }
 
@@ -303,9 +357,12 @@ class GameMap {
     eventUnitMovement(mapUnit) {
         if (isTouched) {
             var path = this.calculateUnitMovement(mapUnit);
+            if(path == -1) return false;
+
             mapUnit.mapPath = path;
             mapUnit.mapPathIndex = 0;
             mapUnit.up = -1;
+
             return true;
 
             /*for (let y = -mapUnit.unit.movement; y <= mapUnit.unit.movement; y++) {

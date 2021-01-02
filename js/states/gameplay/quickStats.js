@@ -83,10 +83,12 @@ function quickStatsUIUpdate() {
         prevQuickStatsUnit = manager.getActivePlayer().getSelectedMapUnit().unit;
         prevQuickStatsTeamID = manager.getActivePlayer().unitGroup.teamID;
     }
+
+    qStatsPanel.enabled = (maxDisplayTilesPerRow == defaultTilesPerRow);
 }
 
 function quickStatsUIDraw() {
-    if(prevQuickStatsUnit != -1) {
+    if(maxDisplayTilesPerRow == defaultTilesPerRow && prevQuickStatsUnit != -1) {
         prevQuickStatsUnit.draw(prevQuickStatsTeamID, vec2(-prevQuickStatsUnit.position.x, -prevQuickStatsUnit.position.y).add(qStatsPanel.subState.uiObjects[0].transform.position).add(qStatsSize.divide(toVec2(2.0))), toVec2(pixelSize/1.5));
     }
 }
