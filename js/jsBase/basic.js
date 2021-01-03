@@ -65,6 +65,10 @@ class Vector2 {
     return Math.sqrt(Math.pow(vec2.x - this.x, 2) + Math.pow(vec2.y - this.y, 2));
   }
 
+  distanceFloor(vec2) {
+    return Math.floor(Math.sqrt(Math.pow(Math.floor(vec2.x) - Math.floor(this.x), 2) + Math.pow(Math.floor(vec2.y) - Math.floor(this.y), 2)));
+  }
+
   angle(vec2) {
     return Math.atan2(this.y - vec2.y, this.x - vec2.x);
   }
@@ -77,6 +81,12 @@ class Vector2 {
 
     return compareFloat((vec2_a.x - this.x) / (vec2_a.y - this.y), (this.x - vec2_b.x) / (this.y - vec2_b.y), error * 1000.0) && distanceTest;
   }
+}
+
+function isVec2InArr(array, vec2) {
+  for(let i = 0; i < array.length; i++)
+    if(array[i].isEqual(vec2)) return true;
+  return false;
 }
 
 function isLineOnLine(

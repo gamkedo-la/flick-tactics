@@ -217,6 +217,12 @@ class GameMap {
         drawRect(spritesRenderer, vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
             Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))),
             vec2(tileSize, tileSize), true, "#FFFFFF44");
+
+        //Tile Position Debug Draw
+        drawText(spritesRenderer, this.cursorTile.x.toString() + ", " + this.cursorTile.y.toString(), vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
+            Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))).add(toVec2(pixelSize)), "black");
+        drawText(spritesRenderer, this.cursorTile.x.toString() + ", " + this.cursorTile.y.toString(), vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
+            Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))), "white");
     }
 
     drawUnitExtras()
@@ -265,54 +271,71 @@ class GameMap {
         || destinationTile.y >= MAP_SIZE.y)
             return -1;
 
-        var path = [mapUnit.mapPosition];
-        var totalMovement = mapUnit.unit.movement;
+        var method = 0;
+        var path = [];
         do {
-            var adjacentTiles = [];
+            path = [mapUnit.mapPosition];
+            var totalMovement = mapUnit.unit.movement;
+            do {
+                var adjacentTiles = [];
 
-            var adjaTile1 = path[path.length - 1].add(vec2(-1, 0));
-            var isObstacle1 = this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile1);
-            var isReducer1 = this.isTileMovementReducerToMapUnit(mapUnit, adjaTile1);
-            if(!isObstacle1) adjacentTiles.push(adjaTile1);
+                var adjaTile1 = path[path.length - 1];
+                var adjaTile2 = path[path.length - 1];
+                var adjaTile3 = path[path.length - 1];
+                var adjaTile4 = path[path.length - 1];
 
-            var adjaTile2 = path[path.length - 1].add(vec2(0, -1));
-            var isObstacle2 = this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile2);
-            var isReducer2 = this.isTileMovementReducerToMapUnit(mapUnit, adjaTile2);
-            if(!isObstacle2) adjacentTiles.push(adjaTile2);
+                adjaTile1 = adjaTile1.add(vec2(-1, 0));
+                adjaTile2 = adjaTile2.add(vec2(0, -1));
+                adjaTile3 = adjaTile3.add(vec2(1, 0));
+                adjaTile4 = adjaTile4.add(vec2(0, 1));
 
-            var adjaTile3 = path[path.length - 1].add(vec2(1, 0));
-            var isObstacle3 = this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile3);
-            var isReducer3 = this.isTileMovementReducerToMapUnit(mapUnit, adjaTile3);
-            if(!isObstacle3) adjacentTiles.push(adjaTile3);
+                if(!this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile1)
+                && !isVec2InArr(path, adjaTile1))
+                    adjacentTiles.push(adjaTile1);
+                if(!this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile2)
+                && !isVec2InArr(path, adjaTile2))
+                    adjacentTiles.push(adjaTile2);
+                if(!this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile3)
+                && !isVec2InArr(path, adjaTile3))
+                    adjacentTiles.push(adjaTile3);
+                if(!this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile4)
+                && !isVec2InArr(path, adjaTile4))
+                    adjacentTiles.push(adjaTile4);
 
-            var adjaTile4 = path[path.length - 1].add(vec2(0, 1));
-            var isObstacle4 = this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile4);
-            var isReducer4 = this.isTileMovementReducerToMapUnit(mapUnit, adjaTile4);
-            if(!isObstacle4) adjacentTiles.push(adjaTile4);
+                if(adjacentTiles.length <= 0) break;
 
-            var shortestDist = 99999.0;
-            var shortestDistTileIndex = -1;
-            for (let i = 0; i < adjacentTiles.length; i++) {
-                var dist = adjacentTiles[i].distance(destinationTile);
-                if (dist < shortestDist) {
-                    shortestDist = dist;
-                    shortestDistTileIndex = i;
+                //method 0 = go for shortest
+                //method 1 = go for second shortest
+                //method 3 = go for third shortest
+
+                var shortestDist = 99999.0;
+                var shortestDistTileIndex = -1;
+                var secondShortestIndex = -1;
+                var thirdShortestIndex = -1;
+                for (let i = 0; i < adjacentTiles.length; i++) {
+                    var dist = adjacentTiles[i].distanceFloor(destinationTile);
+                    if (dist < shortestDist) {
+                        shortestDist = dist;
+                        thirdShortestIndex = secondShortestIndex;
+                        secondShortestIndex = shortestDistTileIndex;
+                        shortestDistTileIndex = i;
+                    }
                 }
-            }
-            path.push(adjacentTiles[shortestDistTileIndex]);
+                if(method == 1 && secondShortestIndex != -1 && path.length < 2) path.push(adjacentTiles[secondShortestIndex]);
+                else if(method == 2 && thirdShortestIndex != -1 && path.length < 2) path.push(adjacentTiles[thirdShortestIndex]);
+                else path.push(adjacentTiles[shortestDistTileIndex]);
 
-            var prevTotalMovement = totalMovement;
-            if(adjacentTiles[shortestDistTileIndex].isEqual(adjaTile1) && isReducer1) totalMovement--;
-            else if(adjacentTiles[shortestDistTileIndex].isEqual(adjaTile2) && isReducer2) totalMovement--;
-            else if(adjacentTiles[shortestDistTileIndex].isEqual(adjaTile3) && isReducer3) totalMovement--;
-            else if(adjacentTiles[shortestDistTileIndex].isEqual(adjaTile4) && isReducer4) totalMovement--;
+                if(this.isTileMovementReducerToMapUnit(mapUnit, adjacentTiles[shortestDistTileIndex])) {
+                    totalMovement--;
+                    //Rifle Mech movement is double reduced by mountains
+                    if(mapUnit.unit.type == RIFLE_MECH) totalMovement--;
+                }
 
-            //Rifle Mech movement is double reduced by mountains
-            if(mapUnit.unit.type == RIFLE_MECH && prevTotalMovement != totalMovement) totalMovement--;
+                totalMovement--;
+            } while (!path[path.length - 1].isEqual(destinationTile) && totalMovement > 0);
 
-            totalMovement--;
-
-        } while (!path[path.length - 1].isEqual(destinationTile) && totalMovement > 0);
+            method++;
+        } while (!path[path.length - 1].isEqual(destinationTile) && method < 3);
 
         if(!path[path.length - 1].isEqual(destinationTile)) return -1;
 
@@ -343,8 +366,8 @@ class GameMap {
                     var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * tileSize) + ((mapUnit.mapPosition.x + x) * tileGap)),
                         Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * tileSize) + ((mapUnit.mapPosition.y + y) * tileGap)));
 
-                    drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
-                        vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true, "#FFFF0088");
+                    drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (16 * pixelSize), tileSize - (16 * pixelSize)).divide(vec2(2, 2))),
+                        vec2(tileSize - (16 * pixelSize), tileSize - (16 * pixelSize)), true, "#FFFFFF88");
                 }
             }
         }
@@ -353,9 +376,9 @@ class GameMap {
         for (let i = 0; i < path.length; i++) {
             var posi = vec2(Math.floor(offset.x + (path[i].x * tileSize) + (path[i].x * tileGap)),
                 Math.floor(offset.y + (path[i].y * tileSize) + (path[i].y * tileGap)));
-            drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
-                vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true,
-                (this.cursorTile.x == path[i].x && this.cursorTile.y == path[i].y) ? "#FF0000FF" : "#FF0000BB");
+            drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (32 * pixelSize), tileSize - (32 * pixelSize)).divide(vec2(2, 2))),
+                vec2(tileSize - (32 * pixelSize), tileSize - (32 * pixelSize)), true,
+                (this.cursorTile.x == path[i].x && this.cursorTile.y == path[i].y) ? "#000000FF" : "#000000BB");
         }
     }
 
