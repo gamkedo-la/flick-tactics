@@ -85,9 +85,9 @@ class Unit {
             case CITY_BUILDING:
                 this.isBuilding = true;
                 this.boost = 0;
-                this.boostCooldown = 3;
+                this.boostCooldown = 5;
                 this.boostCooldownDecreasePerRank = 1;
-                this.incomePerHp = 200;
+                this.incomePerHp = 100;
                 this.incomeRankMultiplier = 1.0;
                 this.rankUpgradeCost = 10000;
                 this.rankUpgradeCostMultiplier = 2.0;
@@ -95,7 +95,10 @@ class Unit {
 
             case WAR_BUILDING:
                 this.isBuilding = true;
-                this.rankUpgradeCost = 20000;
+                this.boost = 0;
+                this.boostCooldown = 5;
+                this.boostCooldownDecreasePerRank = 1;
+                this.rankUpgradeCost = 50000;
                 this.rankUpgradeCostMultiplier = 1.5;
                 this.mechDeployDelay = [
                     [1, 4, 4, 2, 2],

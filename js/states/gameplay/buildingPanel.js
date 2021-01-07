@@ -6,7 +6,10 @@
 
 var buildingPanelDefaultBtnColor = "#00000088";
 var buildingPanelHoverBtnColor = "#000000DD";
+var buildingPanelDisabledBtnColor = "#88000088";
 var buildingPanelPrevSelected = null;
+
+const MECHCOST = [2000, 8000, 12000, 5000, 5000];
 
 function buildingPanelSetup() {
     panelX = 160 * pixelSize;
@@ -20,55 +23,55 @@ function buildingPanelSetup() {
     buildingPanelTab1Objects.push(new Label(tr(), ""));
     buildingPanelTab1Objects.push(new Label(tr(), ""));
     buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
     buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
     buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
 
     buildingPanelTab2Objects = [];
     buildingPanelTab2Objects.push(new Label(tr(), ""));
     buildingPanelTab2Objects.push(new Label(tr(), ""));
     buildingPanelTab2Objects.push(new Label(tr(), ""));
     buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
     buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
     buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
 
     buildingPanelTab3Objects = [];
     buildingPanelTab3Objects.push(new Label(tr(), ""));
     buildingPanelTab3Objects.push(new Label(tr(), ""));
     buildingPanelTab3Objects.push(new Label(tr(), ""));
     buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
     buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
     buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
 
     buildingPanelTab4Objects = [];
     buildingPanelTab4Objects.push(new Label(tr(), ""));
     buildingPanelTab4Objects.push(new Label(tr(), ""));
     buildingPanelTab4Objects.push(new Label(tr(), ""));
     buildingPanelTab4Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
     buildingPanelTab4Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
     buildingPanelTab4Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
 
     buildingPanelTab5Objects = [];
     buildingPanelTab5Objects.push(new Label(tr(), ""));
     buildingPanelTab5Objects.push(new Label(tr(), ""));
     buildingPanelTab5Objects.push(new Label(tr(), ""));
     buildingPanelTab5Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
     buildingPanelTab5Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
     buildingPanelTab5Objects.push(new TextButton(tr(), new Label(tr(), ""),
-        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor)));
+        new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
 
     buildingPanelTabs = [];
     buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW / 5) - tabGap, panelH / 4)), buildingPanelTab1Objects, undefined,
@@ -186,7 +189,7 @@ function setBLabel(tabIndex, index, text)
         buildingPanelLabels[tIndex].text = text;
     }
 }
-function setBButton(tabIndex, index, text)
+function setBButton(tabIndex, index, text, disabled = false)
 {
     var tIndex = (tabIndex * 3) + index;
     if(text == "") buildingPanelButtons[tIndex].visible = false;
@@ -194,6 +197,11 @@ function setBButton(tabIndex, index, text)
     {
         buildingPanelButtons[tIndex].visible = true;
         buildingPanelButtons[tIndex].label.text = text;
+
+        if(disabled)
+            buildingPanelButtons[tIndex].button.output = UIOUTPUT_DISABLED;
+        else
+            buildingPanelButtons[tIndex].button.output = UIOUTPUT_RUNNING;
     }
 }
 function getBButton(tabIndex, index, type)
@@ -241,8 +249,21 @@ function buildingPanelUpdate(buildingMapUnit) {
             setBLabel(1, 1, "CO Power: Rifle Boomer.");
             setBLabel(1, 2, "All your buildings deploys a Rifle Mech.");
             setBButton(1, 0, "Previous CO");
-            setBButton(1, 1, "Use Power!");
+
+            if(getPlayer().powerMeter >= 0.999)
+                setBButton(1, 1, "Use Power!");
+            else
+                setBButton(1, 1, "not enough power", true);
+
             setBButton(1, 2, "Next CO");
+
+            setBLabel(2, 0, "CO Power: Rifle Boomer.");
+            setBLabel(2, 1, "All your buildings deploys a Rifle Mech.");
+
+            if(getPlayer().powerMeter >= 0.999)
+                setBButton(2, 1, "Use Power!");
+            else
+                setBButton(2, 1, "not enough power", true);
 
             setBTab(3, "STATS");
             setBLabel(3, 0, "Player Mechs: " + getPlayer().getTotalNumberOfMechs().toString() + ", Player Buildings: " + getPlayer().getTotalNumberOfBuildings().toString());
@@ -265,7 +286,7 @@ function buildingPanelUpdate(buildingMapUnit) {
             setBLabel(0, 1, "Cost is also a requirement for supply/repair. Income Generation per turn: " + (buildingMapUnit.hp * (buildingMapUnit.unit.incomePerHp + (buildingMapUnit.unit.incomePerHp * buildingMapUnit.unit.incomeRankMultiplier * buildingMapUnit.unit.rank))).toString() + ".");
 
             if(buildingMapUnit.unit.boost == 0) {
-                setBLabel(0, 2, "Use BOOST to get 2 times the income for a turn (Uses 1 AP, " + buildingMapUnit.unit.boostCooldown + " Cooldown Turns).");
+                setBLabel(0, 2, "Use BOOST to get 2 times the income for a turn (Uses 1 AP, " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * buildingMapUnit.unit.rank)) + " Cooldown Turns).");
                 setBButton(0, 2, "Boost");
             } else {
                 setBLabel(0, 2, "It will take " + buildingMapUnit.unit.boost + " turn(s) before it can be boost can be used again.");
@@ -275,7 +296,7 @@ function buildingPanelUpdate(buildingMapUnit) {
             if(buildingMapUnit.unit.rank < 3) {
                 setBLabel(4, 0, "Current City Rank: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
                 setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + (buildingMapUnit.hp * (buildingMapUnit.unit.incomePerHp + (buildingMapUnit.unit.incomePerHp * buildingMapUnit.unit.incomeRankMultiplier * (buildingMapUnit.unit.rank + 1)))).toString() + ".");
-                setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + buildingMapUnit.unit.boostCooldown + ".");
+                setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * (buildingMapUnit.unit.rank + 1))) + ".");
                 setBButton(4, 2, "Upgrade");
             } else setBLabel(4, 0, "Current City Rank: 3. MAX Rank!");
         break;
@@ -284,22 +305,57 @@ function buildingPanelUpdate(buildingMapUnit) {
             resetB();
 
             setBTab(0, "WAR BUILDING");
-            setBButton(0, 2, "Boost");
+            setBLabel(0, 0, "Deploy New Mechs to attack the enemy and support the existing mechs.");
+            setBLabel(0, 1, "ATTACK: Rifle, Cannon and Artillery. ABILITY: Support and Teleport.");
+            if(buildingMapUnit.unit.boost == 0) {
+                setBLabel(0, 2, "Use BOOST to deploy a complete mech without any turn delay (Uses 1 AP, " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * buildingMapUnit.unit.rank)) + " Cooldown Turns).");
+                setBButton(0, 2, "Boost");
+            } else {
+                setBLabel(0, 2, "It will take " + buildingMapUnit.unit.boost + " turn(s) before it can be boost can be used again.");
+            }
 
             setBTab(1, "ATTACK MECHS");
-            setBButton(1, 0, "Buy Rifle");
-            setBButton(1, 1, "Buy Cannon");
-            setBButton(1, 2, "Buy Artillery");
+
+            if(getPlayer().money >= MECHCOST[RIFLE_MECH])
+                setBButton(1, 0, "Buy Rifle");
+            else
+                setBButton(1, 0, "insufficient cash", true);
+
+            if(getPlayer().money >= MECHCOST[CANNON_MECH])
+                setBButton(1, 1, "Buy Cannon");
+            else
+                setBButton(1, 1, "insufficient cash", true);
+
+            if(getPlayer().money >= MECHCOST[ARTILLERY_MECH])
+                setBButton(1, 2, "Buy Artillery");
+            else
+                setBButton(1, 2, "insufficient cash", true);
 
             setBTab(2, "ABILITY MECHS");
-            setBButton(2, 1, "Buy Support");
-            setBButton(2, 2, "Buy Teleport");
+
+            if(getPlayer().money >= MECHCOST[SUPPORT_MECH])
+                setBButton(2, 1, "Buy Support");
+            else
+                setBButton(2, 1, "insufficient cash", true);
+
+                if(getPlayer().money >= MECHCOST[TELEPORT_MECH])
+                setBButton(2, 2, "Buy Teleport");
+            else
+                setBButton(2, 2, "insufficient cash", true);
 
             setBTab(4, "RANK");
-            if(buildingMapUnit.unit.rank < 3) setBLabel(4, 0, "Current War Building Rank: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
-            //setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + buildingMapUnit.hp * 400 + ".");
-            //setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: 4.");
-            if(buildingMapUnit.unit.rank < 3) setBButton(4, 2, "Upgrade");
+            if(buildingMapUnit.unit.rank < 3) {
+                setBLabel(4, 0, "Current War Building Rank: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
+                setBLabel(4, 1, "Mech Deploy Delay Turns AFTER UPGRADE: "
+                + "Rifle " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][RIFLE_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][RIFLE_MECH].toString()
+                + ", Cannon " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][CANNON_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][CANNON_MECH].toString()
+                + ", Artillery " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][ARTILLERY_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][ARTILLERY_MECH].toString()
+                + ", Support " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][SUPPORT_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][SUPPORT_MECH].toString()
+                + ", Teleport " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][TELEPORT_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][TELEPORT_MECH].toString()
+                + ".");
+                setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * (buildingMapUnit.unit.rank + 1))) + ".");
+                setBButton(4, 2, "Upgrade");
+            } else setBLabel(4, 0, "Current War Building Rank: 3. MAX Rank!");
 
         break;
 
@@ -311,7 +367,19 @@ function buildingPanelUpdate(buildingMapUnit) {
 }
 
 function buildingPanelDraw() {
-
+    if(getPlayer().getSelectedMapUnit().unit.type == HQ_BUILDING && maxDisplayTilesPerRow == defaultTilesPerRow)
+    {
+        renderer.fillStyle = "#00000088";
+        renderer.beginPath();
+        renderer.arc(gameWidth/2, gameHeight - panelH + (18.0*pixelSize), 32.0*pixelSize, 0, 2*Math.PI);
+        renderer.lineTo(gameWidth/2, gameHeight - panelH + (18.0*pixelSize));
+        renderer.fill();
+        renderer.fillStyle = rgb(Math.floor(Math.abs(180.0 * Math.sin(gameTime*0.0025))), 255, Math.floor(Math.abs(180.0 * Math.sin(gameTime*0.0025))));
+        renderer.beginPath();
+        renderer.arc(gameWidth/2, gameHeight - panelH + (18.0*pixelSize), 24.0*pixelSize, 0, (getPlayer().powerMeter * 2.0) * Math.PI);
+        renderer.lineTo(gameWidth/2, gameHeight - panelH + (18.0*pixelSize));
+        renderer.fill();
+    }
 }
 
 function buildingPanelEvent() {
@@ -372,24 +440,28 @@ function buildingPanelEvent() {
                 var pos = buildingPanelPrevSelected.mapPosition;
                 if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, 1)))[0] == -1)
                 {
+                    getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
                     var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, 1)));
                     newMapUnit.unit.deployTime = getPlayer().getSelectedMapUnit().unit.mechDeployDelay[getPlayer().getSelectedMapUnit().unit.rank][mechToBuyBtn[i][2]];
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
                 else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(1, 0)))[0] == -1)
                 {
+                    getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
                     var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(1, 0)));
                     newMapUnit.unit.deployTime = getPlayer().getSelectedMapUnit().unit.mechDeployDelay[getPlayer().getSelectedMapUnit().unit.rank][mechToBuyBtn[i][2]];
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
                 else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, -1)))[0] == -1)
                 {
+                    getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
                     var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, -1)));
                     newMapUnit.unit.deployTime = getPlayer().getSelectedMapUnit().unit.mechDeployDelay[getPlayer().getSelectedMapUnit().unit.rank][mechToBuyBtn[i][2]];
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
                 else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(-1, 0)))[0] == -1)
                 {
+                    getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
                     var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(-1, 0)));
                     newMapUnit.unit.deployTime = getPlayer().getSelectedMapUnit().unit.mechDeployDelay[getPlayer().getSelectedMapUnit().unit.rank][mechToBuyBtn[i][2]];
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);

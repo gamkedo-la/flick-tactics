@@ -30,6 +30,9 @@ class PlayerManager {
     endTurn() {
         this.getActivePlayer().clearDisabledActions();
 
+        //TEMP: Power Meter increases a bit
+        this.getActivePlayer().powerMeter += 0.1;
+
         //Player AP replenishes
         this.getActivePlayer().actionPoints += actionPointsPerTurn;
 

@@ -5,12 +5,23 @@ const GREEN_TEAM = 2;
 const BLACK_TEAM = 3;
 
 class Player {
-    constructor(teamID, mapUnits) {
+    constructor(teamID, mapUnits, co = -1) {
         this.unitGroup = new MapUnitGroup(mapUnits);
         this.unitGroup.teamID = teamID;
         this.selectedIndex = this.getHQUnitIndex();
         if(this.selectedIndex == -1) this.selectedIndex = 0;
         
+        if(co <= -1) {
+            switch(teamID) {
+                case RED_TEAM: this.CO = ZAREEM; break;
+                case BLUE_TEAM: this.CO = TAJA; break;
+                case GREEN_TEAM: this.CO = GURU; break;
+                case BLACK_TEAM: this.CO = Math.random() < 0.6 ? this.HULU : this.JONAH; break;
+            }
+        }
+
+        this.powerMeter = 0.0;
+        this.powered = false;
         this.actionPoints = 3;
         this.money = 0;
     }

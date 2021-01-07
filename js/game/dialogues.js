@@ -5,18 +5,7 @@ var dialogueSpeaker;
 var dialogueLine1;
 var dialogueLine2;
 
-var dialogues = [
-    "Welcome to Flick Tactics Zareem! Here, we'll train you to be the most powerful strategest the world has ever created!",
-    "Uh... Hello sir!",
-    "It's GURU SIR!",
-    "YES! GURU SIR!",
-    "That's right young'n.  When I was your age, I'd already fought a bear with my bear hands and it couldn't bear it at all!",
-    "Right... sir....?",
-    "That's GURU SIR!",
-    "YES! GURU SIR!",
-    "Let's learn Movement, click a unit and select \"Move\" then select a square to move to!",
-    "On it's GURU SIR!"
-];
+var dialogues;
 var characterDelay = 0.01;
 var dialogueInput;
 var characterTimer = 0.0;
