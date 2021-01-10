@@ -5,7 +5,7 @@ var dialogueSpeaker;
 var dialogueLine1;
 var dialogueLine2;
 
-var dialogues;
+var dialogues = [];
 var characterDelay = 0.01;
 var dialogueInput;
 var characterTimer = 0.0;
@@ -34,6 +34,9 @@ var dialogueCO = [
 
 function dialogueSetup(uiArray)
 {
+    for(let i = 0; i < mission_one.length; i++)
+        dialogues.push(mission_one[i].dialogue);
+
     var baseYPosition = gameHeight/1.4;
     dialogueFontSize = 0.04 * gameWidth;
 

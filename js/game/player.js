@@ -8,8 +8,15 @@ class Player {
     constructor(teamID, mapUnits, co = -1) {
         this.unitGroup = new MapUnitGroup(mapUnits);
         this.unitGroup.teamID = teamID;
+
         this.selectedIndex = this.getHQUnitIndex();
-        if(this.selectedIndex == -1) this.selectedIndex = 0;
+        //Without HQ, the player is unplayable and all its units will be destroyed!
+        if(this.selectedIndex == -1 && typeof ui != "undefined" && ui.stateIndex != EDITOR) {
+            for(let i = 0; i < mapUnits.length; i++) {
+                if(mapUnits[i].unit.isBuilding) mapUnits[i].unit.type = RUIN_BUILDING;
+                else { mapUnits.splice(i, 1); i--; }
+            }
+        }
         
         if(co <= -1) {
             switch(teamID) {

@@ -9,14 +9,16 @@ const ARTILLERY_MECH = 2;
 const SUPPORT_MECH = 3;
 const TELEPORT_MECH = 4;
 
+const ANIM_MECH_WALK = 40;
+
 //buildings acts as units
 const HQ_BUILDING = 60;
 const CITY_BUILDING = 64;
 const WAR_BUILDING = 68;
 const RUIN_BUILDING = 72;
 
-function getMechIndexFromType(type, teamNo) {
-    return (gameTime % 1200 < 600 ? 20 : 0) + 100 + (4 * type) + teamNo;
+function getMechIndexFromType(type, teamNo, animDelayMax = 1200, animDelayMin = 600) {
+    return (gameTime % animDelayMax < animDelayMin ? 20 : 0) + 100 + (4 * type) + teamNo;
 }
 
 function getBuildingIndexFromType(type) {
@@ -113,12 +115,13 @@ class Unit {
         }
     }
 
-    draw(teamID, offset, scale) {
+    draw(teamID, offset, scale, animIndexOffset = 0) {
         if (typeof scale == "undefined") scale = vec2(1, 1);
 
         if (!this.isBuilding) {
             if(this.deployTime <= 0)
-                drawSheet(getMechIndexFromType(this.type, teamID), offset.add(this.position), scale);
+                drawSheet(getMechIndexFromType(this.type, teamID, animIndexOffset == 0 ? 1200 : 300, animIndexOffset == 0 ? 600 : 150)
+                    + animIndexOffset, offset.add(this.position), scale);
             else
             {
                 renderer.globalAlpha = 0.8;
@@ -190,14 +193,17 @@ class MapUnit {
             }
         }
         
-        if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1) {
-            renderer.globalAlpha = 1.0;
-            renderer.globalCompositeOperation = "multiply";
-        }
-        this.unit.draw(teamID, offset, sc);
-        if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1) {
-            renderer.globalAlpha = 1.0;
-            renderer.globalCompositeOperation = "source-over";
+        if(this.mapPathIndex > -1) this.unit.draw(teamID, offset, sc, ANIM_MECH_WALK);
+        else {
+            if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1) {
+                renderer.globalAlpha = 1.0;
+                renderer.globalCompositeOperation = "multiply";
+            }
+            this.unit.draw(teamID, offset, sc);
+            if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1) {
+                renderer.globalAlpha = 1.0;
+                renderer.globalCompositeOperation = "source-over";
+            }
         }
 
         if (this.hp > 0 && this.unit.type != RUIN_BUILDING) {

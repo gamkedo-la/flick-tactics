@@ -237,9 +237,9 @@ function buildingPanelUpdate(buildingMapUnit) {
             resetB();
 
             setBTab(0, "OBJECTIVE");
-            setBLabel(0, 0, "WIN: Destroy the Enemy HQ or destroy all enemy units.");
-            setBLabel(0, 1, "LOSE: This HQ gets destroyed.");
-            setBLabel(0, 2, "Protect HQ building at all costs!");
+            setBLabel(0, 0, "WIN: Destroy the Enemy HQ(s).");
+            setBLabel(0, 1, "LOSE: Your HQ gets destroyed.");
+            setBLabel(0, 2, "Protect your HQ building at all costs!");
             setBButton(0, 0, "Restart Game");
             setBButton(0, 1, "Need Help?");
             setBButton(0, 2, "End Turn");
