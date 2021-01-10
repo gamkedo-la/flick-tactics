@@ -12,10 +12,7 @@ class Player {
         this.selectedIndex = this.getHQUnitIndex();
         //Without HQ, the player is unplayable and all its units will be destroyed!
         if(this.selectedIndex == -1 && typeof ui != "undefined" && ui.stateIndex != EDITOR) {
-            for(let i = 0; i < mapUnits.length; i++) {
-                if(mapUnits[i].unit.isBuilding) mapUnits[i].unit.type = RUIN_BUILDING;
-                else { mapUnits.splice(i, 1); i--; }
-            }
+            this.nullify();
         }
         
         if(co <= -1) {
@@ -27,10 +24,20 @@ class Player {
             }
         }
 
+        this.control = 0; //-1 = nullify, 0 = user, 1 = AI
         this.powerMeter = 0.0;
         this.powered = false;
         this.actionPoints = 3;
         this.money = 0;
+        this.deployDelay = true;
+    }
+
+    nullify() {
+        this.selectedIndex = -1;
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++) {
+            if(this.unitGroup.mapUnits[i].unit.isBuilding) this.unitGroup.mapUnits[i].unit.type = RUIN_BUILDING;
+            else { this.unitGroup.mapUnits.splice(i, 1); i--; }
+        }
     }
 
     getSelectedMapUnit() {

@@ -15,6 +15,13 @@ class PlayerManager {
         this.index = typeof index == "undefined" ? 0 : index;
     }
 
+    getPlayerOfTeamID(teamID) {
+        for(let i = 0; i < this.players.length; i++)
+            if(this.players[i].unitGroup.teamID == teamID)
+                return this.players[i];
+        return -1;
+    }
+
     getActivePlayer() {
         return this.players[this.index];
     }
@@ -56,8 +63,15 @@ class PlayerManager {
             if(this.players[i].selectedIndex == -1) this.players[i].selectedIndex = 0;
         }
 
+        //Next Player's Turn!!!
         this.index++;
         if (this.index >= this.players.length) this.index = 0;
+
+        //Skipping nullified players
+        while ((this.players[this.index].selectedIndex == -1 || this.players[this.index].control == -1)
+            && this.index < this.players.length) this.index++;
+        if (this.index >= this.players.length) this.index = 0;
+
         updateUnitActionButtons();
     }
 
@@ -76,5 +90,13 @@ class PlayerManager {
                 this.players[i].drawInRect(pos, size);
             }
         }
+    }
+
+    isPlayable() {
+        var count = 0;
+        for(let i = 0; i < this.players.length; i++) {
+            if(this.players[i].selectedIndex != -1 && this.players[i].control != -1) count++;
+        }
+        return count >= 2;
     }
 }
