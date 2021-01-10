@@ -297,7 +297,12 @@ function buildingPanelUpdate(buildingMapUnit) {
                 setBLabel(4, 0, "Current City Rank: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
                 setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + (buildingMapUnit.hp * (buildingMapUnit.unit.incomePerHp + (buildingMapUnit.unit.incomePerHp * buildingMapUnit.unit.incomeRankMultiplier * (buildingMapUnit.unit.rank + 1)))).toString() + ".");
                 setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * (buildingMapUnit.unit.rank + 1))) + ".");
-                setBButton(4, 2, "Upgrade");
+                
+                if(getPlayer().money >= buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank))
+                    setBButton(4, 2, "Upgrade");
+                else
+                    setBButton(4, 2, "insufficient cash", true);
+                
             } else setBLabel(4, 0, "Current City Rank: 3. MAX Rank!");
         break;
 
@@ -354,7 +359,12 @@ function buildingPanelUpdate(buildingMapUnit) {
                 + ", Teleport " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][TELEPORT_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][TELEPORT_MECH].toString()
                 + ".");
                 setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * (buildingMapUnit.unit.rank + 1))) + ".");
-                setBButton(4, 2, "Upgrade");
+                
+                if(getPlayer().money >= buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank))
+                    setBButton(4, 2, "Upgrade");
+                else
+                    setBButton(4, 2, "insufficient cash", true);
+                
             } else setBLabel(4, 0, "Current War Building Rank: 3. MAX Rank!");
 
         break;
@@ -385,6 +395,8 @@ function buildingPanelDraw() {
 function buildingPanelEvent() {
     if(isTouchInsideBPanel())
     {
+        var buildingMapUnit = getPlayer().getSelectedMapUnit();
+
         //HQ BUILDING EVENTS
         var hqBuilding_helpBtn = getBButton(0, 1, HQ_BUILDING);
         if (hqBuilding_helpBtn != 0 && hqBuilding_helpBtn.button.output == UIOUTPUT_SELECT) {
@@ -442,39 +454,46 @@ function buildingPanelEvent() {
                 {
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
                     var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, 1)));
-                    newMapUnit.unit.deployTime = getPlayer().getSelectedMapUnit().unit.mechDeployDelay[getPlayer().getSelectedMapUnit().unit.rank][mechToBuyBtn[i][2]];
+                    newMapUnit.unit.deployTime = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
                 else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(1, 0)))[0] == -1)
                 {
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
                     var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(1, 0)));
-                    newMapUnit.unit.deployTime = getPlayer().getSelectedMapUnit().unit.mechDeployDelay[getPlayer().getSelectedMapUnit().unit.rank][mechToBuyBtn[i][2]];
+                    newMapUnit.unit.deployTime = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
                 else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, -1)))[0] == -1)
                 {
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
                     var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, -1)));
-                    newMapUnit.unit.deployTime = getPlayer().getSelectedMapUnit().unit.mechDeployDelay[getPlayer().getSelectedMapUnit().unit.rank][mechToBuyBtn[i][2]];
+                    newMapUnit.unit.deployTime = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
                 else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(-1, 0)))[0] == -1)
                 {
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
                     var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(-1, 0)));
-                    newMapUnit.unit.deployTime = getPlayer().getSelectedMapUnit().unit.mechDeployDelay[getPlayer().getSelectedMapUnit().unit.rank][mechToBuyBtn[i][2]];
+                    newMapUnit.unit.deployTime = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
                 warBuilding_buyBtn.button.resetOutput();
             }
         }
 
+        var warBuilding_upgradeBtn = getBButton(4, 2, WAR_BUILDING);
+        if(warBuilding_upgradeBtn != 0 && warBuilding_upgradeBtn.button.output == UIOUTPUT_SELECT) {
+            getPlayer().money -= buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank);
+            buildingMapUnit.unit.rank++;
+            warBuilding_upgradeBtn.button.resetOutput();
+        }
+
         // CITY BUILDING EVENTS
         var cityBuilding_upgradeBtn = getBButton(4, 2, CITY_BUILDING);
         if(cityBuilding_upgradeBtn != 0 && cityBuilding_upgradeBtn.button.output == UIOUTPUT_SELECT) {
-            getPlayer().getSelectedMapUnit().unit.rank++;
-            console.log("City Building Rank Increased.");
+            getPlayer().money -= buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank);
+            buildingMapUnit.unit.rank++;
             cityBuilding_upgradeBtn.button.resetOutput();
         }
     }
