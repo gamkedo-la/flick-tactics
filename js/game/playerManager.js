@@ -17,7 +17,7 @@ class PlayerManager {
 
     getPlayerOfTeamID(teamID) {
         for(let i = 0; i < this.players.length; i++)
-            if(this.players[i].unitGroup.teamID == teamID)
+            if(this.players[i].unitGroup.teamID == teamID && this.players[i].selectedIndex != -1)
                 return this.players[i];
         return -1;
     }

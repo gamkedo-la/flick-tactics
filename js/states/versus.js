@@ -148,8 +148,13 @@ function versusEvent(deltaTime) {
             break;
 
         case UIOUTPUT_SELECT:
+
+            do {
             versusTeamID++;
             if(versusTeamID > BLACK_TEAM) versusTeamID = RED_TEAM;
+
+            var pl = versusManager.getPlayerOfTeamID(versusTeamID);
+            } while(pl == -1);
 
             switch(versusTeamID)
             {
@@ -170,9 +175,6 @@ function versusEvent(deltaTime) {
                     versusTeamBtn.button.btnColor = versusTeamBtn.button.defColor = "#000000BB";
                     break;
             }
-
-            var pl = versusManager.getPlayerOfTeamID(versusTeamID);
-            if(pl == -1) break;
 
             switch(pl.control)
             {
