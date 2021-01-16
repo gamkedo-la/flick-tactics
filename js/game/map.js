@@ -262,8 +262,20 @@ class GameMap {
         return false;
     }
 
+    /*
+    map.js:246 Uncaught TypeError: Cannot read property 'length' of undefined
+    at GameMap.isTileMovementObstacleToMapUnit (map.js:246)
+    at GameMap.calculateUnitMovement (map.js:278)
+    at GameMap.drawUnitMovement (map.js:387)
+    at GameMap.drawUnitExtras (map.js:231)
+    at gameplayDraw (gameplay.js:70)
+    at draw (main.js:44)
+    at frame (main.js:65)
+    */
+
     calculateUnitMovement(mapUnit, destinationTile = vec2(this.cursorTile.x, this.cursorTile.y)) {
-        if(this.isTileMovementObstacleToMapUnit(mapUnit, destinationTile)
+        if(mapUnit.unit.isBuilding == true
+        || this.isTileMovementObstacleToMapUnit(mapUnit, destinationTile)
         || manager.getPlayerAndUnitIndexOnTile(destinationTile)[0] != -1
         || destinationTile.x < 0
         || destinationTile.y < 0
@@ -392,28 +404,20 @@ class GameMap {
             mapUnit.up = -1;
 
             return true;
-
-            /*for (let y = -mapUnit.unit.movement; y <= mapUnit.unit.movement; y++) {
-                for (let x = -mapUnit.unit.movement; x <= mapUnit.unit.movement; x++) {
-
-                    if (Math.abs(x) + Math.abs(y) > mapUnit.unit.movement
-                        || (x == 0 && y == 0))
-                        continue;
-
-                    if (this.cursorTile.x == mapUnit.mapPosition.x + x
-                        && this.cursorTile.y == mapUnit.mapPosition.y + y
-                        && manager.getPlayerAndUnitIndexOnTile(this.cursorTile)[0] == -1
-                        && ((this.getTileTypeFromPosition(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y)) != SEA_TILE
-                            && mapUnit.unit.type != TELEPORT_MECH)
-                            || mapUnit.unit.type == TELEPORT_MECH)) {
-                        mapUnit.mapPosition = mapUnit.mapPosition.add(vec2(x, y));
-                        mapUnit.up = -1;
-                        return true;
-                    }
-                }
-            }*/
         }
         return false;
+    }
+
+    eventAIUnitMovement(mapUnit) {
+        var path = -1;
+        while(path == -1) path = this.calculateUnitMovement(mapUnit, mapUnit.mapPosition.add( vec2(
+            Math.floor(-mapUnit.unit.movement + (Math.random() * (mapUnit.unit.movement * 2))),
+            Math.floor(-mapUnit.unit.movement + (Math.random() * (mapUnit.unit.movement * 2))))
+        ));
+
+        mapUnit.mapPath = path;
+        mapUnit.mapPathIndex = 0;
+        mapUnit.up = -1;
     }
 
     //
@@ -581,12 +585,12 @@ class GameMap {
 
     event() {
         //Unit Action Event End Point
-        if (getPlayer().getSelectedMapUnit().up == 0) {
+        if (getPlayer().getSelectedMapUnit().up == 0) { //Move
             if (this.eventUnitMovement(getPlayer().getSelectedMapUnit())) {
                 getPlayer().actionPoints--;
             }
         }
-        else if (getPlayer().getSelectedMapUnit().right == 0) {
+        else if (getPlayer().getSelectedMapUnit().right == 0) { //Attack
             if (this.eventUnitAttack(getPlayer().getSelectedMapUnit())) {
                 getPlayer().actionPoints--;
             }
@@ -604,4 +608,5 @@ class GameMap {
             }
         }
     }
+
 }

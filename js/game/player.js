@@ -95,4 +95,18 @@ class Player {
     drawInRect(pos, size) {
         this.unitGroup.drawInRect(pos, size);
     }
+
+    //AI Assist Functions START
+    setSelectedIndexToAnyUnmovedMech()
+    {
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++) {
+            if (this.unitGroup.mapUnits[i].unit.isBuilding == false
+                && this.unitGroup.mapUnits[i].up == 1) {
+                this.selectedIndex = i;
+                return i;
+            }
+        }
+        return -1;
+    }
+    //AI Assist Functions END
 }

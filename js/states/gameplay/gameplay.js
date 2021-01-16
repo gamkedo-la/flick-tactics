@@ -73,10 +73,13 @@ function gameplayDraw(deltaTime) {
 
 function gameplayUpdate(deltaTime) {
     playBGM(BGM_WORLDMAP);
+
+    aiUpdate(deltaTime);
+
     if (maxDisplayTilesPerRow == defaultTilesPerRow)
         cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.25);
-
-    if (!getPlayer().getSelectedMapUnit().unit.isBuilding) {
+    
+    if (!getPlayer().getSelectedMapUnit().unit.isBuilding || getPlayer().control == 1) {
         buildingPanel.enabled = false;
 
         if(getPlayer().getSelectedMapUnit().unit.deployTime <= 0) {
@@ -99,17 +102,11 @@ function gameplayUpdate(deltaTime) {
         buildingPanelUpdate(getPlayer().getSelectedMapUnit());
     }
 
-    if (unitUpBtn.button.output != UIOUTPUT_SELECT)
-        unitUpBtn.button.output = getPlayer().getSelectedMapUnit().up == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (unitLeftBtn.button.output != UIOUTPUT_SELECT)
-        unitLeftBtn.button.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (unitDownBtn.button.output != UIOUTPUT_SELECT)
-        unitDownBtn.button.output = getPlayer().getSelectedMapUnit().down == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (unitRightBtn.button.output != UIOUTPUT_SELECT)
-        unitRightBtn.button.output = getPlayer().getSelectedMapUnit().right == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-
-    if (getPlayer().actionPoints <= 0)
-        unitUpBtn.button.output = unitLeftBtn.button.output = unitDownBtn.button.output = unitRightBtn.button.output = UIOUTPUT_DISABLED;
+    if (unitUpBtn.button.output != UIOUTPUT_SELECT) unitUpBtn.button.output = getPlayer().getSelectedMapUnit().up == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (unitLeftBtn.button.output != UIOUTPUT_SELECT) unitLeftBtn.button.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (unitDownBtn.button.output != UIOUTPUT_SELECT) unitDownBtn.button.output = getPlayer().getSelectedMapUnit().down == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (unitRightBtn.button.output != UIOUTPUT_SELECT) unitRightBtn.button.output = getPlayer().getSelectedMapUnit().right == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (getPlayer().actionPoints <= 0) unitUpBtn.button.output = unitLeftBtn.button.output = unitDownBtn.button.output = unitRightBtn.button.output = UIOUTPUT_DISABLED;
 
     controlBarUIUpdate();
     quickStatsUIUpdate();

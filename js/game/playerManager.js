@@ -55,6 +55,9 @@ class PlayerManager {
                 && mapUnit.unit.deployTime > 0) {
                 mapUnit.unit.deployTime--;
             }
+
+            //Clearing Disabled Actions
+            mapUnit.clearDisabledActions();
         });
 
         //All Players HQ are reselected

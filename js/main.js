@@ -1,6 +1,9 @@
 
 var gameTime = 0;
 
+//Super Short Console Log Function
+function c(t) { console.log(t); }
+
 window.onload = function () {
     init();
     audioSetup();
