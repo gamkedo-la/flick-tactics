@@ -29,6 +29,11 @@ function getTeamIndex(index, teamNo) {
     return (gameTime % 1200 < 600 ? 20 : 0) + index + teamNo;
 }
 
+function hMirrorVec2(v2)
+{
+    return vec2(gameWidth - v2.x, v2.y);
+}
+
 class Unit {
     constructor(type, pos) {
         this.type = type;
@@ -115,15 +120,25 @@ class Unit {
         }
     }
 
-    draw(teamID, offset, scale, animIndexOffset = 0) {
+    draw(teamID, offset, scale, flip = false, animIndexOffset = 0) {
         if (typeof scale == "undefined") scale = vec2(1, 1);
 
         if (!this.isBuilding) {
             if(this.deployTime <= 0)
-                drawSheet(getMechIndexFromType(this.type, teamID, animIndexOffset == 0 ? 1200 : 300, animIndexOffset == 0 ? 600 : 150)
-                    + animIndexOffset, offset.add(this.position), scale);
+            {
+                if(flip) {
+                    renderer.setTransform(-1, 0, 0, 1, gameWidth, 0);
+                    drawSheet(getMechIndexFromType(this.type, teamID, animIndexOffset == 0 ? 1200 : 300, animIndexOffset == 0 ? 600 : 150)
+                        + animIndexOffset, hMirrorVec2(offset.add(this.position)), scale);
+                    renderer.setTransform(1, 0, 0, 1, 0, 0);
+                } else {
+                    drawSheet(getMechIndexFromType(this.type, teamID, animIndexOffset == 0 ? 1200 : 300, animIndexOffset == 0 ? 600 : 150)
+                        + animIndexOffset, offset.add(this.position), scale);
+                }
+            }
             else
             {
+                
                 renderer.globalAlpha = 0.8;
                 drawSheet(getMechIndexFromType(this.type, teamID) + 180, offset.add(this.position), scale);
                 renderer.globalAlpha = 1.0;
@@ -156,6 +171,8 @@ class MapUnit {
 
         this.hp = 10.0;
 
+        this.flip = false;
+
         this.clearDisabledActions();
     }
 
@@ -170,6 +187,9 @@ class MapUnit {
     draw(teamID, offset) {
         var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
             (tileSize / 64) + gridBlackLinesFixFactor);
+
+        if(Math.abs((Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap)) - this.unit.position.x) > 0.5)
+            this.flip = (Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap)) < this.unit.position.x;
 
         if (maxDisplayTilesPerRow != defaultTilesPerRow)
             this.unit.position = vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
@@ -193,13 +213,13 @@ class MapUnit {
             }
         }
         
-        if(this.mapPathIndex > -1) this.unit.draw(teamID, offset, sc, ANIM_MECH_WALK);
+        if(this.mapPathIndex > -1) this.unit.draw(teamID, offset, sc, this.flip, ANIM_MECH_WALK);
         else {
             if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1) {
                 renderer.globalAlpha = 1.0;
                 renderer.globalCompositeOperation = "multiply";
             }
-            this.unit.draw(teamID, offset, sc);
+            this.unit.draw(teamID, offset, sc, this.flip);
             if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1) {
                 renderer.globalAlpha = 1.0;
                 renderer.globalCompositeOperation = "source-over";
@@ -226,7 +246,7 @@ class MapUnit {
             Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap));
         this.unit.position = this.unit.position.add(pos);
 
-        this.unit.draw(teamID, vec2(), sc);
+        this.unit.draw(teamID, vec2(), sc, this.flip);
     }
 }
 

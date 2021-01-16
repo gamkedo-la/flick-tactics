@@ -91,7 +91,7 @@ function drawPerspectiveUnitsBG(unit1, unit2, unit3, team = RED_TEAM)
     startscreenUnit.setupUnitProperties();
     startscreenUnit.draw(team, vec2(-gameWidth/2.5, gameHeight/10.0), toVec2(pixelSize*1.5));
 
-    renderer.setTransform(-1, 0, 0, 1, gameWidth - 15, 0);
+    renderer.setTransform(-1, 0, 0, 1, gameWidth, 0);
     startscreenUnit.type = unit1;
     startscreenUnit.setupUnitProperties();
     startscreenUnit.draw(team, vec2(-gameWidth/4.0), toVec2(pixelSize/1.25));
