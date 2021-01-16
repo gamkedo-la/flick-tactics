@@ -188,15 +188,13 @@ class MapUnit {
         var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
             (tileSize / 64) + gridBlackLinesFixFactor);
 
-        if(Math.abs((Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap)) - this.unit.position.x) > 0.5)
-            this.flip = (Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap)) < this.unit.position.x;
+        var absolutePosition = vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
+            Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap))
 
-        if (maxDisplayTilesPerRow != defaultTilesPerRow)
-            this.unit.position = vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
-                Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap));
-        else
-            this.unit.position = lerpVec2(this.unit.position, vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
-                Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap)), 0.3);
+        if(Math.abs(absolutePosition.x - this.unit.position.x) > 0.5) this.flip = absolutePosition.x < this.unit.position.x;
+
+        if (maxDisplayTilesPerRow != defaultTilesPerRow) this.unit.position = absolutePosition;
+        else this.unit.position = lerpVec2(this.unit.position, absolutePosition, 0.3);
 
         //Unit Movement
         if (this.mapPathIndex > -1) {
@@ -207,8 +205,7 @@ class MapUnit {
                     this.mapPosition = this.mapPath[this.mapPath.length - 1];
                     this.mapPathIndex = -1;
                 }
-            }
-            else {
+            } else {
                 this.mapPosition = lerpVec2(this.mapPosition, this.mapPath[this.mapPathIndex], 0.3);
             }
         }

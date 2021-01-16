@@ -110,12 +110,12 @@ function battlescreenDraw(deltaTime) {
     for (let i = 0; i < 3; i++, passiveTHp -= 2) {
         if (passiveTHp > 0)
             passiveMapUnit.unit.draw(passiveTeamID, vec2(gameWidth - (200 * pixelSize), (150 * pixelSize) + (100 * pixelSize * i)),
-                vec2(pixelSize, pixelSize));
+                vec2(pixelSize, pixelSize), true);
     }
     for (let i = 0; i < 2; i++, passiveTHp -= 2) {
         if (passiveTHp > 0)
             passiveMapUnit.unit.draw(passiveTeamID, vec2(gameWidth - (300 * pixelSize), (200 * pixelSize) + (100 * pixelSize * i)),
-                vec2(pixelSize, pixelSize));
+                vec2(pixelSize, pixelSize), true);
     }
     passiveMapUnit.unit.position = vec2(prevPassiveMapUnitPosition.x, prevPassiveMapUnitPosition.y);
 
