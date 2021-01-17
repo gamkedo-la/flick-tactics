@@ -262,17 +262,6 @@ class GameMap {
         return false;
     }
 
-    /*
-    map.js:246 Uncaught TypeError: Cannot read property 'length' of undefined
-    at GameMap.isTileMovementObstacleToMapUnit (map.js:246)
-    at GameMap.calculateUnitMovement (map.js:278)
-    at GameMap.drawUnitMovement (map.js:387)
-    at GameMap.drawUnitExtras (map.js:231)
-    at gameplayDraw (gameplay.js:70)
-    at draw (main.js:44)
-    at frame (main.js:65)
-    */
-
     calculateUnitMovement(mapUnit, destinationTile = vec2(this.cursorTile.x, this.cursorTile.y)) {
         if(mapUnit.unit.isBuilding == true
         || this.isTileMovementObstacleToMapUnit(mapUnit, destinationTile)

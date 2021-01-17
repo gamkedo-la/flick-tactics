@@ -60,7 +60,8 @@ class Player {
     getTotalNumberOfMechs() {
         var no = 0;
         for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
-            if(!this.unitGroup.mapUnits[i].unit.isBuilding) no++;
+            if(this.unitGroup.mapUnits[i].unit.isBuilding == false
+                && this.unitGroup.mapUnits[i].unit.deployTime <= 0) no++;
         return no;
     }
 
@@ -101,7 +102,33 @@ class Player {
     {
         for(let i = 0; i < this.unitGroup.mapUnits.length; i++) {
             if (this.unitGroup.mapUnits[i].unit.isBuilding == false
-                && this.unitGroup.mapUnits[i].up == 1) {
+                && this.unitGroup.mapUnits[i].up == 1
+                && this.unitGroup.mapUnits[i].unit.deployTime <= 0) {
+                this.selectedIndex = i;
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    hasWarBuilding()
+    {
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++) {
+            if (this.unitGroup.mapUnits[i].unit.isBuilding == true
+                && this.unitGroup.mapUnits[i].unit.type == WAR_BUILDING
+                && isAnySpaceFreeAroundBuilding(this.unitGroup.mapUnits[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    setSelectedIndexToAnyWarBuilding()
+    {
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++) {
+            if (this.unitGroup.mapUnits[i].unit.isBuilding == true
+                && this.unitGroup.mapUnits[i].unit.type == WAR_BUILDING
+                && isAnySpaceFreeAroundBuilding(this.unitGroup.mapUnits[i])) {
                 this.selectedIndex = i;
                 return i;
             }
