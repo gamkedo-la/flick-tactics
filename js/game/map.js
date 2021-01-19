@@ -474,22 +474,22 @@ class GameMap {
 
                 //Artillery Range Attack and pushes all units around the attack point
                 var pu1 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(1, 0)));
-                if (pu1[0] != -1 && pu1[1] != -1)
+                if (pu1[0] != -1 && pu1[1] != -1 && !manager.players[pu[0]].unitGroup.mapUnits[pu[1]].unit.isBuilding)
                     manager.players[pu1[0]].unitGroup.mapUnits[pu1[1]].mapPosition
                         = manager.players[pu1[0]].unitGroup.mapUnits[pu1[1]].mapPosition.add(vec2(1, 0));
 
                 var pu2 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(-1, 0)));
-                if (pu2[0] != -1 && pu2[1] != -1)
+                if (pu2[0] != -1 && pu2[1] != -1 && !manager.players[pu[0]].unitGroup.mapUnits[pu[1]].unit.isBuilding)
                     manager.players[pu2[0]].unitGroup.mapUnits[pu2[1]].mapPosition
                         = manager.players[pu2[0]].unitGroup.mapUnits[pu2[1]].mapPosition.add(vec2(-1, 0));
 
                 var pu3 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(0, 1)));
-                if (pu3[0] != -1 && pu3[1] != -1)
+                if (pu3[0] != -1 && pu3[1] != -1 && !manager.players[pu[0]].unitGroup.mapUnits[pu[1]].unit.isBuilding)
                     manager.players[pu3[0]].unitGroup.mapUnits[pu3[1]].mapPosition
                         = manager.players[pu3[0]].unitGroup.mapUnits[pu3[1]].mapPosition.add(vec2(0, 1));
 
                 var pu4 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(0, -1)));
-                if (pu4[0] != -1 && pu4[1] != -1)
+                if (pu4[0] != -1 && pu4[1] != -1 && !manager.players[pu[0]].unitGroup.mapUnits[pu[1]].unit.isBuilding)
                     manager.players[pu4[0]].unitGroup.mapUnits[pu4[1]].mapPosition
                         = manager.players[pu4[0]].unitGroup.mapUnits[pu4[1]].mapPosition.add(vec2(0, -1));
 
@@ -500,7 +500,9 @@ class GameMap {
                     this.battlescreenTransition(munit1, munit2);
                     munit1.hp -= Math.floor((((munit1.hp + munit2.hp) / 2) / 10.0) * 2);
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 4);
-                    munit2.mapPosition = munit2.mapPosition.add(placement);
+
+                    //Support Mech's tackle pushes the mech
+                    if(!munit2.unit.isBuilding) munit2.mapPosition = munit2.mapPosition.add(placement);
                 }
                 break;
 
@@ -511,30 +513,6 @@ class GameMap {
                 }
                 break;
         }
-
-        if (munit2.hp <= 0)
-        {
-            // Get player and unit index for player owning munit2
-            var munit2PlayerAndUnit = manager.getPlayerAndUnitIndexOnTile(munit2.mapPosition);
-            
-            // Array of units for player owning munit2
-            var munit2PlayerUnits = manager.players[munit2PlayerAndUnit[0]].unitGroup.mapUnits;
-
-            // Unit to remove from array
-            var unitIndexToRemove = munit2PlayerAndUnit[1];
-
-            // Remove unit from array
-            for(var i = 0; i < munit2PlayerUnits.length; i++) { 
-    
-                if (munit2PlayerUnits[i] === munit2PlayerUnits[unitIndexToRemove]) {            
-                    munit2PlayerUnits.splice(i, 1); 
-                }            
-            }
-
-            // Get player owning munit2 units and set array to modified value
-            manager.players[munit2PlayerAndUnit[0]].unitGroup.mapUnits = munit2PlayerUnits;
-        }
-
     }
 
     eventUnitAttack(mapUnit) {

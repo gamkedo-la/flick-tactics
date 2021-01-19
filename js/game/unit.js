@@ -229,6 +229,15 @@ class MapUnit {
                 drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-29.6 * pixelSize, -14.6 * pixelSize))), "black");
                 drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
             }
+        } else if (this.hp <= 0 && ui.stateIndex != BATTLESCREEN) {
+            //Destroying/Removing a Unit
+            var indexPair = manager.getPlayerAndUnitIndexOnTile(this.mapPosition);
+            for(var i = 0; i < manager.players[indexPair[0]].unitGroup.mapUnits.length; i++) { 
+                if (manager.players[indexPair[0]].unitGroup.mapUnits[i] === manager.players[indexPair[0]].unitGroup.mapUnits[indexPair[1]]) {            
+                    new TileParticle(this.unit.position, unitDestroySequence);
+                    manager.players[indexPair[0]].unitGroup.mapUnits.splice(i, 1);
+                }            
+            }
         }
     }
 
@@ -245,6 +254,9 @@ class MapUnit {
 
         this.unit.draw(teamID, vec2(), sc, this.flip);
     }
+
+    //Destroy Map Unit on Mountain/River/Toxic/etc.
+    //getTileTypeFromPosition(pos)
 }
 
 class MapUnitGroup {
