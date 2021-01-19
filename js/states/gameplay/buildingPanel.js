@@ -320,6 +320,9 @@ function buildingPanelUpdate(buildingMapUnit) {
             }
 
             setBTab(1, "ATTACK MECHS");
+            setBLabel(1, 0, "RIFLE (" + MECHCOST[RIFLE_MECH] + "$): Light Weight but Less Attacking Power.");
+            setBLabel(1, 1, "CANNON (" + MECHCOST[CANNON_MECH] + "$): Heavy Weight with Immense Attacking Power.");
+            setBLabel(1, 2, "ARTILLERY (" + MECHCOST[ARTILLERY_MECH] + "$): Only Mech that can attack from a Long Distance.");
 
             if(getPlayer().money >= MECHCOST[RIFLE_MECH])
                 setBButton(1, 0, "Buy Rifle");
@@ -337,6 +340,8 @@ function buildingPanelUpdate(buildingMapUnit) {
                 setBButton(1, 2, "insufficient cash", true);
 
             setBTab(2, "ABILITY MECHS");
+            setBLabel(2, 0, "SUPPORT (" + MECHCOST[SUPPORT_MECH] + "$): Essential Mech that Provides Supply and Repair Buildings.");
+            setBLabel(2, 1, "TELEPORT (" + MECHCOST[TELEPORT_MECH] + "$): Fastest Mech with the Ability to Teleport same team mechs.");
 
             if(getPlayer().money >= MECHCOST[SUPPORT_MECH])
                 setBButton(2, 1, "Buy Support");
