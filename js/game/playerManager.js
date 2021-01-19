@@ -69,6 +69,7 @@ class PlayerManager {
         //Next Player's Turn!!!
         this.index++;
         if (this.index >= this.players.length) this.index = 0;
+        playSFX(SFX_ENDTURN);
 
         //Skipping nullified players
         while ((this.players[this.index].selectedIndex == -1 || this.players[this.index].control == -1)

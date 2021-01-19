@@ -309,11 +309,11 @@ class Button extends UIObject {
                     isTouched = false;
                 }
                 else if (this.output != UIOUTPUT_DISABLED && hover(this.transform)) {
-                    this.btnColor = this.hoverColor;
-                    if(this.output != UIOUTPUT_HOVER)
+                    if(this.output != UIOUTPUT_HOVER && this.btnColor != this.hoverColor)
                     {
                         this.hoverTrigger = true;
                     }
+                    this.btnColor = this.hoverColor;
                     this.output = UIOUTPUT_HOVER;
                 }
                 else if (this.output == UIOUTPUT_DISABLED) {

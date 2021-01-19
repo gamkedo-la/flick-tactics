@@ -543,4 +543,24 @@ function buildingPanelEvent() {
             cityBuilding_upgradeBtn.button.resetOutput();
         }
     }
+
+    /*for(let i = 0; i < buildingPanelTabs.length; i++)
+    {
+        if(buildingPanelTabs[i].textButton.button.output == UIOUTPUT_HOVER) {
+            if(buildingPanelTabs[i].textButton.button.hoverTrigger) {
+                playSFX(SFX_BUTTON_HOVER);
+                buildingPanelTabs[i].textButton.button.hoverTrigger = false;
+            }
+        }
+    }*/
+
+    for(let i = 0; i < buildingPanelButtons.length; i++)
+    {
+        if(buildingPanelButtons[i].button.output == UIOUTPUT_HOVER) {
+            if(buildingPanelButtons[i].button.hoverTrigger) {
+                playSFX(SFX_BUTTON_HOVER);
+                buildingPanelButtons[i].button.hoverTrigger = false;
+            }
+        }
+    }
 }

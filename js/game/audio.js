@@ -18,48 +18,56 @@ var BGM = [
 const SFX_BUTTON_CANCEL = 0;
 const SFX_BUTTON_CLICK = 1;
 const SFX_BUTTON_HOVER = 2;
+const SFX_ENDTURN = 3;
+const SFX_MECHDAMAGE = 4;
+const SFX_MECHDESTROY = 5;
+const SFX_BUILDINGDAMAGE = 6;
+const SFX_BUILDINGDESTROY = 7;
 var SFX = [
     {
-        content: [document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio')],
+        content: [document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio')],
         index: 0,
         path: 'audio/FT_Button_Cancel.wav'
     },  
     {
-        content: [document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio')],
+        content: [document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio')],
         index: 0,
         path: 'audio/FT_Button_Click.wav'
     },
     {
-        content: [document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio'),
-            document.createElement('audio')],
+        content: [document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio')],
         index: 0,
         path: 'audio/FT_Button_Hover.wav'
+    },
+    {
+        content: [document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio')],
+        index: 0,
+        path: 'audio/FT_EndTurn.wav'
+    },
+    {
+        content: [document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio')],
+        index: 0,
+        path: 'audio/FT_EndTurn.wav'
+    },
+    {
+        content: [document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio')],
+        index: 0,
+        path: 'audio/FT_UnitDamage.wav'
+    },
+    {
+        content: [document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio')],
+        index: 0,
+        path: 'audio/FT_UnitDestroy.wav'
+    },
+    {
+        content: [document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio')],
+        index: 0,
+        path: 'audio/FT_BuildingDamage.wav'
+    },
+    {
+        content: [document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio'),document.createElement('audio')],
+        index: 0,
+        path: 'audio/FT_BuildingDestroy.wav'
     },
 ];
 
