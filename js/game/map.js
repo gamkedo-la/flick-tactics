@@ -276,7 +276,7 @@ class GameMap {
         return false;
     }
 
-    calculateUnitMovement(mapUnit, destinationTile = vec2(this.cursorTile.x, this.cursorTile.y)) {
+    calculateUnitMovement(mapUnit, destinationTile = vec2(this.cursorTile.x, this.cursorTile.y), limited = true) {
         if(mapUnit.unit.isBuilding == true
         || this.isTileMovementObstacleToMapUnit(mapUnit, destinationTile)
         || manager.getPlayerAndUnitIndexOnTile(destinationTile)[0] != -1
@@ -290,7 +290,7 @@ class GameMap {
         var path = [];
         do {
             path = [mapUnit.mapPosition];
-            var totalMovement = mapUnit.unit.movement;
+            var totalMovement = limited ? mapUnit.unit.movement : 200;
             do {
                 var adjacentTiles = [];
 
@@ -361,6 +361,39 @@ class GameMap {
         var path = this.calculateUnitMovement(mapUnit, tilePosition);
         if(path == -1) return false;
         return path[path.length - 1].isEqual(tilePosition);
+    }
+
+    canUnitReachAdjacentTile(mapUnit, tilePosition) {
+        var down = this.calculateUnitMovement(mapUnit, tilePosition.add(vec2(1,0)));
+        var right = this.calculateUnitMovement(mapUnit, tilePosition.add(vec2(0,1)));
+        var up = this.calculateUnitMovement(mapUnit, tilePosition.add(vec2(-1,0)));
+        var left = this.calculateUnitMovement(mapUnit, tilePosition.add(vec2(0,-1)));
+
+        if(down != -1
+        && ((right != -1 && down.length <= right.length) || (right == -1))
+        && ((up != -1 && down.length <= up.length) || (up == -1))
+        && ((left != -1 && down.length <= left.length) || (left == -1)))
+            return down;
+
+        if(right != -1
+        && ((down != -1 && right.length <= down.length) || (down == -1))
+        && ((up != -1 && right.length <= up.length) || (up == -1))
+        && ((left != -1 && right.length <= left.length) || (left == -1)))
+            return right;
+
+        if(up != -1
+        && ((right != -1 && up.length <= right.length) || (right == -1))
+        && ((down != -1 && up.length <= down.length) || (down == -1))
+        && ((left != -1 && up.length <= left.length) || (left == -1)))
+            return up;
+
+        if(left != -1
+        && ((right != -1 && left.length <= right.length) || (right == -1))
+        && ((up != -1 && left.length <= up.length) || (up == -1))
+        && ((down != -1 && left.length <= down.length) || (down == -1)))
+            return left;
+
+        return -1;
     }
 
     drawUnitMovement(offset, mapUnit) {

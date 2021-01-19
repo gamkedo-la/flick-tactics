@@ -118,4 +118,36 @@ class PlayerManager {
         }
         return count >= 2;
     }
+
+    getClosestPlayerIndex() {
+        var hqPos = this.players[this.index].unitGroup.mapUnits[this.players[this.index].getHQUnitIndex()].mapPosition;
+        var dist = 99999.0;
+        var targetPlayer = -1;
+        for(let p = 0; p < this.players.length; p++) {
+            if(p != this.index) {
+                var newDist = hqPos.distance(this.players[p].unitGroup.mapUnits[this.players[p].getHQUnitIndex()].mapPosition);
+                if(newDist < dist) {
+                    dist = newDist;
+                    targetPlayer = p;
+                }
+            }
+        }
+        var hqPos = this.players[this.index].unitGroup.mapUnits[this.players[this.index].getHQUnitIndex()].mapPosition;
+        var closestMechIndex = -1;
+        for(let p = 0; p < this.players.length; p++) {
+            if(p != this.index) {
+                for(let m = 0; m < this.players[p].unitGroup.mapUnits.length; m++) {
+                    if(this.players[p].unitGroup.mapUnits[m].unit.isBuilding == false) {
+                        var newDist = hqPos.distance(this.players[p].unitGroup.mapUnits[m].mapPosition);
+                        if(newDist < dist) {
+                            dist = newDist;
+                            closestMechIndex = m;
+                            targetPlayer = p;
+                        }
+                    }
+                }
+            }
+        }
+        return [targetPlayer, closestMechIndex];
+    }
 }

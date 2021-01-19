@@ -30,8 +30,30 @@ function aiUpdate(deltaTime)
 
                 //Selecting a tile to move to
                 } else {
-                    map.eventAIUnitMovement(getPlayer().getSelectedMapUnit());
+
+                    //Selecting Player to attack
+                    var indexPair = manager.getClosestPlayerIndex();//Math.floor(Math.random() * manager.players.length);
+                    if(indexPair != -1) {
+
+                    //Move to building if reachable for attack (2 AP required)
+                    var toBuilding = false;
+                    if(getPlayer().actionPoints >= 2) {
+                        for(let b = 0; b < manager.players[indexPair[0]].unitGroup.mapUnits.length; b++) {
+                            if(manager.players[indexPair[0]].unitGroup.mapUnits[b].unit.isBuilding) {
+                                var path = map.canUnitReachAdjacentTile(getPlayer().getSelectedMapUnit(), manager.players[indexPair[0]].unitGroup.mapUnits[b].mapPosition);
+                                if(path != -1) {
+                                    getPlayer().getSelectedMapUnit().mapPath = path;
+                                    getPlayer().getSelectedMapUnit().mapPathIndex = 0;
+                                    getPlayer().getSelectedMapUnit().up = -1;
+                                    toBuilding = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if(!toBuilding) map.eventAIUnitMovement(getPlayer().getSelectedMapUnit());
                     getPlayer().actionPoints--;
+                }
                     aiUnitSelected = false;
                 }
 
