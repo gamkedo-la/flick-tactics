@@ -78,6 +78,16 @@ function updateTileSizes() {
     tileGap = Math.floor(tileSize / tileGapFactor);
 }
 
+function pixelPositionToTilePosition(pixelPos) {
+    return vec2(Math.floor((pixelPos.x / (tileSize + tileGap))+0.01),
+        Math.floor((pixelPos.y / (tileSize + tileGap))+0.01));
+}
+
+function tilePositionToPixelPosition(tilePos) {
+    return vec2(Math.floor((tilePos.x * tileSize) + (tilePos.x * tileGap)),
+        Math.floor((tilePos.y * tileSize) + (tilePos.y * tileGap)));
+}
+
 class GameMap {
     constructor(mapString) {
         this.indexes = [];
@@ -168,6 +178,10 @@ class GameMap {
 
     getTileTypeFromPosition(pos) {
         return this.indexes[pos.x + (pos.y * MAP_SIZE.x)];
+    }
+
+    setTileTypeFromPosition(pos, type) {
+        this.indexes[pos.x + (pos.y * MAP_SIZE.x)] = type;
     }
 
     drawInRect(pos, size) {
@@ -456,6 +470,10 @@ class GameMap {
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 3);
+                } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
+                    new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
+                } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == SAND_TILE && !isTileOnSmoke(munit1.mapPosition.add(placement))) {
+                    new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), smokeSequence).forTurns(SAND_SMOKE_TURNS);
                 }
                 break;
 
@@ -463,6 +481,10 @@ class GameMap {
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 6);
+                } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
+                    new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
+                } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == SAND_TILE && !isTileOnSmoke(munit1.mapPosition.add(placement))) {
+                    new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), smokeSequence).forTurns(SAND_SMOKE_TURNS);
                 }
                 break;
 
@@ -470,6 +492,10 @@ class GameMap {
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= Math.floor((munit1.hp / 10.0) * 8);
+                } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
+                    new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
+                } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == SAND_TILE && !isTileOnSmoke(munit1.mapPosition.add(placement))) {
+                    new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), smokeSequence).forTurns(SAND_SMOKE_TURNS);
                 }
 
                 //Artillery Range Attack and pushes all units around the attack point
@@ -492,7 +518,6 @@ class GameMap {
                 if (pu4[0] != -1 && pu4[1] != -1 && !manager.players[pu[0]].unitGroup.mapUnits[pu[1]].unit.isBuilding)
                     manager.players[pu4[0]].unitGroup.mapUnits[pu4[1]].mapPosition
                         = manager.players[pu4[0]].unitGroup.mapUnits[pu4[1]].mapPosition.add(vec2(0, -1));
-
                 break;
 
             case SUPPORT_MECH:
@@ -576,4 +601,22 @@ class GameMap {
         }
     }
 
+}
+
+function fireSequenceEndFunction(self) {
+    var pos = pixelPositionToTilePosition(self.position);
+
+    if(map.getTileTypeFromPosition(pos) == FOREST_TILE) {
+        map.setTileTypeFromPosition(pos, SAND_TILE);
+        new TileParticle(tilePositionToPixelPosition(pos), smokeSequence).forTurns(AFTER_FOREST_SMOKE_TURNS);
+    }
+
+    if(map.getTileTypeFromPosition(pos.add(vec2(0,1))) == FOREST_TILE && !isTileOnFire(pos.add(vec2(0,1))))
+        new TileParticle(tilePositionToPixelPosition(pos.add(vec2(0,1))), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
+    if(map.getTileTypeFromPosition(pos.add(vec2(1,0))) == FOREST_TILE && !isTileOnFire(pos.add(vec2(1,0))))
+        new TileParticle(tilePositionToPixelPosition(pos.add(vec2(1,0))), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
+    if(map.getTileTypeFromPosition(pos.add(vec2(0,-1))) == FOREST_TILE && !isTileOnFire(pos.add(vec2(0,-1))))
+        new TileParticle(tilePositionToPixelPosition(pos.add(vec2(0,-1))), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
+    if(map.getTileTypeFromPosition(pos.add(vec2(-1,0))) == FOREST_TILE && !isTileOnFire(pos.add(vec2(-1,0))))
+        new TileParticle(tilePositionToPixelPosition(pos.add(vec2(-1,0))), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
 }

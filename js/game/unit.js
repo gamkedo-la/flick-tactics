@@ -165,8 +165,7 @@ class MapUnit {
         this.mapPathIndex = -1;
         this.mapPath = [];
 
-        var pos = vec2(Math.floor((this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap)),
-            Math.floor((this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap)));
+        var pos = tilePositionToPixelPosition(this.mapPosition);
         this.unit = new Unit(type, pos);
 
         this.hp = 10.0;
@@ -188,13 +187,12 @@ class MapUnit {
         var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
             (tileSize / 64) + gridBlackLinesFixFactor);
 
-        var absolutePosition = vec2(Math.floor(this.mapPosition.x * tileSize) + (this.mapPosition.x * tileGap),
-            Math.floor(this.mapPosition.y * tileSize) + (this.mapPosition.y * tileGap))
+        var pixelPosition = tilePositionToPixelPosition(this.mapPosition);
 
-        if(Math.abs(absolutePosition.x - this.unit.position.x) > 0.5) this.flip = absolutePosition.x < this.unit.position.x;
+        if(Math.abs(pixelPosition.x - this.unit.position.x) > 0.5) this.flip = pixelPosition.x < this.unit.position.x;
 
-        if (maxDisplayTilesPerRow != defaultTilesPerRow) this.unit.position = absolutePosition;
-        else this.unit.position = lerpVec2(this.unit.position, absolutePosition, 0.3);
+        if (maxDisplayTilesPerRow != defaultTilesPerRow) this.unit.position = pixelPosition;
+        else this.unit.position = lerpVec2(this.unit.position, pixelPosition, 0.3);
 
         //Unit Movement
         if (this.mapPathIndex > -1) {

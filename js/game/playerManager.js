@@ -13,6 +13,9 @@ class PlayerManager {
         if(map.blackData.length > 0) this.players.push(new Player(BLACK_TEAM, map.blackData));
         else if(forceAllPlayers > 0) this.players.push(new Player(BLACK_TEAM, []));
         this.index = typeof index == "undefined" ? 0 : index;
+
+        this.turnCount = 0;
+        this.endTurnCounter = 0;
     }
 
     getPlayerOfTeamID(teamID) {
@@ -64,6 +67,16 @@ class PlayerManager {
         for (let i = 0; i < this.players.length; i++) {
             this.players[i].selectedIndex = this.players[i].getHQUnitIndex();
             if(this.players[i].selectedIndex == -1) this.players[i].selectedIndex = 0;
+        }
+
+        //Turn Count
+        this.endTurnCounter++;
+        if(this.endTurnCounter >= this.players.length) {
+            this.turnCount++;
+            this.endTurnCounter = 0;
+
+            //Tile Particle Turn Process
+            decrementTileParticlesTurns();
         }
 
         //Next Player's Turn!!!
