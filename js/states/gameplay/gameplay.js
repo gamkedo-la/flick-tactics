@@ -6,7 +6,8 @@ var gameplay = [];
 function getPlayer() { return manager.getActivePlayer(); }
 
 function gameplayReset() {
-
+    //Resetting building panel properties
+    buildingPanelCOSelection = 0;
 }
 
 function getActiveTeamColor() {

@@ -8,6 +8,7 @@ var buildingPanelDefaultBtnColor = "#00000088";
 var buildingPanelHoverBtnColor = "#000000DD";
 var buildingPanelDisabledBtnColor = "#88000088";
 var buildingPanelPrevSelected = null;
+var buildingPanelCOSelection = 0;
 
 const MECHCOST = [2000, 8000, 12000, 5000, 5000];
 
@@ -245,9 +246,34 @@ function buildingPanelUpdate(buildingMapUnit) {
             setBButton(0, 2, "End Turn");
 
             setBTab(1, "CO");
-            setBLabel(1, 0, "Player CO: Zareem.");
-            setBLabel(1, 1, "CO Power: Rifle Boomer.");
-            setBLabel(1, 2, "All your buildings deploys a Rifle Mech.");
+            switch(manager.players[buildingPanelCOSelection].CO) {
+                case ZAREEM:
+                    setBLabel(1, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: Zareem.");
+                    setBLabel(1, 1, "CO Power: Rifle Boomer.");
+                    setBLabel(1, 2, "All your buildings deploys a Rifle Mech.");
+                    break;
+                case GURU:
+                    setBLabel(1, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: Guru.");
+                    setBLabel(1, 1, "CO Power: Extra Action.");
+                    setBLabel(1, 2, "Receives 3 Action Points.");
+                    break;
+                case TAJA:
+                    setBLabel(1, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: Taja.");
+                    setBLabel(1, 1, "CO Power: Distant Chaos.");
+                    setBLabel(1, 2, "+1 Tile & +25% Fire Power to all Range Attacks.");
+                    break;
+                case HULU:
+                    setBLabel(1, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: Hulu.");
+                    setBLabel(1, 1, "CO Power: Terror Infliction.");
+                    setBLabel(1, 2, "-1 to all Opponent Mechs HP.");
+                    break;
+                case JONAH:
+                    setBLabel(1, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: Jonah.");
+                    setBLabel(1, 1, "CO Power: Me My Mine.");
+                    setBLabel(1, 2, "Strongest Opponent Mech(s) becomes his Mech(s).");
+                    break;
+            }
+
             setBButton(1, 0, "Previous CO");
 
             if(getPlayer().powerMeter >= 0.999)
@@ -421,6 +447,20 @@ function buildingPanelEvent() {
             hqBuilding_endBtn.button.resetOutput();
         }
 
+        var hqBuilding_prevCOBtn = getBButton(1, 0, HQ_BUILDING);
+        if (hqBuilding_prevCOBtn != 0 && hqBuilding_prevCOBtn.button.output == UIOUTPUT_SELECT) {
+            buildingPanelCOSelection--;
+            if(buildingPanelCOSelection < 0) buildingPanelCOSelection = manager.players.length - 1;
+            hqBuilding_prevCOBtn.button.resetOutput();
+        }
+
+        var hqBuilding_nextCOBtn = getBButton(1, 2, HQ_BUILDING);
+        if (hqBuilding_nextCOBtn != 0 && hqBuilding_nextCOBtn.button.output == UIOUTPUT_SELECT) {
+            buildingPanelCOSelection++;
+            if(buildingPanelCOSelection >= manager.players.length) buildingPanelCOSelection = 0;
+            hqBuilding_nextCOBtn.button.resetOutput();
+        }
+
         var hqBuilding_sfxBtn = getBButton(4, 0, HQ_BUILDING);
         if(hqBuilding_sfxBtn != 0 && hqBuilding_sfxBtn.button.output == UIOUTPUT_SELECT) {
             gameOptions.SFXEnabled = !gameOptions.SFXEnabled;
@@ -437,6 +477,7 @@ function buildingPanelEvent() {
 
         var hqBuilding_exitBtn = getBButton(4, 2, HQ_BUILDING);
         if(hqBuilding_exitBtn != 0 && hqBuilding_exitBtn.button.output == UIOUTPUT_SELECT) {
+            gameplayReset();
             ui.transitionToState = STARTSCREEN;
             hqBuilding_exitBtn.button.resetOutput();
         }

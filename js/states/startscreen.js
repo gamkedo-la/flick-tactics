@@ -60,9 +60,9 @@ function startscreenResize() {
 
     playButton.label.font = aboutButton.label.font = fontSize.toString() + "px " + uiContext.fontFamily;
 
-    startscreen[1].transform.position = vec2((gameWidth / 2) - (gameWidth / 6), gameHeight / 2);
-    startscreen[1].transform.scale = vec2(gameWidth / 3, gameHeight / 3);
-    startscreen[1].gridSpace = vec2(0, sizeFactor * 0.05);
+    startscreen[1].transform.position = vec2((gameWidth / 2) - (gameWidth / 6), gameHeight / 2.25);
+    startscreen[1].transform.scale = vec2(gameWidth / 3, gameHeight / 2.25);
+    startscreen[1].gridSpace = vec2(0, sizeFactor * 0.025);
     startscreen[1].updateCellSize();
 }
 

@@ -75,6 +75,8 @@ class PlayerManager {
             && this.index < this.players.length) this.index++;
         if (this.index >= this.players.length) this.index = 0;
 
+        buildingPanelCOSelection = this.index;
+
         updateUnitActionButtons();
     }
 

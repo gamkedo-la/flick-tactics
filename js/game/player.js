@@ -20,8 +20,10 @@ class Player {
                 case RED_TEAM: this.CO = ZAREEM; break;
                 case BLUE_TEAM: this.CO = TAJA; break;
                 case GREEN_TEAM: this.CO = GURU; break;
-                case BLACK_TEAM: this.CO = Math.random() < 0.6 ? this.HULU : this.JONAH; break;
+                case BLACK_TEAM: this.CO = Math.random() < 0.6 ? HULU : JONAH; break;
             }
+        } else {
+            this.CO = co;
         }
 
         this.control = 0; //-1 = nullify, 0 = user, 1 = AI
