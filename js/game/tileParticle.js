@@ -9,6 +9,16 @@ var unitDestroySequence = [
     {index: 97, duration: 50},
 ];
 
+var smokeSequence = [
+    {index: 78, duration: 600},
+    {index: 79, duration: 600},
+];
+
+var fireSequence = [
+    {index: 98, duration: 600},
+    {index: 99, duration: 600},
+];
+
 var particles = [];
 
 class TileParticle {
@@ -22,6 +32,11 @@ class TileParticle {
         particles.push(this);
     }
 
+    forTurns(turns)
+    {
+        this.turns = turns;
+    }
+
     draw(deltaTime, camPos, sc)
     {
         if(this.timer >= this.sequence[this.currentIndex].duration)
@@ -31,14 +46,21 @@ class TileParticle {
 
             if(this.currentIndex >= this.sequence.length)
             {
-                for(let i = 0; i < particles.length; i++)
+                if(typeof this.turns == "undefined" || this.turns <= 0)
                 {
-                    if(this == particles[i])
+                    for(let i = 0; i < particles.length; i++)
                     {
-                        this.endFunction();
-                        particles.splice(i, 1);
-                        return;
+                        if(this == particles[i])
+                        {
+                            this.endFunction();
+                            particles.splice(i, 1);
+                            return;
+                        }
                     }
+                }
+                else
+                {
+                    this.currentIndex = 0;
                 }
             }
         }
@@ -59,4 +81,22 @@ function drawTileParticles(deltaTime, camPos)
 {
     for(let i = 0; i < particles.length; i++)
         particles[i].draw(deltaTime, camPos);
+}
+
+function isUnitOnSmoke(unit)
+{
+    for(let i = 0; i < particles.length; i++) {
+        if(particles[i].seqeunce[0].index == 78 || particles[i].seqeunce[0].index == 79)
+            return true;
+    }
+    return false;
+}
+
+function isUnitOnFire(unit)
+{
+    for(let i = 0; i < particles.length; i++) {
+        if(particles[i].seqeunce[0].index == 98 || particles[i].seqeunce[0].index == 99)
+            return true;
+    }
+    return false;
 }
