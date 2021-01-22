@@ -446,10 +446,15 @@ class GameMap {
 
     eventAIUnitMovement(mapUnit) {
         var path = -1;
-        while(path == -1) path = this.calculateUnitMovement(mapUnit, mapUnit.mapPosition.add( vec2(
+        var tries = 0;
+        while(path == -1) {
+            path = this.calculateUnitMovement(mapUnit, mapUnit.mapPosition.add( vec2(
             Math.floor(-mapUnit.unit.movement + (Math.random() * (mapUnit.unit.movement * 2))),
             Math.floor(-mapUnit.unit.movement + (Math.random() * (mapUnit.unit.movement * 2))))
         ));
+            if(tries > 9999) return;
+            else tries++;
+        }
 
         mapUnit.mapPath = path;
         mapUnit.mapPathIndex = 0;
@@ -533,22 +538,22 @@ class GameMap {
 
                 //Artillery Range Attack and pushes all units around the attack point
                 var pu1 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(1, 0)));
-                if (pu1[0] != -1 && pu1[1] != -1 && !manager.players[pu[0]].unitGroup.mapUnits[pu[1]].unit.isBuilding)
+                if (pu1[0] != -1 && pu1[1] != -1 && !manager.players[pu1[0]].unitGroup.mapUnits[pu1[1]].unit.isBuilding)
                     manager.players[pu1[0]].unitGroup.mapUnits[pu1[1]].mapPosition
                         = manager.players[pu1[0]].unitGroup.mapUnits[pu1[1]].mapPosition.add(vec2(1, 0));
 
                 var pu2 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(-1, 0)));
-                if (pu2[0] != -1 && pu2[1] != -1 && !manager.players[pu[0]].unitGroup.mapUnits[pu[1]].unit.isBuilding)
+                if (pu2[0] != -1 && pu2[1] != -1 && !manager.players[pu2[0]].unitGroup.mapUnits[pu2[1]].unit.isBuilding)
                     manager.players[pu2[0]].unitGroup.mapUnits[pu2[1]].mapPosition
                         = manager.players[pu2[0]].unitGroup.mapUnits[pu2[1]].mapPosition.add(vec2(-1, 0));
 
                 var pu3 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(0, 1)));
-                if (pu3[0] != -1 && pu3[1] != -1 && !manager.players[pu[0]].unitGroup.mapUnits[pu[1]].unit.isBuilding)
+                if (pu3[0] != -1 && pu3[1] != -1 && !manager.players[pu3[0]].unitGroup.mapUnits[pu3[1]].unit.isBuilding)
                     manager.players[pu3[0]].unitGroup.mapUnits[pu3[1]].mapPosition
                         = manager.players[pu3[0]].unitGroup.mapUnits[pu3[1]].mapPosition.add(vec2(0, 1));
 
                 var pu4 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(0, -1)));
-                if (pu4[0] != -1 && pu4[1] != -1 && !manager.players[pu[0]].unitGroup.mapUnits[pu[1]].unit.isBuilding)
+                if (pu4[0] != -1 && pu4[1] != -1 && !manager.players[pu4[0]].unitGroup.mapUnits[pu4[1]].unit.isBuilding)
                     manager.players[pu4[0]].unitGroup.mapUnits[pu4[1]].mapPosition
                         = manager.players[pu4[0]].unitGroup.mapUnits[pu4[1]].mapPosition.add(vec2(0, -1));
                 break;
