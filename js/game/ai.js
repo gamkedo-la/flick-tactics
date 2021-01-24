@@ -19,9 +19,9 @@ function aiUpdate(deltaTime)
             if(getPlayer().actionPoints > 0 && getPlayer().getTotalNumberOfMechs() > 0
             && !aiNoMechMoveLeft /*TEMP*/) {
 
-                c("mech control");
-                c(getPlayer().getSelectedMapUnit().right);
-                c(updateOpponentUnitAdjacent());
+                //c("mech control");
+                //c(getPlayer().getSelectedMapUnit().right);
+                //c(updateOpponentUnitAdjacent());
 
                 //Selecting unmoved Mech
                 if(!aiUnitSelected) {
@@ -38,6 +38,7 @@ function aiUpdate(deltaTime)
                 } else if (getPlayer().getSelectedMapUnit().up == 1) {
                     getPlayer().getSelectedMapUnit().up = 0;
 
+                //Attack Mech's target (direct attack on adjacent opponent)
                 } else if (getPlayer().getSelectedMapUnit().right == 0) {
                     map.attack(getPlayer().getSelectedMapUnit(), aiMechAdjacentOpponentUnit, aiMechOpponentUnitPlacement);
                     getPlayer().actionPoints--;
@@ -71,7 +72,8 @@ function aiUpdate(deltaTime)
                     }
 
                     //Is there any opponent mech adjacent to the selected mech for attack?
-                    aiUnitSelected = updateOpponentUnitAdjacent();
+                    //If yes, keep the unit selected in order for the unit to attack.
+                    aiUnitSelected = updateOpponentUnitAdjacent(getPlayer().getSelectedMapUnit().mapPath[getPlayer().getSelectedMapUnit().mapPath.length - 1]);
                 }
 
 
@@ -156,9 +158,11 @@ function deployMechFromBuilding(buildingMapUnit, type) {
     }
 }
 
-function updateOpponentUnitAdjacent() {
+function updateOpponentUnitAdjacent(mpos) {
     var munit = getPlayer().getSelectedMapUnit();
-    var mpos = munit.mapPosition;
+
+    if(typeof mpos == "undefined")
+        mpos = munit.mapPosition;
 
     /*if(munit.right == -1) {
         aiMechAdjacentOpponentUnit = aiMechOpponentUnitPlacement = null;
