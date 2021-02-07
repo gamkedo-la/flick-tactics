@@ -82,15 +82,27 @@ function worldmapDraw(deltaTime) {
 function worldmapUpdate(deltaTime) {
     playBGM(BGM_WORLDMAP);
     if(!dialogueUpdate(deltaTime))
-        if(isTouched) ui.transitionToState = GAMEPLAY;
+        if(isTouched){
+            //ui.transitionToState = GAMEPLAY; //When Campaign is Added
+            
+            ui.transitionToState = STARTSCREEN;
+            dialogues = [];
+            for(let i = 0; i < no_campaign.length; i++)
+                dialogues.push(no_campaign[i].dialogue);
+        }
 }
 
 function worldmapEvent(deltaTime) {
-    if(isTouched)
+
+    if(!worldmapMissionFocus) worldmapMissionFocus = true;
+    currentMissionIndex = 0;
+
+    //Flag Jumping Code!
+    /*if(isTouched)
     {
         if(!worldmapMissionFocus) worldmapMissionFocus = true;
         else if(currentMissionIndex < missionPoints.length - 1) currentMissionIndex++;
         else { currentMissionIndex = 0; worldmapMissionFocus = false; }
         worldmapFocusCircleRadius = 0.0;
-    }
+    }*/
 }
