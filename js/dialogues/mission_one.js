@@ -110,4 +110,45 @@ const mission_one = [
         dialogue: "Where?",
         face: FACE_NEUTRAL
     },
+    {
+        speaker: GURU,
+        //units now on a mountain
+        dialogue: "They're on a Mountain! Look!",
+        face: FACE_SHOCK   
+    },
+    {
+        speaker: ZAREEM,
+        dialogue: "Oh... oh oh, yea, so what?",
+        face: FACE_NEUTRAL
+    },
+    {
+        speaker: GURU,
+        dialogue: "Select them",
+        face: FACE_NEUTRAL  
+    },
+    {
+        speaker: ZAREEM,
+        dialogue: "Okayyyyy",
+        face: FACE_NEUTRAL
+    },
+    {
+        speaker: GURU,
+        dialogue: "Look at their defense now",
+        face: FACE_NEUTRAL  
+    },
+    {
+        speaker: ZAREEM,
+        dialogue: "Oh it's higher!",
+        face: FACE_SHOCK
+    },
+    {
+        speaker: GURU,
+        dialogue: "Exactly!  Units on mountains get more defense points.  Remember that!",
+        face: FACE_HAPPY 
+    },
+    {
+        speaker: ZAREEM,
+        dialogue: "YES! GURU SIR!",
+        face: FACE_HAPPY
+    },
 ];

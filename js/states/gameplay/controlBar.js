@@ -13,6 +13,10 @@ function controlBarUISetup(fontSize) {
         fontSize.toString() + "px " + uiContext.fontFamily);
     controlBar.push(moneyLabel);
 
+    turnLabel = new Label(tr(), "Turn " + manager.turnCount.toString(),
+        fontSize.toString() + "px " + uiContext.fontFamily);
+    controlBar.push(turnLabel);
+
     actionPointsLabel = new Label(tr(), "AP: " + getPlayer().actionPoints.toString(),
         fontSize.toString() + "px " + uiContext.fontFamily);
     controlBar.push(actionPointsLabel);
@@ -26,7 +30,7 @@ function controlBarUISetup(fontSize) {
     controlBar.push(new Label(tr(), ""));
 
     gameplay.push(new FlexGroup(tr(vec2(0.01, 0.01), vec2(gameWidth, 25 * pixelSize)),
-        new SubState(tr(), controlBar), false, vec2(10 * pixelSize, 0), vec2(8, 1), true));
+        new SubState(tr(), controlBar), false, vec2(10 * pixelSize, 0), vec2(9, 1), true));
 }
 
 function controlBarUIUpdate() {

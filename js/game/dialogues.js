@@ -40,8 +40,8 @@ function dialogueSetup(uiArray)
     dialogueFaceSize = 256.0 * (pixelSize/2.0);
     soldierFaceSprite = new Sprite(tr(vec2((gameWidth/12) + (38.0 * pixelSize), baseYPosition + (64.0 * pixelSize)), toVec2(pixelSize/2.0)), new ImageObject("images/soldierFace1.png"));
 
-    for(let i = 0; i < mission_one.length; i++)
-        dialogues.push(mission_one[i].dialogue);
+    for(let i = 0; i < no_campaign.length; i++)
+        dialogues.push(no_campaign[i].dialogue);
 
     dialogueSpeaker = new Label(tr(vec2(gameWidth/12, baseYPosition),
         vec2(gameWidth - (gameWidth/6), gameHeight/9)),
@@ -63,6 +63,7 @@ function dialogueSetup(uiArray)
 
 function dialogueProcess(isDelay)
 {
+    dialogueSpeaker.text = dialogueCO[GURU].name;
     if(renderer.measureText(dialogueLine1.text).width < (gameWidth - (gameWidth/6)) - (gameWidth/10) - dialogueOffsetWhenDisplayingFace)
     {
         dialogueLine1.text += dialogues[0][characterIndex];
@@ -113,7 +114,7 @@ function dialogueProcess(isDelay)
 
 function dialogueUpdate(deltaTime)
 {
-    if(dialogues.length > 0)
+    if(dialogues.length > 0 && ui.transitionToState == -1)
     {
         //when not displaying face
         //var dialogueOffsetWhenDisplayingFace = 0;
@@ -156,6 +157,8 @@ function dialogueUpdate(deltaTime)
         
         if(characterTimer > 0) characterTimer -= deltaTime;
 
+        dialogueSpeaker.enabled = dialogueLine1.enabled = dialogueLine2.enabled = true;
+
         return true;
     }
 
@@ -164,7 +167,7 @@ function dialogueUpdate(deltaTime)
 
 function dialogueDraw()
 {
-    if(dialogues.length > 0) {
+    if(dialogues.length > 0 && ui.transitionToState == -1) {
         drawRect(renderer, vec2(gameWidth/16, gameHeight/1.4), vec2(gameWidth - (gameWidth/8), gameHeight/4), true, "#323353", 32);
 
         //displaying face
