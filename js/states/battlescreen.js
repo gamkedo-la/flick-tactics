@@ -17,6 +17,7 @@ var battlescreenTileSize = 1.4;
 var battlescreenTileOffset = 24;
 
 var muzzleIndex = 0;
+var recoilPositionOffset = 0;
 var rifleMuzzles = [13, 14, 15];
 var cannonMuzzles = [33, 34, 35];
 var artilleryMuzzles = [53, 54, 55];
@@ -90,25 +91,35 @@ function battlescreenDraw(deltaTime) {
     for (let i = 0; i < 3; i++, activeTHp -= 2) {
         if (activeTHp > 0)
         {
-            activeMapUnit.unit.draw(activeTeamID, vec2(200 * pixelSize, (150 * pixelSize) + (100 * pixelSize * i)),
+            activeMapUnit.unit.draw(activeTeamID, vec2((200 * pixelSize) - recoilPositionOffset, (150 * pixelSize) + (100 * pixelSize * i)),
                 vec2(pixelSize, pixelSize));
 
             if(activeMapUnit.unit.type == RIFLE_MECH) {
                 if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherTime && gameTime % 160 < 80) {
                     drawSheet(rifleMuzzles[muzzleIndex], activeMapUnit.unit.position.add(vec2((200 * pixelSize) + muzzleSpace, (150 * pixelSize) + (100 * pixelSize * i))),
                         vec2(pixelSize, pixelSize));
+                    recoilPositionOffset = lerp(recoilPositionOffset, 0.0, 0.75);
                 } else {
                     muzzleIndex = Math.floor(Math.random() * 3);
+                    recoilPositionOffset = (2.0 * pixelSize) + (Math.random() * (4.0 * pixelSize));
                 }
             } else if (activeMapUnit.unit.type == CANNON_MECH) {
                 if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherTime) {
                     muzzleIndex += 0.0015 * deltaTime;
+                    if(muzzleIndex > 1 && muzzleIndex < 2)
+                        recoilPositionOffset = muzzleIndex * pixelSize * 15.0;
+                    else
+                        recoilPositionOffset = lerp(recoilPositionOffset, 0.0, 0.25);
                     drawSheet(cannonMuzzles[Math.floor(muzzleIndex)], activeMapUnit.unit.position.add(vec2((200 * pixelSize) + muzzleSpace, (150 * pixelSize) + (100 * pixelSize * i))),
                         vec2(pixelSize, pixelSize));
                 }
             } else if (activeMapUnit.unit.type == ARTILLERY_MECH) {
                 if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherTime) {
                     muzzleIndex += 0.0015 * deltaTime;
+                    if(muzzleIndex > 1 && muzzleIndex < 2)
+                        recoilPositionOffset = muzzleIndex * pixelSize * 15.0;
+                    else
+                        recoilPositionOffset = lerp(recoilPositionOffset, 0.0, 0.25);
                     drawSheet(artilleryMuzzles[Math.floor(muzzleIndex)], activeMapUnit.unit.position.add(vec2((200 * pixelSize) + (muzzleSpace/1.5), (150 * pixelSize) + (100 * pixelSize * i) - (muzzleSpace/1.5))),
                         vec2(pixelSize, pixelSize));
                 }
@@ -118,25 +129,35 @@ function battlescreenDraw(deltaTime) {
     for (let i = 0; i < 2; i++, activeTHp -= 2) {
         if (activeTHp > 0)
         {
-            activeMapUnit.unit.draw(activeTeamID, vec2(300 * pixelSize, (200 * pixelSize) + (100 * pixelSize * i)),
+            activeMapUnit.unit.draw(activeTeamID, vec2((300 * pixelSize) - recoilPositionOffset, (200 * pixelSize) + (100 * pixelSize * i)),
                 vec2(pixelSize, pixelSize));
 
             if(activeMapUnit.unit.type == RIFLE_MECH) {
                 if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherTime && gameTime % 160 < 80) {
-                    drawSheet(rifleMuzzles[muzzleIndex], activeMapUnit.unit.position.add(vec2((300 * pixelSize) + muzzleSpace, (200 * pixelSize) + (100 * pixelSize * i))),
+                    drawSheet(rifleMuzzles[muzzleIndex], activeMapUnit.unit.position.add(vec2((300 * pixelSize) + muzzleSpace + recoilPositionOffset, (200 * pixelSize) + (100 * pixelSize * i))),
                         vec2(pixelSize, pixelSize));
+                    recoilPositionOffset = lerp(recoilPositionOffset, 0.0, 0.75);
                 } else {
                     muzzleIndex = Math.floor(Math.random() * 3);
+                    recoilPositionOffset = (2.0 * pixelSize) + (Math.random() * (4.0 * pixelSize));
                 }
             } else if (activeMapUnit.unit.type == CANNON_MECH) {
                 if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherTime) {
                     muzzleIndex += 0.0015 * deltaTime;
+                    if(muzzleIndex > 1 && muzzleIndex < 2)
+                        recoilPositionOffset = muzzleIndex * pixelSize * 15.0;
+                    else
+                        recoilPositionOffset = lerp(recoilPositionOffset, 0.0, 0.25);
                     drawSheet(cannonMuzzles[Math.floor(muzzleIndex)], activeMapUnit.unit.position.add(vec2((300 * pixelSize) + muzzleSpace, (200 * pixelSize) + (100 * pixelSize * i))),
                         vec2(pixelSize, pixelSize));
                 }
             } else if (activeMapUnit.unit.type == ARTILLERY_MECH) {
                 if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherTime) {
                     muzzleIndex += 0.0015 * deltaTime;
+                    if(muzzleIndex > 1 && muzzleIndex < 2)
+                        recoilPositionOffset = muzzleIndex * pixelSize * 15.0;
+                    else
+                        recoilPositionOffset = lerp(recoilPositionOffset, 0.0, 0.25);
                     drawSheet(artilleryMuzzles[Math.floor(muzzleIndex)], activeMapUnit.unit.position.add(vec2((300 * pixelSize) + (muzzleSpace/1.5), (200 * pixelSize) + (100 * pixelSize * i) - (muzzleSpace/1.5))),
                         vec2(pixelSize, pixelSize));
                 }
@@ -190,6 +211,7 @@ function battlescreenUpdate(deltaTime) {
         battlescreenActiveUnitX = -battlescreenStartUnitX * pixelSize;
         battlescreenPassiveUnitX = battlescreenStartUnitX * pixelSize;
         muzzleIndex = 0;
+        recoilPositionOffset = 0;
         ui.stateIndex = GAMEPLAY;
     }
 }
