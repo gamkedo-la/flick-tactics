@@ -24,13 +24,13 @@ function startscreenSetup() {
     startscreen.push(startLabel);
 
     menuUI = [];
-    playButton = new TextButton(tr(),
+    /*playButton = new TextButton(tr(),
         new Label(tr(), "PLAY CAMPAIGN",
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
-    menuUI.push(playButton);
+    menuUI.push(playButton);*/
     versusButton = new TextButton(tr(),
-        new Label(tr(), "PLAY VERSUS",
+        new Label(tr(), "PLAY",// VERSUS",
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
     menuUI.push(versusButton);
@@ -58,7 +58,7 @@ function startscreenResize() {
     titleSprite.transform.scale = vec2((sizeFactor / 1.8) / titleSprite.imageObject.image.width, (sizeFactor / 4) / titleSprite.imageObject.image.height);
     titleSprite.transform.position = vec2(gameWidth / 2, gameHeight / 4);
 
-    playButton.label.font = aboutButton.label.font = fontSize.toString() + "px " + uiContext.fontFamily;
+    //playButton.label.font = aboutButton.label.font = fontSize.toString() + "px " + uiContext.fontFamily;
 
     startscreen[1].transform.position = vec2((gameWidth / 2) - (gameWidth / 6), gameHeight / 2.25);
     startscreen[1].transform.scale = vec2(gameWidth / 3, gameHeight / 2.25);
@@ -123,7 +123,7 @@ function startscreenUpdate(deltaTime) {
 }
 
 function startscreenEvent(deltaTime) {
-    switch (playButton.button.output)
+    /*switch (playButton.button.output)
     {
         case UIOUTPUT_HOVER:
             if(playButton.button.hoverTrigger)
@@ -137,7 +137,7 @@ function startscreenEvent(deltaTime) {
             playSFX(SFX_BUTTON_CLICK);
             ui.transitionToState = WORLDMAP;
             playButton.button.resetOutput();
-    }
+    }*/
 
     switch (versusButton.button.output)
     {
