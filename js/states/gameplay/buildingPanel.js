@@ -223,7 +223,7 @@ function buildingPanelUpdate(buildingMapUnit) {
     }
 
     if (maxDisplayTilesPerRow == defaultTilesPerRow) {
-        unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
+        unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
         buildingPanel.enabled = true;
     }
     else {

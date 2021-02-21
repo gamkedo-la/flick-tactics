@@ -84,19 +84,18 @@ function gameplayUpdate(deltaTime) {
         buildingPanel.enabled = false;
 
         if(getPlayer().getSelectedMapUnit().unit.deployTime <= 0) {
-            unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled =
+            unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled =
                 (cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize);
 
-            if (getPlayer().getSelectedMapUnit().up == 0 || getPlayer().getSelectedMapUnit().left == 0 ||
-                getPlayer().getSelectedMapUnit().down == 0 || getPlayer().getSelectedMapUnit().right == 0) {
+            if (getPlayer().getSelectedMapUnit().up == 0 || getPlayer().getSelectedMapUnit().left == 0 || getPlayer().getSelectedMapUnit().right == 0) {
                 leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled =
-                    unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
+                    unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
             }
             else if (controlBar[0].enabled) {
                 leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
             }
         } else {
-            unitUpBtn.enabled = unitLeftBtn.enabled = unitDownBtn.enabled = unitRightBtn.enabled = false;
+            unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
         }
     }
     else {
@@ -105,9 +104,8 @@ function gameplayUpdate(deltaTime) {
 
     if (unitUpBtn.button.output != UIOUTPUT_SELECT) unitUpBtn.button.output = getPlayer().getSelectedMapUnit().up == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
     if (unitLeftBtn.button.output != UIOUTPUT_SELECT) unitLeftBtn.button.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (unitDownBtn.button.output != UIOUTPUT_SELECT) unitDownBtn.button.output = getPlayer().getSelectedMapUnit().down == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
     if (unitRightBtn.button.output != UIOUTPUT_SELECT) unitRightBtn.button.output = getPlayer().getSelectedMapUnit().right == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (getPlayer().actionPoints <= 0) unitUpBtn.button.output = unitLeftBtn.button.output = unitDownBtn.button.output = unitRightBtn.button.output = UIOUTPUT_DISABLED;
+    if (getPlayer().actionPoints <= 0) unitUpBtn.button.output = unitLeftBtn.button.output = unitRightBtn.button.output = UIOUTPUT_DISABLED;
 
     controlBarUIUpdate();
     quickStatsUIUpdate();
@@ -138,10 +136,6 @@ function gameplayEvent(deltaTime) {
     else if (unitLeftBtn.button.output == UIOUTPUT_SELECT) {
         getPlayer().getSelectedMapUnit().left = 0;
         unitLeftBtn.button.resetOutput();
-    }
-    else if (unitDownBtn.button.output == UIOUTPUT_SELECT) {
-        getPlayer().getSelectedMapUnit().down = 0;
-        unitDownBtn.button.resetOutput();
     }
     else if (unitRightBtn.button.output == UIOUTPUT_SELECT) {
         getPlayer().getSelectedMapUnit().right = 0;

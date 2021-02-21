@@ -176,7 +176,7 @@ class MapUnit {
     }
 
     clearDisabledActions() {
-        this.up = this.left = this.down = this.right = 1;
+        this.up = this.left = this.right = 1;
     }
 
     getCameraPosition() {
@@ -210,12 +210,12 @@ class MapUnit {
         
         if(this.mapPathIndex > -1) this.unit.draw(teamID, offset, sc, this.flip, ANIM_MECH_WALK);
         else {
-            if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1) {
+            if(this.up == -1 || this.right == -1 || this.left == -1) {
                 renderer.globalAlpha = 1.0;
                 renderer.globalCompositeOperation = "multiply";
             }
             this.unit.draw(teamID, offset, sc, this.flip);
-            if(this.up == -1 || this.down == -1 || this.right == -1 || this.left == -1) {
+            if(this.up == -1 || this.right == -1 || this.left == -1) {
                 renderer.globalAlpha = 1.0;
                 renderer.globalCompositeOperation = "source-over";
             }
