@@ -1,4 +1,4 @@
-const VERSUS = 5;
+const VERSUS = 6;
 var versus = [];
 
 var versusTeamID = -1;

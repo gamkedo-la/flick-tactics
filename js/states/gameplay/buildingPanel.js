@@ -454,6 +454,20 @@ function buildingPanelEvent() {
             hqBuilding_prevCOBtn.button.resetOutput();
         }
 
+        var hqBuilding_powerBtn = getBButton(1, 1, HQ_BUILDING);
+        var hqBuilding_powerBtn2 = getBButton(2, 1, HQ_BUILDING);
+        if ((hqBuilding_powerBtn != 0 && hqBuilding_powerBtn.button.output == UIOUTPUT_SELECT)
+        || (hqBuilding_powerBtn2 != 0 && hqBuilding_powerBtn2.button.output == UIOUTPUT_SELECT)) {
+
+            if(getPlayer().powerMeter >= 0.999) {
+                activatePower();
+                getPlayer().powerMeter = 0.0;
+            }
+
+            hqBuilding_powerBtn.button.resetOutput();
+            hqBuilding_powerBtn2.button.resetOutput();
+        }
+
         var hqBuilding_nextCOBtn = getBButton(1, 2, HQ_BUILDING);
         if (hqBuilding_nextCOBtn != 0 && hqBuilding_nextCOBtn.button.output == UIOUTPUT_SELECT) {
             buildingPanelCOSelection++;

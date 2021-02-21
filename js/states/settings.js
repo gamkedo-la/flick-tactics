@@ -6,6 +6,7 @@ function uiInit() {
     gameplaySetup();
     aboutSetup();
     battlescreenSetup();
+    powerscreenSetup();
     worldmapSetup();
     versusSetup();
     editorSetup();
@@ -15,6 +16,7 @@ function uiInit() {
     uistates.push(new UIState(gameplay));
     uistates.push(new UIState(about));
     uistates.push(new UIState(battlescreen));
+    uistates.push(new UIState(powerscreen));
     uistates.push(new UIState(worldmap));
     uistates.push(new UIState(versus));
     uistates.push(new UIState(editor));

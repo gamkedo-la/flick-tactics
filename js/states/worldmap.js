@@ -1,4 +1,4 @@
-const WORLDMAP = 4;
+const WORLDMAP = 5;
 var worldmap = [];
 var worldmapMissionFocus = false;
 var currentMissionIndex = 0;

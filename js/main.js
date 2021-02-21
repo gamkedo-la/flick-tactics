@@ -17,6 +17,7 @@ function event(deltaTime) {
         case GAMEPLAY: gameplayEvent(deltaTime); break;
         case ABOUT: aboutEvent(deltaTime); break;
         case BATTLESCREEN: battlescreenEvent(deltaTime); break;
+        case POWERSCREEN: powerscreenEvent(deltaTime); break;
         case WORLDMAP: worldmapEvent(deltaTime); break;
         case VERSUS: versusEvent(deltaTime); break;
         case EDITOR: editorEvent(deltaTime); break;
@@ -29,6 +30,7 @@ function update(deltaTime) {
         case GAMEPLAY: gameplayUpdate(deltaTime); break;
         case ABOUT: aboutUpdate(deltaTime); break;
         case BATTLESCREEN: battlescreenUpdate(deltaTime); break;
+        case POWERSCREEN: powerscreenUpdate(deltaTime); break;
         case WORLDMAP: worldmapUpdate(deltaTime); break;
         case VERSUS: versusUpdate(deltaTime); break;
         case EDITOR: editorUpdate(deltaTime); break;
@@ -48,6 +50,7 @@ function draw(deltaTime) {
             break;
         case ABOUT:aboutDraw(deltaTime); break;
         case BATTLESCREEN: battlescreenDraw(deltaTime); break;
+        case POWERSCREEN: powerscreenDraw(deltaTime); break;
         case WORLDMAP: worldmapDraw(deltaTime); break;
         case VERSUS: versusDraw(deltaTime); break;
         case EDITOR: editorDraw(deltaTime); break;

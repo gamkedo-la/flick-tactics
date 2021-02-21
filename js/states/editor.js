@@ -1,4 +1,4 @@
-const EDITOR = 6;
+const EDITOR = 7;
 var editor = [];
 var editorCam = vec2();
 var editorCamMove = 0.5;
