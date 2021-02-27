@@ -1,0 +1,33 @@
+	Character Win Dialogues
+
+	Guru
+1	Speed over costs, win the war
+2	The one who takes the initiative can strike first!
+3	Haha, you were too slow!  
+4	A worthy adversary
+5	I cannot let evil take this land
+
+	Zareem
+1	HA! YES! I'm getting stronger!
+2	Rifle Mechs all the way!
+3	I made Guru proud!
+4	I will protect the world!
+
+	Taja
+1	Ha!  My Forces are Elite!
+2	I will become the supreme commander!
+3	Never get too close to the enemy!  Take them out from afar!
+4	Artillery mechs will always be versatile.
+
+	Hulu
+1	Destory.... everything....
+2	Scared of me?  Hehe 
+3	Fear me.  Run, hide, I will still come for you.
+4	FOR THE GLORY OF JONAH!
+
+	Jonah
+1	You cannot defeat me
+2	This world belongs to me
+3	I will take everything!
+4	What a useless bug you are!
+5	I enjoyed stepping on you

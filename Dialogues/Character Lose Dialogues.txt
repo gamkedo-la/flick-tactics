@@ -1,0 +1,31 @@
+	Character Lose Dialogues
+
+	Guru
+1	You are a great opponent, I concede
+2	I will learn much from this
+3	My speed couldn't keep up with you!
+4	I gave it my best
+
+	Zareem
+1	I disappointed you again, Guru
+2	I will get stronger!
+3	My Rifle Mechs got shredded
+4	Hmm, what would Guru want me to learn from this?
+
+	Taja
+1	This fight was too close range for me...
+2	Keep your distance in the next fight!
+3	You close the gap too quickly
+4	No, my dream of supreme commander...
+
+	Hulu
+1	I've failed you master!
+2	No, this can't be!
+3	I wasn't strong enough....
+4	You overcame your fears
+
+	Jonah
+1	You're a fool, defeat from me will be next
+2	Next time, I'll take everything of yours
+3	Watch out bug, I will come back for you
+4	I will enjoy squishing you below my feet in our next engagement
