@@ -40,8 +40,8 @@ function dialogueSetup(uiArray)
     dialogueFaceSize = 256.0 * (pixelSize/2.0);
     soldierFaceSprite = new Sprite(tr(vec2((gameWidth/12) + (38.0 * pixelSize), baseYPosition + (64.0 * pixelSize)), toVec2(pixelSize/2.0)), new ImageObject("images/soldierFace1.png"));
 
-    for(let i = 0; i < no_campaign.length; i++)
-        dialogues.push(no_campaign[i].dialogue);
+    /*for(let i = 0; i < no_campaign.length; i++)
+        dialogues.push(no_campaign[i].dialogue);*/
 
     dialogueSpeaker = new Label(tr(vec2(gameWidth/12, baseYPosition),
         vec2(gameWidth - (gameWidth/6), gameHeight/9)),
