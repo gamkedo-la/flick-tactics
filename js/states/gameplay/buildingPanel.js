@@ -146,33 +146,28 @@ function buildingPanelSetup() {
         ]));
 }
 
-function isTouchInsideBPanel()
-{
+//#region buildingpanel_helpers
+
+function isTouchInsideBPanel() {
     return buildingPanel.enabled
     && touchPos[0].x >= panelX && touchPos[0].x < panelX + panelW
     && touchPos[0].y >= panelY && touchPos[0].y < panelY + panelH;
 }
-
-function resetB()
-{
-    for(let i = 0; i < buildingPanelTabs.length; i++)
-    {
+function resetB() {
+    for(let i = 0; i < buildingPanelTabs.length; i++) {
         buildingPanelTabs[i].textButton.label.text = "";
         buildingPanelTabs[i].visible = false;
     }
-    for(let i = 0; i < buildingPanelLabels.length; i++)
-    {
+    for(let i = 0; i < buildingPanelLabels.length; i++) {
         buildingPanelLabels[i].text = "";
         buildingPanelLabels[i].visible = false;
     }
-    for(let i = 0; i < buildingPanelButtons.length; i++)
-    {
+    for(let i = 0; i < buildingPanelButtons.length; i++) {
         buildingPanelButtons[i].label.text = "";
         buildingPanelButtons[i].visible = false;
     }
 }
-function setBTab(index, text)
-{
+function setBTab(index, text) {
     if(text == "") buildingPanelTabs[index].visible = false;
     else
     {
@@ -180,8 +175,7 @@ function setBTab(index, text)
         buildingPanelTabs[index].textButton.label.text = text;
     }
 }
-function setBLabel(tabIndex, index, text)
-{
+function setBLabel(tabIndex, index, text) {
     var tIndex = (tabIndex * 3) + index;
     if(text == "") buildingPanelLabels[tIndex].visible = false;
     else
@@ -190,8 +184,7 @@ function setBLabel(tabIndex, index, text)
         buildingPanelLabels[tIndex].text = text;
     }
 }
-function setBButton(tabIndex, index, text, disabled = false)
-{
+function setBButton(tabIndex, index, text, disabled = false) {
     var tIndex = (tabIndex * 3) + index;
     if(text == "") buildingPanelButtons[tIndex].visible = false;
     else
@@ -205,13 +198,14 @@ function setBButton(tabIndex, index, text, disabled = false)
             buildingPanelButtons[tIndex].button.output = UIOUTPUT_RUNNING;
     }
 }
-function getBButton(tabIndex, index, type)
-{
+function getBButton(tabIndex, index, type) {
     var tIndex = (tabIndex * 3) + index;
     if(buildingPanelButtons[tIndex].visible && buildingPanelPrevSelected != null && buildingPanelPrevSelected.unit.type == type)
         return buildingPanelButtons[tIndex];
     return 0;
 }
+
+//#endregion
 
 function buildingPanelUpdate(buildingMapUnit) {
 
@@ -495,38 +489,36 @@ function buildingPanelEvent() {
             [2, 1, SUPPORT_MECH],
             [2, 2, TELEPORT_MECH]
         ];
-        for(let i = 0; i < mechToBuyBtn.length; i++)
-        {
+        for(let i = 0; i < mechToBuyBtn.length; i++) {
             var warBuilding_buyBtn = getBButton(mechToBuyBtn[i][0], mechToBuyBtn[i][1], WAR_BUILDING);
-            if (warBuilding_buyBtn != 0 && warBuilding_buyBtn.button.output == UIOUTPUT_SELECT)
-            {
+            if (warBuilding_buyBtn != 0 && warBuilding_buyBtn.button.output == UIOUTPUT_SELECT) {
                 var pos = buildingPanelPrevSelected.mapPosition;
-                if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, 1)))[0] == -1)
-                {
+                if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, 1)))[0] == -1) {
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
                     var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, 1)));
                     if(getPlayer().deployDelay) newMapUnit.unit.deployTime = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
+                    else newMapUnit.unit.rank = buildingMapUnit.unit.rank;
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
-                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(1, 0)))[0] == -1)
-                {
+                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(1, 0)))[0] == -1) {
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
                     var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(1, 0)));
                     if(getPlayer().deployDelay) newMapUnit.unit.deployTime = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
+                    else newMapUnit.unit.rank = buildingMapUnit.unit.rank;
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
-                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, -1)))[0] == -1)
-                {
+                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, -1)))[0] == -1) {
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
                     var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, -1)));
                     if(getPlayer().deployDelay) newMapUnit.unit.deployTime = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
+                    else newMapUnit.unit.rank = buildingMapUnit.unit.rank;
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
-                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(-1, 0)))[0] == -1)
-                {
+                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(-1, 0)))[0] == -1) {
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
                     var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(-1, 0)));
                     if(getPlayer().deployDelay) newMapUnit.unit.deployTime = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
+                    else newMapUnit.unit.rank = buildingMapUnit.unit.rank;
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
                 warBuilding_buyBtn.button.resetOutput();
@@ -549,8 +541,7 @@ function buildingPanelEvent() {
         }
     }
 
-    /*for(let i = 0; i < buildingPanelTabs.length; i++)
-    {
+    /*for(let i = 0; i < buildingPanelTabs.length; i++) {
         if(buildingPanelTabs[i].textButton.button.output == UIOUTPUT_HOVER) {
             if(buildingPanelTabs[i].textButton.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
@@ -559,8 +550,7 @@ function buildingPanelEvent() {
         }
     }*/
 
-    for(let i = 0; i < buildingPanelButtons.length; i++)
-    {
+    for(let i = 0; i < buildingPanelButtons.length; i++) {
         if(buildingPanelButtons[i].button.output == UIOUTPUT_HOVER) {
             if(buildingPanelButtons[i].button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);

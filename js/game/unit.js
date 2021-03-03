@@ -51,6 +51,7 @@ class Unit {
                 this.movementReducers = [MOUNTAIN_TILE];
                 this.ammo = -1;
                 this.deployTime = 0;
+                this.smokeAmmo = 1;
                 break;
 
             case CANNON_MECH:
@@ -59,6 +60,7 @@ class Unit {
                 this.movementReducers = [FOREST_TILE];
                 this.ammo = 3;
                 this.deployTime = 0;
+                this.boost = 0;
                 break;
 
             case ARTILLERY_MECH:
@@ -67,6 +69,7 @@ class Unit {
                 this.movementReducers = [FOREST_TILE];
                 this.ammo = 3;
                 this.deployTime = 0;
+                this.smokeAmmo = 1;
                 break;
 
             case SUPPORT_MECH:
@@ -254,7 +257,10 @@ class MapUnit {
                     new TileParticle(this.unit.position, unitDestroySequence);
 
                     //Game crash edgee case: when active player destroys its own unit
-                    if(manager.index == indexPair[0] && getPlayer().selectedIndex > i) getPlayer().selectedIndex--;
+                    if(manager.index == indexPair[0]) {
+                        if(getPlayer().selectedIndex > i) getPlayer().selectedIndex--;
+                        else if(getPlayer().selectedIndex == i) getPlayer().selectedIndex = getPlayer().getHQUnitIndex();
+                    }
 
                     manager.players[indexPair[0]].unitGroup.mapUnits.splice(i, 1);
                 }            

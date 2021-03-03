@@ -28,32 +28,32 @@ function updateUnitActionButtons() {
     switch (getPlayer().unitGroup.mapUnits[getPlayer().selectedIndex].unit.type) {
         case RIFLE_MECH:
             unitUpBtn.label.text = "MOVE";
-            unitLeftBtn.label.text = "SMOKE"; //no
+            unitLeftBtn.label.text = "SMOKE";
             unitRightBtn.label.text = "ATTACK";
             break;
 
         case CANNON_MECH:
-            unitUpBtn.label.text = "MOVE"; //push->no
-            unitLeftBtn.label.text = "BOOST"; //no
+            unitUpBtn.label.text = "MOVE";
+            unitLeftBtn.label.text = "BOOST";
             unitRightBtn.label.text = "ATTACK";
             break;
 
         case ARTILLERY_MECH:
             unitUpBtn.label.text = "MOVE";
-            unitLeftBtn.label.text = "SMOKE"; //no
-            unitRightBtn.label.text = "ATTACK"; //push
+            unitLeftBtn.label.text = "SMOKE";
+            unitRightBtn.label.text = "ATTACK";
             break;
 
         case SUPPORT_MECH:
             unitUpBtn.label.text = "MOVE";
-            unitLeftBtn.label.text = "SUPPLY"; //no
-            unitRightBtn.label.text = "REPAIR"; //no
+            unitLeftBtn.label.text = "SUPPLY";
+            unitRightBtn.label.text = "REPAIR";
             break;
 
         case TELEPORT_MECH:
             unitUpBtn.label.text = "MOVE";
-            unitLeftBtn.label.text = "TELEPORT"; //no
-            unitRightBtn.label.text = "TACKLE";
+            unitLeftBtn.label.text = "TELEPORT";
+            unitRightBtn.label.text = "SELF-DESTRUCT";
             break;
     }
 }

@@ -562,21 +562,45 @@ class GameMap {
                 break;
 
             case SUPPORT_MECH:
+                //repair
                 if (munit2 != -1) {
-                    this.battlescreenTransition(munit1, munit2);
-                    munit1.hp -= Math.floor((((munit1.hp + munit2.hp) / 2) / 10.0) * 2);
-                    munit2.hp -= Math.floor((munit1.hp / 10.0) * 4);
-
-                    //Support Mech's tackle pushes the mech
-                    if(!munit2.unit.isBuilding) munit2.mapPosition = munit2.mapPosition.add(placement);
+                    munit2.hp += Math.floor((munit1.hp / 10.0) * 2);
+                    if(munit2.hp > 10.0) munit2.hp = 10.0;
                 }
                 break;
 
             case TELEPORT_MECH:
-                if (munit2 != -1) {
-                    this.battlescreenTransition(munit1, munit2);
-                    munit2.hp -= Math.floor((munit1.hp / 10.0) * 2);
+                //self-destruct
+                var d1 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(vec2(1, 0)));
+                if(d1[0] != -1 && d1[1] != -1) {
+                    manager.players[d1[0]].unitGroup.mapUnits[d1[1]].hp -= Math.floor((munit1.hp / 10.0) * 4);
+                    if(!manager.players[d1[0]].unitGroup.mapUnits[d1[1]].unit.isBuilding)
+                        manager.players[d1[0]].unitGroup.mapUnits[d1[1]].mapPosition
+                            = manager.players[d1[0]].unitGroup.mapUnits[d1[1]].mapPosition.add(vec2(1, 0));
                 }
+                var d2 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(vec2(-1, 0)));
+                if(d2[0] != -1 && d2[1] != -1) {
+                    manager.players[d2[0]].unitGroup.mapUnits[d2[1]].hp -= Math.floor((munit1.hp / 10.0) * 4);
+                    if(!manager.players[d2[0]].unitGroup.mapUnits[d2[1]].unit.isBuilding)
+                        manager.players[d2[0]].unitGroup.mapUnits[d2[1]].mapPosition
+                            = manager.players[d2[0]].unitGroup.mapUnits[d2[1]].mapPosition.add(vec2(-1, 0));
+                }
+                var d3 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(vec2(0, 1)));
+                if(d3[0] != -1 && d3[1] != -1) {
+                    manager.players[d3[0]].unitGroup.mapUnits[d3[1]].hp -= Math.floor((munit1.hp / 10.0) * 4);
+                    if(!manager.players[d3[0]].unitGroup.mapUnits[d3[1]].unit.isBuilding)
+                        manager.players[d3[0]].unitGroup.mapUnits[d3[1]].mapPosition
+                            = manager.players[d3[0]].unitGroup.mapUnits[d3[1]].mapPosition.add(vec2(0, 1));
+                }
+                var d4 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(vec2(0, -1)));
+                if(d4[0] != -1 && d4[1] != -1) {
+                    manager.players[d4[0]].unitGroup.mapUnits[d4[1]].hp -= Math.floor((munit1.hp / 10.0) * 4);
+                    if(!manager.players[d4[0]].unitGroup.mapUnits[d4[1]].unit.isBuilding)
+                        manager.players[d4[0]].unitGroup.mapUnits[d4[1]].mapPosition
+                            = manager.players[d4[0]].unitGroup.mapUnits[d4[1]].mapPosition.add(vec2(0, -1));
+                }
+                munit1.hp = 0;
+                munit1.destroyTime = gameTime + 250;
                 break;
         }
     }
