@@ -339,56 +339,47 @@ function buildingPanelUpdate(buildingMapUnit) {
             setBLabel(0, 0, "Deploy New Mechs to attack the enemy and support the existing mechs.");
             setBLabel(0, 1, "ATTACK: Rifle, Cannon and Artillery. ABILITY: Support and Teleport.");
             if(buildingMapUnit.unit.boost == 0) {
-                setBLabel(0, 2, "Use BOOST to deploy a complete mech without any turn delay (Uses 1 AP, " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * buildingMapUnit.unit.rank)) + " Cooldown Turns).");
+                if(getPlayer().deployDelay) setBLabel(0, 2, "Use BOOST to deploy a complete mech without any turn delay (Uses 1 AP, " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * buildingMapUnit.unit.rank)) + " Cooldown Turns).");
+                else setBLabel(0, 2, "Use BOOST to deploy a max rank mech (Uses 1 AP, " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * buildingMapUnit.unit.rank)) + " Cooldown Turns).");
                 setBButton(0, 2, "Boost");
             } else {
                 setBLabel(0, 2, "It will take " + buildingMapUnit.unit.boost + " turn(s) before it can be boost can be used again.");
             }
 
             setBTab(1, "ATTACK MECHS");
-            setBLabel(1, 0, "RIFLE (" + MECHCOST[RIFLE_MECH] + "$): Light Weight but Less Attacking Power.");
-            setBLabel(1, 1, "CANNON (" + MECHCOST[CANNON_MECH] + "$): Heavy Weight with Immense Attacking Power.");
-            setBLabel(1, 2, "ARTILLERY (" + MECHCOST[ARTILLERY_MECH] + "$): Only Mech that can attack from a Long Distance.");
+            setBLabel(1, 0, "RIFLE (" + MECHCOST[RIFLE_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][RIFLE_MECH].toString() + " turn(s)" : "") + "): Light Weight but Less Attacking Power.");
+            setBLabel(1, 1, "CANNON (" + MECHCOST[CANNON_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][CANNON_MECH].toString() + " turn(s)" : "") + "): Heavy Weight with Immense Attacking Power.");
+            setBLabel(1, 2, "ARTILLERY (" + MECHCOST[ARTILLERY_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][ARTILLERY_MECH].toString() + " turn(s)" : "") + "): Only Mech that can attack from a Long Distance.");
 
-            if(getPlayer().money >= MECHCOST[RIFLE_MECH])
-                setBButton(1, 0, "Buy Rifle");
-            else
-                setBButton(1, 0, "insufficient cash", true);
-
-            if(getPlayer().money >= MECHCOST[CANNON_MECH])
-                setBButton(1, 1, "Buy Cannon");
-            else
-                setBButton(1, 1, "insufficient cash", true);
-
-            if(getPlayer().money >= MECHCOST[ARTILLERY_MECH])
-                setBButton(1, 2, "Buy Artillery");
-            else
-                setBButton(1, 2, "insufficient cash", true);
+            if(getPlayer().money >= MECHCOST[RIFLE_MECH]) setBButton(1, 0, "Buy Rifle");
+            else setBButton(1, 0, "insufficient cash", true);
+            if(getPlayer().money >= MECHCOST[CANNON_MECH]) setBButton(1, 1, "Buy Cannon");
+            else setBButton(1, 1, "insufficient cash", true);
+            if(getPlayer().money >= MECHCOST[ARTILLERY_MECH]) setBButton(1, 2, "Buy Artillery");
+            else setBButton(1, 2, "insufficient cash", true);
 
             setBTab(2, "ABILITY MECHS");
-            setBLabel(2, 0, "SUPPORT (" + MECHCOST[SUPPORT_MECH] + "$): Essential Mech that Provides Supply and Repair Buildings.");
-            setBLabel(2, 1, "TELEPORT (" + MECHCOST[TELEPORT_MECH] + "$): Fastest Mech with the Ability to Teleport same team mechs.");
+            setBLabel(2, 0, "SUPPORT (" + MECHCOST[SUPPORT_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][SUPPORT_MECH].toString() + " turn(s)" : "") + "): Essential Mech that Provides Supply and Repair Buildings.");
+            setBLabel(2, 1, "TELEPORT (" + MECHCOST[TELEPORT_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][TELEPORT_MECH].toString() + " turn(s)" : "") + "): Fastest Mech with the Ability to Teleport same team mechs.");
 
-            if(getPlayer().money >= MECHCOST[SUPPORT_MECH])
-                setBButton(2, 1, "Buy Support");
-            else
-                setBButton(2, 1, "insufficient cash", true);
-
-                if(getPlayer().money >= MECHCOST[TELEPORT_MECH])
-                setBButton(2, 2, "Buy Teleport");
-            else
-                setBButton(2, 2, "insufficient cash", true);
+            if(getPlayer().money >= MECHCOST[SUPPORT_MECH]) setBButton(2, 1, "Buy Support");
+            else setBButton(2, 1, "insufficient cash", true);
+            if(getPlayer().money >= MECHCOST[TELEPORT_MECH]) setBButton(2, 2, "Buy Teleport");
+            else setBButton(2, 2, "insufficient cash", true);
 
             setBTab(4, "RANK");
             if(buildingMapUnit.unit.rank < 3) {
                 setBLabel(4, 0, "Current War Building Rank: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
-                setBLabel(4, 1, "Mech Deploy Delay Turns AFTER UPGRADE: "
-                + "Rifle " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][RIFLE_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][RIFLE_MECH].toString()
-                + ", Cannon " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][CANNON_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][CANNON_MECH].toString()
-                + ", Artillery " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][ARTILLERY_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][ARTILLERY_MECH].toString()
-                + ", Support " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][SUPPORT_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][SUPPORT_MECH].toString()
-                + ", Teleport " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][TELEPORT_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][TELEPORT_MECH].toString()
-                + ".");
+                if(getPlayer().deployDelay)
+                    setBLabel(4, 1, "Mech Deploy Delay Turns AFTER UPGRADE: "
+                    + "Rifle " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][RIFLE_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][RIFLE_MECH].toString()
+                    + ", Cannon " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][CANNON_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][CANNON_MECH].toString()
+                    + ", Artillery " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][ARTILLERY_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][ARTILLERY_MECH].toString()
+                    + ", Support " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][SUPPORT_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][SUPPORT_MECH].toString()
+                    + ", Teleport " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][TELEPORT_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][TELEPORT_MECH].toString()
+                    + ".");
+                else
+                    setBLabel(4, 1, "Mech Deploy Rank AFTER UPGRADE: " + buildingMapUnit.unit.rank.toString() + "->" + (buildingMapUnit.unit.rank+1).toString() + ".");
                 setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * (buildingMapUnit.unit.rank + 1))) + ".");
                 
                 if(getPlayer().money >= buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank))
