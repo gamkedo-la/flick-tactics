@@ -50,7 +50,7 @@ class PlayerManager {
 
             //Money Increases (receives city building income)
             if(mapUnit.unit.isBuilding && typeof mapUnit.unit.incomePerHp != "undefined") {
-                this.getActivePlayer().money += (mapUnit.hp * (mapUnit.unit.incomePerHp + (mapUnit.unit.incomePerHp * mapUnit.unit.incomeRankMultiplier * mapUnit.unit.rank)));
+                this.getActivePlayer().money += (mapUnit.hp * (mapUnit.unit.incomePerHp + (mapUnit.unit.incomePerHp * mapUnit.unit.incomeRankMultiplier * mapUnit.unit.rank))) * (mapUnit.unit.boost == 1 ? 2 : 1);
             }
 
             //Deploy Time Decreases
@@ -61,6 +61,21 @@ class PlayerManager {
 
             //Clearing Disabled Actions
             mapUnit.clearDisabledActions();
+
+            //Cannon Mech Boost Regulation
+            if(mapUnit.unit.type == CANNON_MECH) {
+                if(mapUnit.unit.boost == 1) {
+                    mapUnit.unit.movement -= mapUnit.unit.boostMovement;
+                    mapUnit.unit.boost = -(mapUnit.unit.boostCooldown - (mapUnit.unit.boostCooldownDecreasePerRank * mapUnit.unit.rank));
+                }
+                else if(mapUnit.unit.boost < 0) mapUnit.unit.boost++;
+            }
+
+            //Buildings Boost Regulation
+            if(mapUnit.unit.isBuilding && typeof mapUnit.unit.boost != "undefined") {
+                if(mapUnit.unit.boost == 1) mapUnit.unit.boost = -(mapUnit.unit.boostCooldown - (mapUnit.unit.boostCooldownDecreasePerRank * mapUnit.unit.rank));
+                else if(mapUnit.unit.boost < 0) mapUnit.unit.boost++;
+            }
         });
 
         //All Players HQ are reselected

@@ -51,25 +51,32 @@ class Unit {
                 this.movementReducers = [MOUNTAIN_TILE];
                 this.ammo = -1;
                 this.deployTime = 0;
-                this.smokeAmmo = 1;
+                this.smokeAmmoCapacity = 1;
+                this.smokeAmmo = this.smokeAmmoCapacity;
                 break;
 
             case CANNON_MECH:
-                this.movement = 2; //+2 on boost
+                this.movement = 2;
+                this.boostMovement = 2;
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
-                this.ammo = 3;
+                this.ammoCapacity = 3;
+                this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
                 this.boost = 0;
+                this.boostCooldown = 5;
+                this.boostCooldownDecreasePerRank = 1;
                 break;
 
             case ARTILLERY_MECH:
                 this.movement = 2;
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
-                this.ammo = 3;
+                this.ammoCapacity = 3;
+                this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
-                this.smokeAmmo = 1;
+                this.smokeAmmoCapacity = 1;
+                this.smokeAmmo = this.smokeAmmoCapacity;
                 break;
 
             case SUPPORT_MECH:
@@ -84,7 +91,8 @@ class Unit {
                 this.movement = 5;
                 this.movementObstacles = [MOUNTAIN_TILE];
                 this.movementReducers = [];
-                this.ammo = 6;
+                this.ammoCapacity = 6;
+                this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
                 break;
 
@@ -150,7 +158,9 @@ class Unit {
         else if (this.isBuilding) {
             drawSheet(getTeamIndex(this.type, teamID), offset.add(this.position), scale);
         }
+    }
 
+    drawIndicators(offset, scale) {
         if(this.rank > 0) {
             drawSheet(56 + ((this.rank - 1) * 20), offset.add(this.position), scale);
         }
@@ -218,18 +228,32 @@ class MapUnit {
         }
         
         //Unit Draw
-        if(this.mapPathIndex > -1) this.unit.draw(teamID, offset, sc, this.flip, ANIM_MECH_WALK);
-        else { //Darken(multiply draw) the unit if they have moved or they can't move anymore.
+        if(this.mapPathIndex > -1)
+            this.unit.draw(teamID, offset, sc, this.flip, ANIM_MECH_WALK);
+        else {
+            //Darken(multiply draw) the unit if they have moved or they can't move anymore.
+            //OR Brighten(overlay draw) the unit if they are boosted!
             if(this.up == -1 || getPlayer().actionPoints <= 0) {
                 renderer.globalAlpha = 1.0;
                 renderer.globalCompositeOperation = "multiply";
             }
+            else if(gameTime % 600 < 300 && typeof this.unit.boost != "undefined" && this.unit.boost >= 1) {
+                renderer.globalAlpha = 1.0;
+                renderer.globalCompositeOperation = "overlay";
+            }
+
             this.unit.draw(teamID, offset, sc, this.flip);
+
             if(this.up == -1 || getPlayer().actionPoints <= 0) {
                 renderer.globalAlpha = 1.0;
                 renderer.globalCompositeOperation = "source-over";
             }
+            else if(gameTime % 600 < 300 && typeof this.unit.boost != "undefined" && this.unit.boost >= 1) {
+                renderer.globalAlpha = 1.0;
+                renderer.globalCompositeOperation = "source-over";
+            }
         }
+        this.unit.drawIndicators(offset, sc);
 
         //Destroy Units if they are on sea (exception: teleport mech)
         if(map.getTileTypeFromPosition(this.mapPosition) == SEA_TILE && this.hp > 0) {

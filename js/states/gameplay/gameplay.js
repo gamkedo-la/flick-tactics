@@ -101,8 +101,19 @@ function gameplayUIDisplayUpdate() {
     if (unitUpBtn.button.output != UIOUTPUT_SELECT) unitUpBtn.button.output = getPlayer().getSelectedMapUnit().up == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
     if (unitLeftBtn.button.output != UIOUTPUT_SELECT) unitLeftBtn.button.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
     if (unitRightBtn.button.output != UIOUTPUT_SELECT) unitRightBtn.button.output = getPlayer().getSelectedMapUnit().right == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (getPlayer().actionPoints <= 0) unitUpBtn.button.output = unitLeftBtn.button.output = unitRightBtn.button.output = UIOUTPUT_DISABLED;
-    else if(getPlayer().getSelectedMapUnit().unit.ammo == 0) unitRightBtn.button.output = UIOUTPUT_DISABLED;
+    
+    if (getPlayer().actionPoints <= 0)
+        unitUpBtn.button.output = unitLeftBtn.button.output
+        = unitRightBtn.button.output = UIOUTPUT_DISABLED;
+    
+    if (getPlayer().getSelectedMapUnit().unit.ammo == 0
+    || isTileOnSmoke(getPlayer().getSelectedMapUnit().mapPosition))
+        unitRightBtn.button.output = UIOUTPUT_DISABLED;
+    
+    if ((getPlayer().getSelectedMapUnit().unit.type == RIFLE_MECH
+    || getPlayer().getSelectedMapUnit().unit.type == ARTILLERY_MECH)
+    && getPlayer().getSelectedMapUnit().unit.smokeAmmo == 0)
+        unitLeftBtn.button.output = UIOUTPUT_DISABLED;
 }
 
 function gameplayUpdate(deltaTime) {

@@ -307,9 +307,12 @@ function buildingPanelUpdate(buildingMapUnit) {
 
             if(buildingMapUnit.unit.boost == 0) {
                 setBLabel(0, 2, "Use BOOST to get 2 times the income for a turn (Uses 1 AP, " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * buildingMapUnit.unit.rank)) + " Cooldown Turns).");
-                setBButton(0, 2, "Boost");
+                if(getPlayer().actionPoints > 0) setBButton(0, 2, "Boost");
+                else setBButton(0, 2, "No AP", true);
+            } else if (buildingMapUnit.unit.boost < 0) {
+                setBLabel(0, 2, "It will take " + (-buildingMapUnit.unit.boost).toString() + " turn(s) before it can be boost can be used again.");
             } else {
-                setBLabel(0, 2, "It will take " + buildingMapUnit.unit.boost + " turn(s) before it can be boost can be used again.");
+                setBLabel(0, 2, "BOOSTED: You will receive twice the income for a turn!");
             }
 
             setBTab(4, "RANK");
@@ -335,9 +338,12 @@ function buildingPanelUpdate(buildingMapUnit) {
             if(buildingMapUnit.unit.boost == 0) {
                 if(getPlayer().deployDelay) setBLabel(0, 2, "Use BOOST to deploy a complete mech without any turn delay (Uses 1 AP, " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * buildingMapUnit.unit.rank)) + " Cooldown Turns).");
                 else setBLabel(0, 2, "Use BOOST to deploy a max rank mech (Uses 1 AP, " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * buildingMapUnit.unit.rank)) + " Cooldown Turns).");
-                setBButton(0, 2, "Boost");
+                if(getPlayer().actionPoints > 0) setBButton(0, 2, "Boost");
+                else setBButton(0, 2, "No AP", true);
+            } else if(buildingMapUnit.unit.boost < 0) {
+                setBLabel(0, 2, "It will take " + (-buildingMapUnit.unit.boost).toString() + " turn(s) before it can be boost can be used again.");
             } else {
-                setBLabel(0, 2, "It will take " + buildingMapUnit.unit.boost + " turn(s) before it can be boost can be used again.");
+                setBLabel(0, 2, "BOOSTED: " + (getPlayer().deployDelay ? "Build a complete mech without any turn delay!" : "Build a max rank mech!"));
             }
 
             setBTab(1, "ATTACK MECHS");
@@ -482,6 +488,14 @@ function buildingPanelEvent() {
         }
 
         // WAR BUILDING EVENTS
+        var warBuilding_boostBtn = getBButton(0, 2, WAR_BUILDING);
+        if(warBuilding_boostBtn != 0 && warBuilding_boostBtn.button.output == UIOUTPUT_SELECT) {
+            getPlayer().actionPoints--;
+            if(buildingMapUnit.unit.boost == 0)
+                buildingMapUnit.unit.boost = 1;
+            warBuilding_boostBtn.button.resetOutput();
+        }
+
         var mechToBuyBtn = [
             [1, 0, RIFLE_MECH],
             [1, 1, CANNON_MECH],
@@ -493,32 +507,30 @@ function buildingPanelEvent() {
             var warBuilding_buyBtn = getBButton(mechToBuyBtn[i][0], mechToBuyBtn[i][1], WAR_BUILDING);
             if (warBuilding_buyBtn != 0 && warBuilding_buyBtn.button.output == UIOUTPUT_SELECT) {
                 var pos = buildingPanelPrevSelected.mapPosition;
-                if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, 1)))[0] == -1) {
+                var newMapUnit = null;
+                if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, 1)))[0] == -1)
+                    newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, 1)));
+                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(1, 0)))[0] == -1)
+                    newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(1, 0)));
+                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, -1)))[0] == -1)
+                    newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, -1)));
+                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(-1, 0)))[0] == -1)
+                    newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(-1, 0)));
+                if(newMapUnit != null) {
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
-                    var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, 1)));
-                    if(getPlayer().deployDelay) newMapUnit.unit.deployTime = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
+
+                    //Deploy Delay Effect
+                    if(getPlayer().deployDelay) newMapUnit.unit.deployTime
+                        = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
                     else newMapUnit.unit.rank = buildingMapUnit.unit.rank;
-                    getPlayer().unitGroup.mapUnits.push(newMapUnit);
-                }
-                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(1, 0)))[0] == -1) {
-                    getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
-                    var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(1, 0)));
-                    if(getPlayer().deployDelay) newMapUnit.unit.deployTime = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
-                    else newMapUnit.unit.rank = buildingMapUnit.unit.rank;
-                    getPlayer().unitGroup.mapUnits.push(newMapUnit);
-                }
-                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, -1)))[0] == -1) {
-                    getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
-                    var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, -1)));
-                    if(getPlayer().deployDelay) newMapUnit.unit.deployTime = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
-                    else newMapUnit.unit.rank = buildingMapUnit.unit.rank;
-                    getPlayer().unitGroup.mapUnits.push(newMapUnit);
-                }
-                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(-1, 0)))[0] == -1) {
-                    getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
-                    var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(-1, 0)));
-                    if(getPlayer().deployDelay) newMapUnit.unit.deployTime = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
-                    else newMapUnit.unit.rank = buildingMapUnit.unit.rank;
+
+                    //Boosted Unit Build
+                    if(buildingMapUnit.unit.boost == 1) {
+                        if(getPlayer().deployDelay) newMapUnit.unit.deployTime = 0;
+                        else newMapUnit.unit.rank = 3; //3 is max rank
+                        buildingMapUnit.unit.boost = 0;
+                    }
+
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
                 warBuilding_buyBtn.button.resetOutput();
@@ -533,6 +545,14 @@ function buildingPanelEvent() {
         }
 
         // CITY BUILDING EVENTS
+        var cityBuilding_boostBtn = getBButton(0, 2, CITY_BUILDING);
+        if(cityBuilding_boostBtn != 0 && cityBuilding_boostBtn.button.output == UIOUTPUT_SELECT) {
+            getPlayer().actionPoints--;
+            if(buildingMapUnit.unit.boost == 0)
+                buildingMapUnit.unit.boost = 1;
+            cityBuilding_boostBtn.button.resetOutput();
+        }
+
         var cityBuilding_upgradeBtn = getBButton(4, 2, CITY_BUILDING);
         if(cityBuilding_upgradeBtn != 0 && cityBuilding_upgradeBtn.button.output == UIOUTPUT_SELECT) {
             getPlayer().money -= buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank);

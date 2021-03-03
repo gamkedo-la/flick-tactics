@@ -257,6 +257,9 @@ class GameMap {
         else if (getPlayer().getSelectedMapUnit().right == 0) {
             map.drawUnitAttack(cam, getPlayer().getSelectedMapUnit());
         }
+        else if (getPlayer().getSelectedMapUnit().left == 0) {
+            map.drawUnitSpecial(cam, getPlayer().getSelectedMapUnit());
+        }
     }
 
     //#endregion
@@ -405,7 +408,6 @@ class GameMap {
     }
 
     drawUnitMovement(offset, mapUnit) {
-
         for (let y = -mapUnit.unit.movement; y <= mapUnit.unit.movement; y++) {
             for (let x = -mapUnit.unit.movement; x <= mapUnit.unit.movement; x++) {
 
@@ -636,6 +638,123 @@ class GameMap {
 
     //#endregion
 
+    //#region unit_special
+
+    drawUnitSpecial(offset, mapUnit) {
+        var skipRange = mapUnit.unit.type == TELEPORT_MECH ? 1 : 0;
+        var range = mapUnit.unit.type == TELEPORT_MECH ? 5 : 1;
+        for (let y = -range; y <= range; y++) {
+            for (let x = -range; x <= range; x++) {
+
+                if (Math.abs(x) + Math.abs(y) > range
+                    || Math.abs(x) + Math.abs(y) <= skipRange
+                    || (x == 0 && y == 0))
+                    continue;
+
+                var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * tileSize) + ((mapUnit.mapPosition.x + x) * tileGap)),
+                    Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * tileSize) + ((mapUnit.mapPosition.y + y) * tileGap)));
+
+                drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
+                    vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true,
+                    (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#0000FFBB" : "#0000FF88");
+            }
+        }
+    }
+
+    special(munit1, munit2, placement) {
+
+        switch (munit1.unit.type) {
+            case RIFLE_MECH:
+                if (munit1.unit.smokeAmmo > 0) {
+                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(1, 0))))
+                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(1, 0))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
+                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(-1, 0))))
+                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(-1, 0))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
+                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(0, 1))))
+                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(0, 1))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
+                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(0, -1))))
+                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(0, -1))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
+                    munit1.unit.smokeAmmo--;
+                }
+                break;
+
+            case CANNON_MECH:
+                if (munit1.unit.boost == 0) {
+                    munit1.unit.boost = 1;
+                    munit1.unit.movement += munit1.unit.boostMovement;
+                }
+                break;
+
+            case ARTILLERY_MECH:
+                if (munit1.unit.smokeAmmo > 0) {
+
+                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(1, 0))))
+                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(1, 0))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
+                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(-1, 0))))
+                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(-1, 0))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
+                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(0, 1))))
+                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(0, 1))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
+                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(0, -1))))
+                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(0, -1))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
+                    munit1.unit.smokeAmmo--;
+                }
+                break;
+
+            case SUPPORT_MECH:
+                //support
+                if (munit2 != -1 && !munit2.unit.isBuilding) {
+                    if(typeof munit2.unit.ammoCapacity != "undefined") munit2.unit.ammo = munit2.unit.ammoCapacity;
+                    if(typeof munit2.unit.smokeAmmoCapacity != "undefined") munit2.unit.smokeAmmo = munit2.unit.smokeAmmoCapacity;
+                }
+                break;
+
+            case TELEPORT_MECH:
+                //teleport
+                //NONE!
+                break;
+        }
+    }
+
+    eventUnitSpecial(mapUnit) {
+
+        if(mapUnit.unit.type == RIFLE_MECH
+        || mapUnit.unit.type == ARTILLERY_MECH
+        || mapUnit.unit.type == CANNON_MECH) {
+            this.special(mapUnit, -1, vec2());
+            mapUnit.left = -1;
+            return true;
+        }
+
+        if (isTouched) {
+            isTouched = false;
+            var skipRange = mapUnit.unit.type == TELEPORT_MECH ? 1 : 0;
+            var range = mapUnit.unit.type == TELEPORT_MECH ? 5 : 1;
+            for (let y = -range; y <= range; y++) {
+                for (let x = -range; x <= range; x++) {
+
+                    if (Math.abs(x) + Math.abs(y) > range
+                        || Math.abs(x) + Math.abs(y) <= skipRange
+                        || (x == 0 && y == 0))
+                        continue;
+
+                    if (this.cursorTile.x == mapUnit.mapPosition.x + x
+                        && this.cursorTile.y == mapUnit.mapPosition.y + y) {
+                        var playerAndUnit = manager.getPlayerAndUnitIndexOnTile(this.cursorTile);
+                        if (playerAndUnit[0] != -1 && playerAndUnit[1] != -1)
+                            this.special(mapUnit, manager.players[playerAndUnit[0]].unitGroup.mapUnits[playerAndUnit[1]], vec2(x, y));
+                        else
+                            this.special(mapUnit, -1, vec2(x, y));
+                        mapUnit.left = -1;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    //#endregion
+
     event() {
         //Unit Action Event End Point
         if (getPlayer().getSelectedMapUnit().up == 0) { //Move
@@ -645,6 +764,11 @@ class GameMap {
         }
         else if (getPlayer().getSelectedMapUnit().right == 0) { //Attack
             if (this.eventUnitAttack(getPlayer().getSelectedMapUnit())) {
+                getPlayer().actionPoints--;
+            }
+        }
+        else if (getPlayer().getSelectedMapUnit().left == 0) { //Special
+            if (this.eventUnitSpecial(getPlayer().getSelectedMapUnit())) {
                 getPlayer().actionPoints--;
             }
         }

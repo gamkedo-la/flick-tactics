@@ -22,6 +22,7 @@ var fireSequence = [
 const FOREST_FIRE_TURNS = 4;
 const AFTER_FOREST_SMOKE_TURNS = 3;
 const SAND_SMOKE_TURNS = 2;
+const MECH_SMOKE_TURNS = 3;
 
 var particles = [];
 
