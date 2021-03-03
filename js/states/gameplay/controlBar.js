@@ -38,6 +38,18 @@ function controlBarUIUpdate() {
     actionPointsLabel.text = "AP: " + getPlayer().actionPoints.toString();
 }
 
+function stepBackAction() {
+    if(getPlayer().getSelectedMapUnit().up == 0)
+        getPlayer().getSelectedMapUnit().up = 1;
+    else if(getPlayer().getSelectedMapUnit().left == 0)
+        getPlayer().getSelectedMapUnit().left = 1;
+    else if(getPlayer().getSelectedMapUnit().right == 0)
+        getPlayer().getSelectedMapUnit().right = 1;
+    else
+        return false;
+    return true;
+}
+
 function controlBarUIEvents() {
     switch (controlHomeBtn.button.output)
     {
@@ -57,6 +69,21 @@ function controlBarUIEvents() {
             else manager.endTurn();
 
             controlHomeBtn.button.resetOutput();
+    }
+    switch (resetTurnBtn.button.output)
+    {
+        case UIOUTPUT_HOVER:
+            if(resetTurnBtn.button.hoverTrigger)
+            {
+                playSFX(SFX_BUTTON_HOVER);
+                resetTurnBtn.button.hoverTrigger = false;
+            }
+            break;
+
+        case UIOUTPUT_SELECT:
+            playSFX(SFX_BUTTON_CLICK);
+            stepBackAction();
+            resetTurnBtn.button.resetOutput();
     }
 }
 

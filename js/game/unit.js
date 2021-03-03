@@ -57,7 +57,7 @@ class Unit {
                 this.movement = 2; //+2 on boost
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
-                this.ammo = -1;
+                this.ammo = 3;
                 this.deployTime = 0;
                 break;
 
@@ -65,7 +65,7 @@ class Unit {
                 this.movement = 2;
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
-                this.ammo = -1;
+                this.ammo = 3;
                 this.deployTime = 0;
                 break;
 
@@ -81,7 +81,7 @@ class Unit {
                 this.movement = 5;
                 this.movementObstacles = [MOUNTAIN_TILE];
                 this.movementReducers = [];
-                this.ammo = -1;
+                this.ammo = 6;
                 this.deployTime = 0;
                 break;
 
@@ -162,6 +162,10 @@ class MapUnit {
     constructor(type, mapPos) {
         this.mapPosition = mapPos;
 
+        //RECORD MAP TILE POSITION FOR RESET!
+        this.mapPositionAtStartTurn = this.mapPosition;
+        this.prevMapPosition = this.mapPosition;
+
         this.mapPathIndex = -1;
         this.mapPath = [];
 
@@ -169,6 +173,7 @@ class MapUnit {
         this.unit = new Unit(type, pos);
 
         this.hp = 10.0;
+        this.destroyTime = gameTime;
 
         this.flip = false;
 
@@ -177,6 +182,7 @@ class MapUnit {
 
     clearDisabledActions() {
         this.up = this.left = this.right = 1;
+        if(this.unit.ammo == 0) this.right = -1;
     }
 
     getCameraPosition() {
@@ -208,31 +214,48 @@ class MapUnit {
             }
         }
         
+        //Unit Draw
         if(this.mapPathIndex > -1) this.unit.draw(teamID, offset, sc, this.flip, ANIM_MECH_WALK);
-        else {
-            if(this.up == -1 || this.right == -1 || this.left == -1) {
+        else { //Darken(multiply draw) the unit if they have moved or they can't move anymore.
+            if(this.up == -1 || getPlayer().actionPoints <= 0) {
                 renderer.globalAlpha = 1.0;
                 renderer.globalCompositeOperation = "multiply";
             }
             this.unit.draw(teamID, offset, sc, this.flip);
-            if(this.up == -1 || this.right == -1 || this.left == -1) {
+            if(this.up == -1 || getPlayer().actionPoints <= 0) {
                 renderer.globalAlpha = 1.0;
                 renderer.globalCompositeOperation = "source-over";
             }
         }
 
+        //Destroy Units if they are on sea (exception: teleport mech)
+        if(map.getTileTypeFromPosition(this.mapPosition) == SEA_TILE && this.hp > 0) {
+            if(this.unit.type == CANNON_MECH || this.unit.type == ARTILLERY_MECH
+            || this.unit.type == RIFLE_MECH || this.unit.type == SUPPORT_MECH)
+            {
+                this.hp = 0;
+                this.destroyTime = gameTime + 500;
+            }
+        }
+
+        //Unit Status
         if (this.hp > 0 && this.unit.type != RUIN_BUILDING) {
             if (ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
                 spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
-                drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-29.6 * pixelSize, -14.6 * pixelSize))), "black");
-                drawText(spritesRenderer, this.hp.toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
+                drawText(spritesRenderer, Math.floor(this.hp).toString(), offset.add(this.unit.position.add(vec2(-29.6 * pixelSize, -14.6 * pixelSize))), "black");
+                drawText(spritesRenderer, Math.floor(this.hp).toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
             }
-        } else if (this.hp <= 0 && ui.stateIndex != BATTLESCREEN) {
+        } else if (this.hp <= 0 && ui.stateIndex != BATTLESCREEN && this.destroyTime < gameTime) {
             //Destroying/Removing a Unit
             var indexPair = manager.getPlayerAndUnitIndexOnTile(this.mapPosition);
             for(var i = 0; i < manager.players[indexPair[0]].unitGroup.mapUnits.length; i++) { 
+
                 if (manager.players[indexPair[0]].unitGroup.mapUnits[i] === manager.players[indexPair[0]].unitGroup.mapUnits[indexPair[1]]) {            
                     new TileParticle(this.unit.position, unitDestroySequence);
+
+                    //Game crash edgee case: when active player destroys its own unit
+                    if(manager.index == indexPair[0] && getPlayer().selectedIndex > i) getPlayer().selectedIndex--;
+
                     manager.players[indexPair[0]].unitGroup.mapUnits.splice(i, 1);
                 }            
             }
@@ -253,7 +276,7 @@ class MapUnit {
         this.unit.draw(teamID, vec2(), sc, this.flip);
     }
 
-    //Destroy Map Unit on Mountain/River/Toxic/etc.
+    //Destroy Map Unit on Mountain/Water/Toxic/etc.
     //getTileTypeFromPosition(pos)
 }
 

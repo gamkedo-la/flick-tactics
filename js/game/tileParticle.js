@@ -19,8 +19,8 @@ var fireSequence = [
     {index: 99, duration: 600},
 ];
 
-const FOREST_FIRE_TURNS = 6;
-const AFTER_FOREST_SMOKE_TURNS = 4;
+const FOREST_FIRE_TURNS = 4;
+const AFTER_FOREST_SMOKE_TURNS = 3;
 const SAND_SMOKE_TURNS = 2;
 
 var particles = [];

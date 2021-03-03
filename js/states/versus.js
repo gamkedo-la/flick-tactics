@@ -183,7 +183,7 @@ function versusEvent(deltaTime) {
                     versusUserAIToggleBtn.button.btnColor = versusUserAIToggleBtn.button.defColor = "#66660066";
                     break;
                 case 1:
-                    versusUserAIToggleBtn.label.text = "AI";
+                    versusUserAIToggleBtn.label.text = "AI (Work in Progress)";
                     versusUserAIToggleBtn.button.btnColor = versusUserAIToggleBtn.button.defColor = "#00666666";
                     break;
                 case -1:
@@ -218,7 +218,7 @@ function versusEvent(deltaTime) {
                     break;
                 case 0:
                     pl.control = 1;
-                    versusUserAIToggleBtn.label.text = "AI";
+                    versusUserAIToggleBtn.label.text = "AI (Work in Progress)";
                     versusUserAIToggleBtn.button.btnColor = versusUserAIToggleBtn.button.defColor = "#00666666";
                     break;
                 case 1:

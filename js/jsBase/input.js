@@ -111,6 +111,12 @@ function onMouseUp(ev) {
     userInteracted = true;
 }
 
+function onRightClick(ev) {
+    ev.preventDefault();
+    isRightClick = true;
+    return false;
+}
+
 function onMouseWheelScroll(ev) {
     wheelScroll = ev.deltaY;
 }
@@ -144,6 +150,7 @@ function inputSetup() {
     window.addEventListener("mousedown", onMouseDown);
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
+    window.addEventListener("contextmenu", onRightClick, false);
 
     window.addEventListener("wheel", onMouseWheelScroll);
     window.addEventListener("keydown", onKeyDown);

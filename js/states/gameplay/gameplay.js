@@ -30,7 +30,6 @@ function gameplayUISetup() {
         new Label(tr(), "<<"),
         new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
     gameplay.push(leftUnitChangeBtn);
-
     rightUnitChangeBtn = new TextButton(tr(vec2(gameWidth - (50 * pixelSize), gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
         new Label(tr(), ">>"),
         new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
@@ -57,8 +56,8 @@ function gameplaySetup() {
 
     cam = vec2(Math.floor((gameWidth / maxDisplayTilesPerRow) / 2), Math.floor((gameWidth / maxDisplayTilesPerRow) / 2));
 
+    gameplayUISetup();
     updateUnitActionButtons();
-
     gameplayReset();
 }
 
@@ -103,6 +102,7 @@ function gameplayUIDisplayUpdate() {
     if (unitLeftBtn.button.output != UIOUTPUT_SELECT) unitLeftBtn.button.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
     if (unitRightBtn.button.output != UIOUTPUT_SELECT) unitRightBtn.button.output = getPlayer().getSelectedMapUnit().right == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
     if (getPlayer().actionPoints <= 0) unitUpBtn.button.output = unitLeftBtn.button.output = unitRightBtn.button.output = UIOUTPUT_DISABLED;
+    else if(getPlayer().getSelectedMapUnit().unit.ammo == 0) unitRightBtn.button.output = UIOUTPUT_DISABLED;
 }
 
 function gameplayUpdate(deltaTime) {
@@ -122,6 +122,17 @@ function gameplayUpdate(deltaTime) {
 function gameplayEvent(deltaTime) {
     controlBarUIEvents();
     overviewUIEvents();
+
+    if(isRightClick) {
+        if(!stepBackAction()
+        && getPlayer().selectedIndex != getPlayer().getHQUnitIndex()
+        && getPlayer().getHQUnitIndex() != -1)
+            getPlayer().selectedIndex = getPlayer().getHQUnitIndex();
+    }
+    if(getPlayer().getSelectedMapUnit().up == 0 || getPlayer().getSelectedMapUnit().left == 0 || getPlayer().getSelectedMapUnit().right == 0)
+        resetTurnBtn.label.text = "Cancel";
+    else
+        resetTurnBtn.label.text = "Reset";
 
     //Gameplay UI Button Events
     if (leftUnitChangeBtn.button.output == UIOUTPUT_SELECT) {

@@ -72,6 +72,7 @@ function frame() {
         inputTimer -= deltaTime;
         gameTime += deltaTime;
         if(ui.stateIndex != EDITOR) isTouched = false;
+        isRightClick = false;
     }
     setTimeout(frame, 15);
 }

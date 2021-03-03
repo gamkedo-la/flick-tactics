@@ -60,6 +60,8 @@ var maps = [
 
 var currentMapIndex = 0;
 
+//#region map_helpers
+
 function drawSheet(index, pos, sc, tileSize) {
     if (typeof tileSize == "undefined") tileSize = vec2(64, 64);
     var cols = Math.floor((gameSheet.imageObject.image.width - 20) / tileSize.x);
@@ -87,6 +89,8 @@ function tilePositionToPixelPosition(tilePos) {
     return vec2(Math.floor((tilePos.x * tileSize) + (tilePos.x * tileGap)),
         Math.floor((tilePos.y * tileSize) + (tilePos.y * tileGap)));
 }
+
+//#endregion
 
 class GameMap {
     constructor(mapString) {
@@ -133,6 +137,8 @@ class GameMap {
 
         this.cursorTile = vec2(0, 0);
     }
+
+    //#region map_getters
 
     getMapString(manager) {
         var mapString = "";
@@ -183,6 +189,10 @@ class GameMap {
     setTileTypeFromPosition(pos, type) {
         this.indexes[pos.x + (pos.y * MAP_SIZE.x)] = type;
     }
+
+    //#endregion
+
+    //#region map_draw
 
     drawInRect(pos, size) {
         tileSize = size.x / MAP_SIZE.x;
@@ -249,11 +259,9 @@ class GameMap {
         }
     }
 
-    //UNIT MOVEMENT START // //
+    //#endregion
 
-    //
-
-    //
+    //#region unit_movement
 
     isTileMovementObstacleToMapUnit(mapUnit, tilePosition) {
         var tileType = this.getTileTypeFromPosition(tilePosition);
@@ -461,17 +469,9 @@ class GameMap {
         mapUnit.up = -1;
     }
 
-    //
+    //#endregion
 
-    //
-
-    //UNIT MOVEMENT END // //
-
-    //UNIT ATTACK START // //
-
-    //
-
-    //
+    //#region unit_attack
 
     drawUnitAttack(offset, mapUnit) {
         var skipRange = mapUnit.unit.type == ARTILLERY_MECH ? 2 : 0;
@@ -503,6 +503,9 @@ class GameMap {
     }
 
     attack(munit1, munit2, placement) {
+
+        if(munit1.unit.ammo > 0) munit1.unit.ammo--;
+
         switch (munit1.unit.type) {
             case RIFLE_MECH:
                 if (munit2 != -1) {
@@ -607,11 +610,7 @@ class GameMap {
         return false;
     }
 
-    //
-
-    //
-
-    //UNIT ATTACK END // //
+    //#endregion
 
     event() {
         //Unit Action Event End Point
