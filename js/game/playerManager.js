@@ -76,6 +76,12 @@ class PlayerManager {
                 if(mapUnit.unit.boost == 1) mapUnit.unit.boost = -(mapUnit.unit.boostCooldown - (mapUnit.unit.boostCooldownDecreasePerRank * mapUnit.unit.rank));
                 else if(mapUnit.unit.boost < 0) mapUnit.unit.boost++;
             }
+
+            //Fire and Toxic Tile Damage
+            if(map.getTileTypeFromPosition(mapUnit.mapPosition) == TOXIC_TILE || isTileOnFire(mapUnit.mapPosition)) {
+                if(mapUnit.unit.rank >= 3) mapUnit.hp -= 1.0;
+                else mapUnit.hp -= 2.0;
+            }
         });
 
         //All Players HQ are reselected

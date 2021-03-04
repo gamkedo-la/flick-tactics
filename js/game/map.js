@@ -65,7 +65,6 @@ var currentMapIndex = 0;
 function drawSheet(index, pos, sc, tileSize) {
     if (typeof tileSize == "undefined") tileSize = vec2(64, 64);
     var cols = Math.floor((gameSheet.imageObject.image.width - 20) / tileSize.x);
-    //var rows = Math.floor(gameSheet.imageObject.image.height / tileSize.y);
 
     gameSheet.transform.position = pos;
     gameSheet.transform.scale = sc;
@@ -512,8 +511,9 @@ class GameMap {
             case RIFLE_MECH:
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
-                    munit2.hp -= Math.floor((munit1.hp / 10.0) * 3);
-                } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
+                    munit2.hp -= (munit1.hp / 10.0) * 3;
+                }
+                if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
                 } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == SAND_TILE && !isTileOnSmoke(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), smokeSequence).forTurns(SAND_SMOKE_TURNS);
@@ -523,9 +523,12 @@ class GameMap {
             case CANNON_MECH:
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
-                    munit2.hp -= Math.floor((munit1.hp / 10.0) * 6);
-                } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
+                    munit2.hp -= (munit1.hp / 10.0) * 6;
+                }
+                if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
+                } else if(munit1.unit.boost == 1 && !isTileOnFire(munit1.mapPosition.add(placement))) {
+                    new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(MECH_FIRE_TURNS);
                 } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == SAND_TILE && !isTileOnSmoke(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), smokeSequence).forTurns(SAND_SMOKE_TURNS);
                 }
@@ -534,8 +537,9 @@ class GameMap {
             case ARTILLERY_MECH:
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
-                    munit2.hp -= Math.floor((munit1.hp / 10.0) * 8);
-                } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
+                    munit2.hp -= (munit1.hp / 10.0) * 8;
+                }
+                if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
                 } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == SAND_TILE && !isTileOnSmoke(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), smokeSequence).forTurns(SAND_SMOKE_TURNS);
@@ -554,7 +558,7 @@ class GameMap {
             case SUPPORT_MECH:
                 //repair
                 if (munit2 != -1) {
-                    munit2.hp += Math.floor((munit1.hp / 10.0) * 2);
+                    munit2.hp += (munit1.hp / 10.0) * 2;
                     if(munit2.hp > 10.0) munit2.hp = 10.0;
                 }
                 break;
@@ -566,7 +570,7 @@ class GameMap {
                 {
                     var affMUnit = getMUnitI(getIndexPair(munit1.mapPosition.add(affPos[i])));
                     if(affMUnit != -1) {
-                        affMUnit.hp -= Math.floor((munit1.hp / 10.0) * 4);
+                        affMUnit.hp -= (munit1.hp / 10.0) * 4;
                         if(affMUnit.hp <= 0) affMUnit.destroyTime = gameTime + 250;
                         if(!affMUnit.unit.isBuilding)
                             affMUnit.mapPosition = affMUnit.mapPosition.add(affPos[i]);
