@@ -4,6 +4,8 @@ var editorCam = vec2();
 var editorCamMove = 0.5;
 var editorSelectedIndex = 0;
 var editorTeamID = RED_TEAM;
+var editorOverviewLock = false;
+var editorMapIndex = -1;
 
 const EDIT_TERRAIN = 0;
 const EDIT_BUILDING = 1;
@@ -37,7 +39,13 @@ function editorSaveMap() {
 }
 
 function editorLoadMap() {
-    editorLoadBtn.click();
+    if(editorMapIndex <= -1)
+        editorLoadBtn.click();
+    else {
+        editorMapData = readFile("maps/map" + editorMapIndex.toString() + ".txt");
+        editorMap = new GameMap(editorMapData);
+        editorManager = new PlayerManager(editorMap, 1);
+    }
 }
 
 function editorSetup() {
@@ -93,6 +101,10 @@ function editorSetup() {
         new Label(tr(), "RESET POS", undefined, "black"),
         new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(resetMapBtn);
+    clearMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
+        new Label(tr(), "CLEAR", undefined, "black"),
+        new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
+    editorBtnGroup.push(clearMapBtn);
     editorToMenuBtn = new TextButton(tr(vec2(0.001, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
         new Label(tr(), "BACK", undefined, "black"),
         new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFBBBBFF"));
@@ -105,13 +117,17 @@ function editorSetup() {
         new Label(tr(), "LOAD", undefined, "black"),
         new Button(tr(), "#FF8888BB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(loadMapBtn);
-    clearMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "CLEAR", undefined, "black"),
+    playMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 3, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
+        new Label(tr(), "PLAY", undefined, "black"),
+        new Button(tr(), "#88FFFFBB", "#000000FF", "#FFFFFFFF"));
+    editorBtnGroup.push(playMapBtn);
+    changeMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 4, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
+        new Label(tr(), editorMapIndex <= -1 ? "EXT." : "MAP " + (editorMapIndex+1).toString(), undefined, "black"),
         new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
-    editorBtnGroup.push(clearMapBtn);
+    editorBtnGroup.push(changeMapBtn);
 
     editor.push(new FlexGroup(tr(vec2(0.001, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), vec2(gameWidth/2, editorBtnSize.y * 2)),
-        new SubState(tr(), editorBtnGroup), false, toVec2(pixelSize), vec2(4, 2), true));
+        new SubState(tr(), editorBtnGroup), false, toVec2(pixelSize), vec2(5, 2), true));
 }
 
 function editorResize() {
@@ -122,7 +138,7 @@ function editorDraw(deltaTime) {
     editorManager.draw(editorCam);
     drawTileParticles(deltaTime, editorCam);
 
-    if(maxDisplayTilesPerRow != totalTilesInRow)
+    if(maxDisplayTilesPerRow != totalTilesInRow || (editorOverviewLock && overviewMapBtn.label.text != "IMMERSED"))
     {
         drawRect(renderer, vec2(0, gameHeight - (64.0 * pixelSize)), vec2(gameWidth, 64.0 * pixelSize), true, "#000000BB");
         for(let i = 0; i < 6 - (editMode == EDIT_BUILDING ? 2 : (editMode == EDIT_MECH ? 1 : 0)); i++)
@@ -146,34 +162,42 @@ function editorDraw(deltaTime) {
     }
 }
 
+function editorOverview() {
+    leftMoveBtn.enabled = rightMoveBtn.enabled = upMoveBtn.enabled = downMoveBtn.enabled = false;
+    maxDisplayTilesPerRow = totalTilesInRow;
+    updateTileSizes();
+    editorCam.x = tilePixels * pixelSize;
+    editorCam.y = tilePixels * pixelSize;
+}
+
 function editorUpdate(deltaTime) {
     playBGM(BGM_WORLDMAP);
+
+    if(editorOverviewLock) {
+        editorOverview();
+    }
 }
 
 function editorEvent(deltaTime) {
-    for(let i = 0; i < 6; i++)
-    {
-        var pos = vec2(gameWidth - (64.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (64.0 * pixelSize));
-        var sc = toVec2((pixelSize - (pixelSize/8.0))*64.0);
+    if(overviewMapBtn.label.text != "IMMERSED")
+        for(let i = 0; i < 6; i++) {
+            var pos = vec2(gameWidth - (64.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (64.0 * pixelSize));
+            var sc = toVec2((pixelSize - (pixelSize/8.0))*64.0);
 
-        if(isTouched && touchPos[0].x >= pos.x && touchPos[0].x < pos.x + sc.x
-            && touchPos[0].y >= pos.y && touchPos[0].y < pos.y + sc.y)
-        {
-            editorSelectedIndex = i;
-            break;
+            if(isTouched && touchPos[0].x >= pos.x && touchPos[0].x < pos.x + sc.x
+            && touchPos[0].y >= pos.y && touchPos[0].y < pos.y + sc.y) {
+                editorSelectedIndex = i;
+                break;
+            }
         }
-    }
 
     var playerAndUnitIndex = editorManager.getPlayerAndUnitIndexOnTile(editorMap.cursorTile);
 
-    if(wheelScroll != 0)
-    {
-        if(playerAndUnitIndex[0] >= 0)
-        {
+    if(wheelScroll != 0) {
+        if(playerAndUnitIndex[0] >= 0) {
             var unit = editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]];
             unit.hp -= wheelScroll / 100.0;
-            if(unit.hp <= 0.0)
-            {
+            if(unit.hp <= 0.0) {
                 new TileParticle(editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]].unit.position, unitDestroySequence);
                 editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
             }
@@ -182,17 +206,25 @@ function editorEvent(deltaTime) {
     }
     wheelScroll = 0.0;
 
-    if(isTouched && touchPos[0].y < gameHeight - (64.0 * pixelSize))
-    {
-        switch(editMode)
-        {
+    if(isRightClick) {
+        if(overviewMapBtn.label.text == "OVERVIEW") {
+            overviewMapBtn.label.text = "LOCKED";
+            editorOverviewLock = true;
+        } else if (overviewMapBtn.label.text == "LOCKED") {
+            overviewMapBtn.label.text = "IMMERSED";
+            for(let i = 1; i < editorBtnGroup.length; i++) editorBtnGroup[i].enabled = false;
+        } else if (overviewMapBtn.label.text == "IMMERSED") {
+            overviewMapBtn.label.text = "LOCKED";
+        }
+    } else if(isTouched && (overviewMapBtn.label.text == "IMMERSED" || touchPos[0].y < gameHeight - (64.0 * pixelSize))) {
+
+        switch(editMode) {
             case EDIT_TERRAIN:
                 editorMap.indexes[editorMap.cursorTile.x + (editorMap.cursorTile.y * MAP_SIZE.x)] = editorSelectedIndex;
                 break;
 
             case EDIT_BUILDING:
-                if(playerAndUnitIndex[0] >= 0)
-                {
+                if(playerAndUnitIndex[0] >= 0) {
                     new TileParticle(editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]].unit.position, unitDestroySequence);
                     editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
                 }
@@ -203,8 +235,7 @@ function editorEvent(deltaTime) {
                 break;
 
             case EDIT_MECH:
-                if(playerAndUnitIndex[0] >= 0)
-                {
+                if(playerAndUnitIndex[0] >= 0) {
                     new TileParticle(editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]].unit.position, unitDestroySequence);
                     editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
                 }
@@ -216,32 +247,22 @@ function editorEvent(deltaTime) {
         }
     }
 
-    if(leftMoveBtn.button.output == UIOUTPUT_HOVER)
-    {
+    if(leftMoveBtn.button.output == UIOUTPUT_HOVER) {
         editorCam.x += editorCamMove * pixelSize * deltaTime;
-    }
-    else if(rightMoveBtn.button.output == UIOUTPUT_HOVER)
-    {
+    } else if(rightMoveBtn.button.output == UIOUTPUT_HOVER) {
         editorCam.x -= editorCamMove * pixelSize * deltaTime;
-    }
-    else if(upMoveBtn.button.output == UIOUTPUT_HOVER)
-    {
+    } else if(upMoveBtn.button.output == UIOUTPUT_HOVER) {
         editorCam.y += editorCamMove * pixelSize * deltaTime;
-    }
-    else if(downMoveBtn.button.output == UIOUTPUT_HOVER)
-    {
+    } else if(downMoveBtn.button.output == UIOUTPUT_HOVER) {
         editorCam.y -= editorCamMove * pixelSize * deltaTime;
     }
 
-    if (keysDown.indexOf(' ') != -1)
-    {
-        if(!isKeyPressed(' '))
-        {
+    if (keysDown.indexOf(' ') != -1) {
+        if(!isKeyPressed(' ')) {
             editMode++;
             if(editMode > EDIT_MECH) editMode = EDIT_TERRAIN;
 
-            switch(editMode)
-            {
+            switch(editMode) {
                 case EDIT_TERRAIN:
                     mapBuildingUnitToggleBtn.label.text = "TERRAIN";
                     break;
@@ -256,47 +277,28 @@ function editorEvent(deltaTime) {
     }
     else removeKeyPressed(' ');
 
-    if (keysDown.indexOf('1') != -1)
-    {
+    if (keysDown.indexOf('1') != -1) {
         if(isKeyPressed('1')) editorSelectedIndex = 0;
-    }
-    else removeKeyPressed('1');
-
-    if (keysDown.indexOf('2') != -1)
-    {
+    } else removeKeyPressed('1');
+    if (keysDown.indexOf('2') != -1) {
         if(isKeyPressed('2')) editorSelectedIndex = 1;
-    }
-    else removeKeyPressed('2');
-
-    if (keysDown.indexOf('3') != -1)
-    {
+    } else removeKeyPressed('2');
+    if (keysDown.indexOf('3') != -1) {
         if(isKeyPressed('3')) editorSelectedIndex = 2;
-    }
-    else removeKeyPressed('3');
-
-    if (keysDown.indexOf('4') != -1)
-    {
+    } else removeKeyPressed('3');
+    if (keysDown.indexOf('4') != -1) {
         if(isKeyPressed('4')) editorSelectedIndex = 3;
-    }
-    else removeKeyPressed('4');
-
-    if (keysDown.indexOf('5') != -1)
-    {
+    } else removeKeyPressed('4');
+    if (keysDown.indexOf('5') != -1) {
         if(isKeyPressed('5')) editorSelectedIndex = 4;
-    }
-    else removeKeyPressed('5');
-
-    if (keysDown.indexOf('6') != -1)
-    {
+    } else removeKeyPressed('5');
+    if (keysDown.indexOf('6') != -1) {
         if(isKeyPressed('6')) editorSelectedIndex = 5;
-    }
-    else removeKeyPressed('6');
+    } else removeKeyPressed('6');
 
-    switch (editorToMenuBtn.button.output)
-    {
+    switch (editorToMenuBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(editorToMenuBtn.button.hoverTrigger)
-            {
+            if(editorToMenuBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 editorToMenuBtn.button.hoverTrigger = false;
             }
@@ -309,11 +311,9 @@ function editorEvent(deltaTime) {
             ui.transitionToState = STARTSCREEN;
             editorToMenuBtn.button.resetOutput();
     }
-    switch (mapBuildingUnitToggleBtn.button.output)
-    {
+    switch (mapBuildingUnitToggleBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(mapBuildingUnitToggleBtn.button.hoverTrigger)
-            {
+            if(mapBuildingUnitToggleBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 mapBuildingUnitToggleBtn.button.hoverTrigger = false;
             }
@@ -324,8 +324,7 @@ function editorEvent(deltaTime) {
             editMode++;
             if(editMode > EDIT_MECH) editMode = EDIT_TERRAIN;
 
-            switch(editMode)
-            {
+            switch(editMode) {
                 case EDIT_TERRAIN:
                     mapBuildingUnitToggleBtn.label.text = "TERRAIN";
                     break;
@@ -339,11 +338,9 @@ function editorEvent(deltaTime) {
 
             mapBuildingUnitToggleBtn.button.resetOutput();
     }
-    switch (resetMapBtn.button.output)
-    {
+    switch (resetMapBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(resetMapBtn.button.hoverTrigger)
-            {
+            if(resetMapBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 resetMapBtn.button.hoverTrigger = false;
             }
@@ -354,11 +351,9 @@ function editorEvent(deltaTime) {
             editorCam = vec2();
             resetMapBtn.button.resetOutput();
     }
-    switch (editorTeamBtn.button.output)
-    {
+    switch (editorTeamBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(editorTeamBtn.button.hoverTrigger)
-            {
+            if(editorTeamBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 editorTeamBtn.button.hoverTrigger = false;
             }
@@ -368,8 +363,7 @@ function editorEvent(deltaTime) {
             editorTeamID++;
             if(editorTeamID > BLACK_TEAM) editorTeamID = RED_TEAM;
 
-            switch(editorTeamID)
-            {
+            switch(editorTeamID) {
                 case RED_TEAM:
                     editorTeamBtn.label.text = "RED";
                     editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#FFBBBBBB";
@@ -390,11 +384,9 @@ function editorEvent(deltaTime) {
 
             editorTeamBtn.button.resetOutput();
     }
-    switch (saveMapBtn.button.output)
-    {
+    switch (saveMapBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(saveMapBtn.button.hoverTrigger)
-            {
+            if(saveMapBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 saveMapBtn.button.hoverTrigger = false;
             }
@@ -405,11 +397,9 @@ function editorEvent(deltaTime) {
             editorSaveMap();
             saveMapBtn.button.resetOutput();
     }
-    switch (loadMapBtn.button.output)
-    {
+    switch (loadMapBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(loadMapBtn.button.hoverTrigger)
-            {
+            if(loadMapBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 loadMapBtn.button.hoverTrigger = false;
             }
@@ -420,11 +410,9 @@ function editorEvent(deltaTime) {
             editorLoadMap();
             loadMapBtn.button.resetOutput();
     }
-    switch (clearMapBtn.button.output)
-    {
+    switch (clearMapBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(clearMapBtn.button.hoverTrigger)
-            {
+            if(clearMapBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 clearMapBtn.button.hoverTrigger = false;
             }
@@ -437,26 +425,51 @@ function editorEvent(deltaTime) {
             editorManager = new PlayerManager(editorMap, 1);
             clearMapBtn.button.resetOutput();
     }
-    switch (overviewMapBtn.button.output)
-    {
-        case UIOUTPUT_HOVER || UIOUTPUT_SELECT:
-            if(overviewMapBtn.button.hoverTrigger)
-            {
+    switch (overviewMapBtn.button.output) {
+        case UIOUTPUT_HOVER:
+            if(overviewMapBtn.button.hoverTrigger) {
                 if(maxDisplayTilesPerRow != totalTilesInRow) playSFX(SFX_BUTTON_HOVER);
                 for(let i = 1; i < editorBtnGroup.length; i++) editorBtnGroup[i].enabled = false;
-                leftMoveBtn.enabled = rightMoveBtn.enabled = upMoveBtn.enabled = downMoveBtn.enabled = false;
-                maxDisplayTilesPerRow = totalTilesInRow;
-                updateTileSizes();
-                editorCam.x = tilePixels * pixelSize;
-                editorCam.y = tilePixels * pixelSize;
+                editorOverview();
                 //overviewMapBtn.button.hoverTrigger = false;
             }
             break;
 
+        case UIOUTPUT_SELECT:
+            if(overviewMapBtn.label.text == "OVERVIEW") {
+                overviewMapBtn.label.text = "LOCKED";
+                editorOverviewLock = true;
+            } else if (overviewMapBtn.label.text == "LOCKED") {
+                overviewMapBtn.label.text = "IMMERSED";
+                for(let i = 1; i < editorBtnGroup.length; i++) editorBtnGroup[i].enabled = false;
+            } else if (overviewMapBtn.label.text == "IMMERSED") {
+                overviewMapBtn.label.text = "OVERVIEW";
+                editorOverviewLock = false;
+            }
+            break;
+
         default:
-            for(let i = 1; i < editorBtnGroup.length; i++) editorBtnGroup[i].enabled = true;
-            leftMoveBtn.enabled = rightMoveBtn.enabled = upMoveBtn.enabled = downMoveBtn.enabled = true;
-            maxDisplayTilesPerRow = defaultTilesPerRow;
+            if(overviewMapBtn.label.text != "IMMERSED")
+                for(let i = 1; i < editorBtnGroup.length; i++) editorBtnGroup[i].enabled = true;
+            if(!editorOverviewLock) {
+                leftMoveBtn.enabled = rightMoveBtn.enabled = upMoveBtn.enabled = downMoveBtn.enabled = true;
+                maxDisplayTilesPerRow = defaultTilesPerRow;
+            }
             updateTileSizes();
+    }
+    switch (changeMapBtn.button.output) {
+        case UIOUTPUT_HOVER:
+            if(changeMapBtn.button.hoverTrigger) {
+                playSFX(SFX_BUTTON_HOVER);
+                changeMapBtn.button.hoverTrigger = false;
+            }
+            break;
+
+        case UIOUTPUT_SELECT:
+            playSFX(SFX_BUTTON_CLICK);
+            editorMapIndex++;
+            if(editorMapIndex >= 16) editorMapIndex = -1;
+            changeMapBtn.label.text = editorMapIndex <= -1 ? "EXT." : "MAP " + (editorMapIndex+1).toString();
+            changeMapBtn.button.resetOutput();
     }
 }

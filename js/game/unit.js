@@ -275,6 +275,7 @@ class MapUnit {
         } else if (this.hp <= 0 && ui.stateIndex != BATTLESCREEN && this.destroyTime < gameTime) {
             //Destroying/Removing a Unit
             var indexPair = getIndexPair(this.mapPosition);
+            if(indexPair[0] != -1)
             for(var i = 0; i < getPlayerI(indexPair).unitGroup.mapUnits.length; i++) { 
 
                 if (getMUnitI([indexPair[0], i]) === this) {            
