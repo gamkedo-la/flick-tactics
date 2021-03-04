@@ -1,9 +1,34 @@
 const GAMEPLAY = 1;
 var gameplay = [];
 
-//Helper Function: 'manager.getActivePlayer()' => 'getPlayer()'
+//#region helper_functions
+//'manager.getActivePlayer()' => 'getPlayer()'
+//'manager.getActivePlayer().unitGroup.mapUnits[i]' => 'getMUnit(i)'
+//'manager.getPlayerAndUnitIndexOnTile(tilePos)' => 'getIndexPair(tilePos)'
+//'manager.players[indexPair[0]]' => 'getPlayerI(indexPair)'
+//'manager.players[indexPair[0]].unitGroup.mapUnits[indexPair[1]]' => 'getMUnitI(indexPair)'
 
-function getPlayer() { return manager.getActivePlayer(); }
+function getPlayer() {
+    return manager.getActivePlayer();
+}
+function getMUnit(i = -999) {
+    if(i == -999) return manager.getActivePlayer().getSelectedMapUnit();
+    if(i != -1) return manager.getActivePlayer().unitGroup.mapUnits[i];
+    return -1;
+}
+function getIndexPair(tilePos) {
+    return manager.getPlayerAndUnitIndexOnTile(tilePos);
+}
+function getPlayerI(indexPair) {
+    if(indexPair[0] != -1) return manager.players[indexPair[0]];
+    return -1;
+}
+function getMUnitI(indexPair) {
+    if(indexPair[0] != -1 && indexPair[1] != -1) return manager.players[indexPair[0]].unitGroup.mapUnits[indexPair[1]];
+    return -1;
+}
+
+//#endregion
 
 function gameplayReset() {
     //Resetting building panel properties

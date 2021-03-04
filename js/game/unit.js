@@ -274,19 +274,19 @@ class MapUnit {
             }
         } else if (this.hp <= 0 && ui.stateIndex != BATTLESCREEN && this.destroyTime < gameTime) {
             //Destroying/Removing a Unit
-            var indexPair = manager.getPlayerAndUnitIndexOnTile(this.mapPosition);
-            for(var i = 0; i < manager.players[indexPair[0]].unitGroup.mapUnits.length; i++) { 
+            var indexPair = getIndexPair(this.mapPosition);
+            for(var i = 0; i < getPlayerI(indexPair).unitGroup.mapUnits.length; i++) { 
 
-                if (manager.players[indexPair[0]].unitGroup.mapUnits[i] === manager.players[indexPair[0]].unitGroup.mapUnits[indexPair[1]]) {            
+                if (getMUnitI([indexPair[0], i]) === this) {            
                     new TileParticle(this.unit.position, unitDestroySequence);
 
-                    //Game crash edgee case: when active player destroys its own unit
+                    //Game crash edge case: when active player destroys its own unit
                     if(manager.index == indexPair[0]) {
                         if(getPlayer().selectedIndex > i) getPlayer().selectedIndex--;
                         else if(getPlayer().selectedIndex == i) getPlayer().selectedIndex = getPlayer().getHQUnitIndex();
                     }
 
-                    manager.players[indexPair[0]].unitGroup.mapUnits.splice(i, 1);
+                    getPlayerI(indexPair).unitGroup.mapUnits.splice(i, 1);
                 }            
             }
         }

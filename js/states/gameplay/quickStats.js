@@ -14,7 +14,7 @@ function quickStatsUISetup() {
     gameplay.push(qStatsPanel);
 }
 
-function setQuickStatsForType(type)
+function setQuickStatsForType(type, indexPair)
 {
     switch (type) {
         case RIFLE_MECH:
@@ -54,26 +54,26 @@ function setQuickStatsForType(type)
             break;
 
         default:
-            qStatsLabels[1].text = manager.players[plNUnitInd[0]].unitGroup.mapUnits[plNUnitInd[1]].unit.type.toString();
+            qStatsLabels[1].text = getMUnitI(indexPair).unit.type.toString();
     }
 }
 
 function quickStatsUIUpdate() {
-    var plNUnitInd = manager.getPlayerAndUnitIndexOnTile(map.cursorTile);
+    var indexPair = getIndexPair(map.cursorTile);
     var mapUnit = undefined;
 
-    if (plNUnitInd[0] != -1) {
-        mapUnit = manager.players[plNUnitInd[0]].unitGroup.mapUnits[plNUnitInd[1]];
+    if (indexPair[0] != -1) {
+        mapUnit = getMUnitI(indexPair);
         qStatsLabels[0].text = "HOVERED";
         qStatsPanel.color = getActiveTeamColor() + "BB";
-        prevQuickStatsUnit = manager.players[plNUnitInd[0]].unitGroup.mapUnits[plNUnitInd[1]].unit;
-        prevQuickStatsTeamID = manager.players[plNUnitInd[0]].unitGroup.teamID;
+        prevQuickStatsUnit = getMUnitI(indexPair).unit;
+        prevQuickStatsTeamID = getPlayerI(indexPair).unitGroup.teamID;
     } else {
-        mapUnit = manager.getActivePlayer().getSelectedMapUnit();
+        mapUnit = getMUnit();
         qStatsLabels[0].text = "SELECTED";
         qStatsPanel.color = getActiveTeamColor() + "DD";
-        prevQuickStatsUnit = manager.getActivePlayer().getSelectedMapUnit().unit;
-        prevQuickStatsTeamID = manager.getActivePlayer().unitGroup.teamID;
+        prevQuickStatsUnit = getMUnit().unit;
+        prevQuickStatsTeamID = getPlayer().unitGroup.teamID;
     }
 
     setQuickStatsForType(mapUnit.unit.type);

@@ -147,7 +147,7 @@ class GameMap {
             for (let y = 0; y < MAP_SIZE.y; y++) {
                 for (let x = 0; x < MAP_SIZE.x; x++) {
                     var unitTeamString = "";
-                    var PU = manager.getPlayerAndUnitIndexOnTile(vec2(x, y));
+                    var PU = getIndexPair(vec2(x, y));
 
                     if(PU[0] <= -1)
                     {
@@ -155,8 +155,8 @@ class GameMap {
                     }
                     else
                     {
-                        var team = manager.players[PU[0]].unitGroup.teamID;
-                        var unit = manager.players[PU[0]].unitGroup.mapUnits[PU[1]].unit.type + 1;
+                        var team = getPlayerI(PU).unitGroup.teamID;
+                        var unit = getMUnitI(PU).unit.type + 1;
 
                         if(unit == HQ_BUILDING+1) unit = 6;
                         else if(unit == CITY_BUILDING+1) unit = 7;
@@ -273,7 +273,7 @@ class GameMap {
                 return true;
 
         //Other Player Units are Obstacles
-        var plAndUnitInd = manager.getPlayerAndUnitIndexOnTile(tilePosition);
+        var plAndUnitInd = getIndexPair(tilePosition);
         if(plAndUnitInd[0] != -1 && manager.index != plAndUnitInd[0]) return true;
 
         return false;
@@ -290,7 +290,7 @@ class GameMap {
     calculateUnitMovement(mapUnit, destinationTile = vec2(this.cursorTile.x, this.cursorTile.y), limited = true) {
         if(mapUnit.unit.isBuilding == true
         || this.isTileMovementObstacleToMapUnit(mapUnit, destinationTile)
-        || manager.getPlayerAndUnitIndexOnTile(destinationTile)[0] != -1
+        || getIndexPair(destinationTile)[0] != -1
         || destinationTile.x < 0
         || destinationTile.y < 0
         || destinationTile.x >= MAP_SIZE.x
@@ -414,7 +414,7 @@ class GameMap {
                 /*
                 if (Math.abs(x) + Math.abs(y) > mapUnit.unit.movement
                     || (x == 0 && y == 0)
-                    || manager.getPlayerAndUnitIndexOnTile(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y))[0] != -1
+                    || getIndexPair(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y))[0] != -1
                     || (this.getTileTypeFromPosition(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y)) == SEA_TILE
                         && mapUnit.unit.type != TELEPORT_MECH))
                     continue;
@@ -498,9 +498,9 @@ class GameMap {
 
     battlescreenTransition(munit1, munit2) {
         ui.stateIndex = BATTLESCREEN;
-        activeTeamID = manager.players[manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition)[0]].unitGroup.teamID;
+        activeTeamID = getPlayerI(getIndexPair(munit1.mapPosition)).unitGroup.teamID;
         activeMapUnit = munit1;
-        passiveTeamID = manager.players[manager.getPlayerAndUnitIndexOnTile(munit2.mapPosition)[0]].unitGroup.teamID;
+        passiveTeamID = getPlayerI(getIndexPair(munit2.mapPosition)).unitGroup.teamID;
         passiveMapUnit = munit2;
     }
 
@@ -542,25 +542,13 @@ class GameMap {
                 }
 
                 //Artillery Range Attack and pushes all units around the attack point
-                var pu1 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(1, 0)));
-                if (pu1[0] != -1 && pu1[1] != -1 && !manager.players[pu1[0]].unitGroup.mapUnits[pu1[1]].unit.isBuilding)
-                    manager.players[pu1[0]].unitGroup.mapUnits[pu1[1]].mapPosition
-                        = manager.players[pu1[0]].unitGroup.mapUnits[pu1[1]].mapPosition.add(vec2(1, 0));
-
-                var pu2 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(-1, 0)));
-                if (pu2[0] != -1 && pu2[1] != -1 && !manager.players[pu2[0]].unitGroup.mapUnits[pu2[1]].unit.isBuilding)
-                    manager.players[pu2[0]].unitGroup.mapUnits[pu2[1]].mapPosition
-                        = manager.players[pu2[0]].unitGroup.mapUnits[pu2[1]].mapPosition.add(vec2(-1, 0));
-
-                var pu3 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(0, 1)));
-                if (pu3[0] != -1 && pu3[1] != -1 && !manager.players[pu3[0]].unitGroup.mapUnits[pu3[1]].unit.isBuilding)
-                    manager.players[pu3[0]].unitGroup.mapUnits[pu3[1]].mapPosition
-                        = manager.players[pu3[0]].unitGroup.mapUnits[pu3[1]].mapPosition.add(vec2(0, 1));
-
-                var pu4 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(placement).add(vec2(0, -1)));
-                if (pu4[0] != -1 && pu4[1] != -1 && !manager.players[pu4[0]].unitGroup.mapUnits[pu4[1]].unit.isBuilding)
-                    manager.players[pu4[0]].unitGroup.mapUnits[pu4[1]].mapPosition
-                        = manager.players[pu4[0]].unitGroup.mapUnits[pu4[1]].mapPosition.add(vec2(0, -1));
+                var pushPos = [vec2(1, 0), vec2(-1, 0), vec2(0, 1), vec2(0, -1)];
+                for(let i = 0; i < pushPos.length; i++)
+                {
+                    var mUnitToPush = getMUnitI(getIndexPair(munit1.mapPosition.add(placement).add(pushPos[i])));
+                    if (mUnitToPush != -1 && !mUnitToPush.unit.isBuilding)
+                        mUnitToPush.mapPosition = mUnitToPush.mapPosition.add(pushPos[i]);
+                }
                 break;
 
             case SUPPORT_MECH:
@@ -573,33 +561,16 @@ class GameMap {
 
             case TELEPORT_MECH:
                 //self-destruct
-                var d1 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(vec2(1, 0)));
-                if(d1[0] != -1 && d1[1] != -1) {
-                    manager.players[d1[0]].unitGroup.mapUnits[d1[1]].hp -= Math.floor((munit1.hp / 10.0) * 4);
-                    if(!manager.players[d1[0]].unitGroup.mapUnits[d1[1]].unit.isBuilding)
-                        manager.players[d1[0]].unitGroup.mapUnits[d1[1]].mapPosition
-                            = manager.players[d1[0]].unitGroup.mapUnits[d1[1]].mapPosition.add(vec2(1, 0));
-                }
-                var d2 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(vec2(-1, 0)));
-                if(d2[0] != -1 && d2[1] != -1) {
-                    manager.players[d2[0]].unitGroup.mapUnits[d2[1]].hp -= Math.floor((munit1.hp / 10.0) * 4);
-                    if(!manager.players[d2[0]].unitGroup.mapUnits[d2[1]].unit.isBuilding)
-                        manager.players[d2[0]].unitGroup.mapUnits[d2[1]].mapPosition
-                            = manager.players[d2[0]].unitGroup.mapUnits[d2[1]].mapPosition.add(vec2(-1, 0));
-                }
-                var d3 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(vec2(0, 1)));
-                if(d3[0] != -1 && d3[1] != -1) {
-                    manager.players[d3[0]].unitGroup.mapUnits[d3[1]].hp -= Math.floor((munit1.hp / 10.0) * 4);
-                    if(!manager.players[d3[0]].unitGroup.mapUnits[d3[1]].unit.isBuilding)
-                        manager.players[d3[0]].unitGroup.mapUnits[d3[1]].mapPosition
-                            = manager.players[d3[0]].unitGroup.mapUnits[d3[1]].mapPosition.add(vec2(0, 1));
-                }
-                var d4 = manager.getPlayerAndUnitIndexOnTile(munit1.mapPosition.add(vec2(0, -1)));
-                if(d4[0] != -1 && d4[1] != -1) {
-                    manager.players[d4[0]].unitGroup.mapUnits[d4[1]].hp -= Math.floor((munit1.hp / 10.0) * 4);
-                    if(!manager.players[d4[0]].unitGroup.mapUnits[d4[1]].unit.isBuilding)
-                        manager.players[d4[0]].unitGroup.mapUnits[d4[1]].mapPosition
-                            = manager.players[d4[0]].unitGroup.mapUnits[d4[1]].mapPosition.add(vec2(0, -1));
+                var affPos = [vec2(1, 0), vec2(-1, 0), vec2(0, 1), vec2(0, -1)];
+                for(let i = 0; i < affPos.length; i++)
+                {
+                    var affMUnit = getMUnitI(getIndexPair(munit1.mapPosition.add(affPos[i])));
+                    if(affMUnit != -1) {
+                        affMUnit.hp -= Math.floor((munit1.hp / 10.0) * 4);
+                        if(affMUnit.hp <= 0) affMUnit.destroyTime = gameTime + 250;
+                        if(!affMUnit.unit.isBuilding)
+                            affMUnit.mapPosition = affMUnit.mapPosition.add(affPos[i]);
+                    }
                 }
                 munit1.hp = 0;
                 munit1.destroyTime = gameTime + 250;
@@ -622,9 +593,9 @@ class GameMap {
 
                     if (this.cursorTile.x == mapUnit.mapPosition.x + x
                         && this.cursorTile.y == mapUnit.mapPosition.y + y) {
-                        var playerAndUnit = manager.getPlayerAndUnitIndexOnTile(this.cursorTile);
-                        if (playerAndUnit[0] != -1 && playerAndUnit[1] != -1)
-                            this.attack(mapUnit, manager.players[playerAndUnit[0]].unitGroup.mapUnits[playerAndUnit[1]], vec2(x, y));
+                        var mUnit = getMUnitI(getIndexPair(this.cursorTile));
+                        if (mUnit != -1)
+                            this.attack(mapUnit, mUnit, vec2(x, y));
                         else
                             this.attack(mapUnit, -1, vec2(x, y));
                         mapUnit.right = -1;
@@ -739,9 +710,9 @@ class GameMap {
 
                     if (this.cursorTile.x == mapUnit.mapPosition.x + x
                         && this.cursorTile.y == mapUnit.mapPosition.y + y) {
-                        var playerAndUnit = manager.getPlayerAndUnitIndexOnTile(this.cursorTile);
-                        if (playerAndUnit[0] != -1 && playerAndUnit[1] != -1)
-                            this.special(mapUnit, manager.players[playerAndUnit[0]].unitGroup.mapUnits[playerAndUnit[1]], vec2(x, y));
+                        var mUnit = getMUnitI(getIndexPair(this.cursorTile));
+                        if (mUnit != -1)
+                            this.special(mapUnit, mUnit, vec2(x, y));
                         else
                             this.special(mapUnit, -1, vec2(x, y));
                         mapUnit.left = -1;
@@ -775,11 +746,11 @@ class GameMap {
 
         //Select unit on click/touch
         if (isTouched && !isTouchInsideBPanel()) {
-            var playerAndUnit = manager.getPlayerAndUnitIndexOnTile(this.cursorTile);
-            if (playerAndUnit[0] != -1
-                && manager.players[playerAndUnit[0]].unitGroup.teamID == getPlayer().unitGroup.teamID
-                && manager.players[playerAndUnit[0]].unitGroup.mapUnits[playerAndUnit[1]].unit.type != RUIN_BUILDING) {
-                getPlayer().selectedIndex = playerAndUnit[1];
+            var indexPair = getIndexPair(this.cursorTile);
+            if (indexPair[0] != -1
+            && getPlayerI(indexPair).unitGroup.teamID == getPlayer().unitGroup.teamID
+            && getMUnitI(indexPair).unit.type != RUIN_BUILDING) {
+                getPlayer().selectedIndex = indexPair[1];
                 updateUnitActionButtons();
                 zoomLock = false;
             }
