@@ -202,6 +202,23 @@ class MapUnit {
         return vec2(-this.unit.position.x + (gameWidth / 2), -this.unit.position.y + (gameHeight / 2));
     }
 
+    push(offset) {
+        if(!this.unit.isBuilding) {
+            var pushedOverToMUnit = getMUnitI(getIndexPair(this.mapPosition.add(offset)));
+            if(map.getTileTypeFromPosition(this.mapPosition.add(offset)) == MOUNTAIN_TILE) {
+                this.hp -= 2.0;
+            } else if(pushedOverToMUnit != -1) {
+                var prevHp = pushedOverToMUnit.hp;
+                pushedOverToMUnit.hp -= this.hp / 10.0;
+                this.hp -= prevHp / 10.0;
+                if(pushedOverToMUnit.hp <= 0.0) pushedOverToMUnit.destroyTime = gameTime + 250;
+            } else {
+                this.mapPosition = this.mapPosition.add(offset);
+            }
+        }
+        if(this.hp <= 0.0) this.destroyTime = gameTime + 250;
+    }
+
     draw(teamID, offset) {
         var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
             (tileSize / 64) + gridBlackLinesFixFactor);

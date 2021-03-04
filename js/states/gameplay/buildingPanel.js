@@ -508,14 +508,19 @@ function buildingPanelEvent() {
             if (warBuilding_buyBtn != 0 && warBuilding_buyBtn.button.output == UIOUTPUT_SELECT) {
                 var pos = buildingPanelPrevSelected.mapPosition;
                 var newMapUnit = null;
-                if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, 1)))[0] == -1)
+                if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, 1)))[0] == -1) {
+                    removeTileParticles(pos.add(vec2(0, 1)))
                     newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, 1)));
-                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(1, 0)))[0] == -1)
+                } else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(1, 0)))[0] == -1) {
+                    removeTileParticles(pos.add(vec2(1, 0)))
                     newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(1, 0)));
-                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, -1)))[0] == -1)
+                } else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, -1)))[0] == -1) {
+                    removeTileParticles(pos.add(vec2(0, -1)))
                     newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, -1)));
-                else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(-1, 0)))[0] == -1)
+                } else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(-1, 0)))[0] == -1) {
+                    removeTileParticles(pos.add(vec2(-1, 0)))
                     newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(-1, 0)));
+                }
                 if(newMapUnit != null) {
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
 

@@ -507,14 +507,11 @@ class GameMap {
                 } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == SAND_TILE && !isTileOnSmoke(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), smokeSequence).forTurns(SAND_SMOKE_TURNS);
                 }
-
                 //Artillery Range Attack and pushes all units around the attack point
-                var pushPos = [vec2(1, 0), vec2(-1, 0), vec2(0, 1), vec2(0, -1)];
-                for(let i = 0; i < pushPos.length; i++)
-                {
-                    var mUnitToPush = getMUnitI(getIndexPair(munit1.mapPosition.add(placement).add(pushPos[i])));
-                    if (mUnitToPush != -1 && !mUnitToPush.unit.isBuilding)
-                        mUnitToPush.mapPosition = mUnitToPush.mapPosition.add(pushPos[i]);
+                var pushOffset = [vec2(1, 0), vec2(-1, 0), vec2(0, 1), vec2(0, -1)];
+                for(let i = 0; i < pushOffset.length; i++) {
+                    var mUnitToPush = getMUnitI(getIndexPair(munit1.mapPosition.add(placement).add(pushOffset[i])));
+                    if (mUnitToPush != -1) mUnitToPush.push(pushOffset[i]);
                 }
                 break;
 
@@ -528,15 +525,12 @@ class GameMap {
 
             case TELEPORT_MECH:
                 //self-destruct
-                var affPos = [vec2(1, 0), vec2(-1, 0), vec2(0, 1), vec2(0, -1)];
-                for(let i = 0; i < affPos.length; i++)
-                {
-                    var affMUnit = getMUnitI(getIndexPair(munit1.mapPosition.add(affPos[i])));
+                var affOffset = [vec2(1, 0), vec2(-1, 0), vec2(0, 1), vec2(0, -1)];
+                for(let i = 0; i < affOffset.length; i++) {
+                    var affMUnit = getMUnitI(getIndexPair(munit1.mapPosition.add(affOffset[i])));
                     if(affMUnit != -1) {
                         affMUnit.hp -= (munit1.hp / 10.0) * 4;
-                        if(affMUnit.hp <= 0) affMUnit.destroyTime = gameTime + 250;
-                        if(!affMUnit.unit.isBuilding)
-                            affMUnit.mapPosition = affMUnit.mapPosition.add(affPos[i]);
+                        affMUnit.push(affOffset[i]);
                     }
                 }
                 munit1.hp = 0;
@@ -561,10 +555,8 @@ class GameMap {
                     if (this.cursorTile.x == mapUnit.mapPosition.x + x
                         && this.cursorTile.y == mapUnit.mapPosition.y + y) {
                         var mUnit = getMUnitI(getIndexPair(this.cursorTile));
-                        if (mUnit != -1)
-                            this.attack(mapUnit, mUnit, vec2(x, y));
-                        else
-                            this.attack(mapUnit, -1, vec2(x, y));
+                        if (mUnit != -1) this.attack(mapUnit, mUnit, vec2(x, y));
+                        else this.attack(mapUnit, -1, vec2(x, y));
                         mapUnit.right = -1;
                         return true;
                     }
@@ -604,14 +596,11 @@ class GameMap {
         switch (munit1.unit.type) {
             case RIFLE_MECH:
                 if (munit1.unit.smokeAmmo > 0) {
-                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(1, 0))))
-                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(1, 0))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
-                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(-1, 0))))
-                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(-1, 0))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
-                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(0, 1))))
-                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(0, 1))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
-                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(0, -1))))
-                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(0, -1))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
+                    var offsets = [vec2(1, 0), vec2(-1, 0), vec2(0, 1), vec2(0, -1)];
+                    for(let i = 0; i < 4; i++) {
+                        if(!isTileOnSmoke(munit1.mapPosition.add(offsets[i])))
+                            new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(offsets[i])), smokeSequence).forTurns(MECH_SMOKE_TURNS);
+                    }
                     munit1.unit.smokeAmmo--;
                 }
                 break;
@@ -625,15 +614,11 @@ class GameMap {
 
             case ARTILLERY_MECH:
                 if (munit1.unit.smokeAmmo > 0) {
-
-                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(1, 0))))
-                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(1, 0))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
-                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(-1, 0))))
-                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(-1, 0))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
-                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(0, 1))))
-                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(0, 1))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
-                    if(!isTileOnSmoke(munit1.mapPosition.add(vec2(0, -1))))
-                        new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(vec2(0, -1))), smokeSequence).forTurns(MECH_SMOKE_TURNS);
+                    var offsets = [vec2(1, 0), vec2(-1, 0), vec2(0, 1), vec2(0, -1)];
+                    for(let i = 0; i < 4; i++) {
+                        if(!isTileOnSmoke(munit1.mapPosition.add(offsets[i])))
+                            new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(offsets[i])), smokeSequence).forTurns(MECH_SMOKE_TURNS);
+                    }
                     munit1.unit.smokeAmmo--;
                 }
                 break;

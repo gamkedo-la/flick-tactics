@@ -28,8 +28,7 @@ const MECH_SMOKE_TURNS = 3;
 var particles = [];
 
 class TileParticle {
-    constructor(position, sequence, endFunction = function(self){})
-    {
+    constructor(position, sequence, endFunction = function(self){}) {
         this.position = position;
         this.endFunction = endFunction;
         this.currentIndex = 0;
@@ -38,40 +37,30 @@ class TileParticle {
         particles.push(this);
     }
 
-    forTurns(turns)
-    {
+    forTurns(turns) {
         this.turns = turns;
     }
 
-    draw(deltaTime, camPos, sc)
-    {
+    draw(deltaTime, camPos, sc) {
         if(this.timer >= this.sequence[this.currentIndex].duration)
         {
             this.timer = this.sequence[this.currentIndex].duration - this.timer;
             this.currentIndex++;
 
-            if(this.currentIndex >= this.sequence.length)
-            {
-                if(typeof this.turns == "undefined")
-                {
-                    for(let i = 0; i < particles.length; i++)
-                    {
-                        if(this == particles[i])
-                        {
+            if(this.currentIndex >= this.sequence.length) {
+                if(typeof this.turns == "undefined") {
+                    for(let i = 0; i < particles.length; i++) {
+                        if(this == particles[i]) {
                             this.endFunction(this);
                             particles.splice(i, 1);
                             return;
                         }
                     }
-                }
-                else
-                {
+                } else {
                     this.currentIndex = 0;
                 }
             }
-        }
-        else
-        {
+        } else {
             this.timer += deltaTime;
         }
 
@@ -83,8 +72,7 @@ class TileParticle {
     }
 };
 
-function decrementTileParticlesTurns()
-{
+function decrementTileParticlesTurns() {
     for(let i = 0; i < particles.length; i++) {
         if(typeof particles[i].turns != "undefined") {
             particles[i].turns--;
@@ -97,14 +85,12 @@ function decrementTileParticlesTurns()
     }
 }
 
-function drawTileParticles(deltaTime, camPos)
-{
+function drawTileParticles(deltaTime, camPos) {
     for(let i = 0; i < particles.length; i++)
         particles[i].draw(deltaTime, camPos);
 }
 
-function isTileOnSmoke(pos)
-{
+function isTileOnSmoke(pos) {
     for(let i = 0; i < particles.length; i++) {
         if((particles[i].sequence[0].index == 78 || particles[i].sequence[0].index == 79)
         && pos.isEqual(pixelPositionToTilePosition(particles[i].position)))
@@ -113,12 +99,20 @@ function isTileOnSmoke(pos)
     return false;
 }
 
-function isTileOnFire(pos)
-{
+function isTileOnFire(pos) {
     for(let i = 0; i < particles.length; i++) {
         if((particles[i].sequence[0].index == 98 || particles[i].sequence[0].index == 99)
         && pos.isEqual(pixelPositionToTilePosition(particles[i].position)))
             return true;
     }
     return false;
+}
+
+function removeTileParticles(pos) {
+    for(let i = 0; i < particles.length; i++) {
+        if(pos.isEqual(pixelPositionToTilePosition(particles[i].position))) {
+            particles.splice(i, 1);
+            i--;
+        }
+    }
 }
