@@ -4,7 +4,6 @@ var versus = [];
 var versusTeamID = -1;
 var versusMapString = "";
 var versusMapIndex = 0;
-var defaultVersusMapString = "4_0_0.4_0_0.4_0_0.4_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.3_0_0.3_0_0.3_0_0.3_0_0.0_0_0.2_0_0.2_0_0.2_0_0.2_0_0.2_0_0.4_0_0.4_0_0.4_0_0.4_0_0.2_0_0.2_0_0.2_0_0.2_0_0.2_0_0.0_0_0.3_0_0.3_0_0.3_0_0.3_0_0.4_0_0.4_0_0.4_0_0.3_0_0.3_0_0.3_0_0.0_7_0.1_0_0.0_0_0.3_0_0.3_0_0.0_0_0.2_0_0.2_0_0.2_0_0.4_0_0.4_0_0.2_0_0.2_0_0.2_0_0.0_0_0.3_0_0.3_0_0.0_0_0.1_0_0.0_7_2.3_0_0.3_0_0.3_0_0.4_0_0.4_0_0.3_0_0.3_0_0.0_6_0.0_0_0.0_7_0.0_0_0.0_0_0.0_0_0.0_0_0.3_0_0.2_0_0.2_0_0.4_0_0.4_0_0.2_0_0.2_0_0.3_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_7_2.0_0_0.0_6_2.3_0_0.3_0_0.4_0_0.3_0_0.3_0_0.1_7_0.0_0_0.0_8_0.0_0_0.1_0_0.0_0_0.3_0_0.3_0_0.3_0_0.3_0_0.2_0_0.4_0_0.4_0_0.2_0_0.3_0_0.3_0_0.3_0_0.3_0_0.0_0_0.1_0_0.0_0_0.0_8_2.0_0_0.1_7_2.3_0_0.3_0_0.3_0_0.3_0_0.0_0_0.0_7_0.1_0_0.0_0_0.0_0_0.0_0_0.4_0_0.3_0_0.3_0_0.0_0_0.2_0_0.2_0_0.2_0_0.2_0_0.0_0_0.3_0_0.3_0_0.4_0_0.0_0_0.0_0_0.0_0_0.1_0_0.0_7_2.0_0_0.3_0_0.3_0_0.3_0_0.4_0_0.3_0_0.0_0_0.0_0_0.3_0_0.3_0_0.4_0_0.4_0_0.3_0_0.0_0_0.1_0_0.1_0_0.2_0_0.2_0_0.1_0_0.1_0_0.0_0_0.3_0_0.4_0_0.4_0_0.3_0_0.3_0_0.0_0_0.0_0_0.3_0_0.4_0_0.3_0_0.3_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.0_0_0.1_0_0.1_0_0.1_0_0.1_0_0.1_0_0.1_0_0.1_0_0.1_0_0.0_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.3_0_0.3_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.0_0_0.1_0_0.1_0_0.1_0_0.1_0_0.1_0_0.1_0_0.1_0_0.1_0_0.0_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.3_0_0.3_0_0.4_0_0.3_0_0.0_0_0.0_0_0.3_0_0.3_0_0.4_0_0.4_0_0.3_0_0.0_0_0.1_0_0.1_0_0.2_0_0.2_0_0.1_0_0.1_0_0.0_0_0.3_0_0.4_0_0.4_0_0.3_0_0.3_0_0.0_0_0.0_0_0.3_0_0.4_0_0.3_0_0.3_0_0.3_0_0.0_0_0.0_7_1.1_0_0.0_0_0.0_0_0.0_0_0.4_0_0.3_0_0.3_0_0.0_0_0.2_0_0.2_0_0.2_0_0.2_0_0.0_0_0.3_0_0.3_0_0.4_0_0.0_0_0.0_0_0.0_0_0.1_0_0.0_7_3.0_0_0.3_0_0.3_0_0.3_0_0.3_0_0.1_7_1.0_0_0.0_8_1.0_0_0.1_0_0.0_0_0.3_0_0.3_0_0.3_0_0.3_0_0.2_0_0.4_0_0.4_0_0.2_0_0.3_0_0.3_0_0.3_0_0.3_0_0.0_0_0.1_0_0.0_0_0.0_8_3.0_0_0.1_7_3.3_0_0.3_0_0.4_0_0.3_0_0.3_0_0.0_6_1.0_0_0.0_7_1.0_0_0.0_0_0.0_0_0.0_0_0.3_0_0.2_0_0.2_0_0.4_0_0.4_0_0.2_0_0.2_0_0.3_0_0.0_0_0.0_0_0.0_0_0.0_0_0.0_7_3.0_0_0.0_6_3.3_0_0.3_0_0.4_0_0.4_0_0.3_0_0.3_0_0.3_0_0.0_7_1.1_0_0.0_0_0.3_0_0.3_0_0.0_0_0.2_0_0.2_0_0.2_0_0.4_0_0.4_0_0.2_0_0.2_0_0.2_0_0.0_0_0.3_0_0.3_0_0.0_0_0.1_0_0.0_7_3.3_0_0.3_0_0.3_0_0.4_0_0.4_0_0.4_0_0.3_0_0.3_0_0.3_0_0.3_0_0.0_0_0.2_0_0.2_0_0.2_0_0.2_0_0.2_0_0.4_0_0.4_0_0.4_0_0.4_0_0.2_0_0.2_0_0.2_0_0.2_0_0.2_0_0.0_0_0.3_0_0.3_0_0.3_0_0.3_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.4_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.3_0_0.4_0_0.4_0_0.4_0_0.4_0_0.";
 
 function versusSetup() {
     versusLoadBtn = document.getElementById('file-input2');
@@ -19,8 +18,8 @@ function versusSetup() {
         });
     }
 
-    versusMapString = defaultVersusMapString;
-    versusMap = new GameMap(defaultVersusMapString);
+    versusMapString = readFile("maps/map0.txt");
+    versusMap = new GameMap(versusMapString);
     versusManager = new PlayerManager(versusMap);
 
     var fontSize = 18.0 * pixelSize;
@@ -120,6 +119,30 @@ function versusUpdate(deltaTime) {
     }
 }
 
+function versusPlay() {
+    map = new GameMap(versusMapString);
+    manager = new PlayerManager(map);
+
+    for(let tid = 0; tid < 4; tid++) {
+        var vpl = versusManager.getPlayerOfTeamID(tid);
+        var pl = manager.getPlayerOfTeamID(tid);
+        pl.control = vpl.control;
+        pl.money = vpl.money;
+        pl.deployDelay = vpl.deployDelay;
+        if(pl.control == -1) pl.nullify();
+    }
+    ui.transitionToState = GAMEPLAY;
+    maxDisplayTilesPerRow = defaultTilesPerRow;
+    updateTileSizes();
+}
+
+function editorToVersus( mapString ) {
+    versusMapString = mapString;
+    versusMap = new GameMap(versusMapString);
+    versusManager = new PlayerManager(versusMap);
+    ui.transitionToState = VERSUS;
+}
+
 function versusEvent(deltaTime) {
 
     switch (versusLoadMapBtn.button.output)
@@ -153,8 +176,8 @@ function versusEvent(deltaTime) {
             versusMapIndex++;
             if(versusMapIndex >= 16) versusMapIndex = 0;
             versusChangeMapBtn.label.text = "CHANGE MAP (" + (versusMapIndex + 1).toString() + ")";
-            versusMapData = readFile("maps/map" + versusMapIndex.toString() + ".txt");
-            versusMap = new GameMap(versusMapData);
+            versusMapString = readFile("maps/map" + versusMapIndex.toString() + ".txt");
+            versusMap = new GameMap(versusMapString);
             versusManager = new PlayerManager(versusMap, 1);
             versusChangeMapBtn.button.resetOutput();
     }
@@ -330,26 +353,8 @@ function versusEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             if(versusPlayMapBtn.label.text == "PLAY") {
+                versusPlay();
                 playSFX(SFX_BUTTON_CLICK);
-                map = new GameMap(versusMapString);
-                manager = new PlayerManager(map);
-
-                for(let tid = 0; tid < 4; tid++)
-                {
-                    var vpl = versusManager.getPlayerOfTeamID(tid);
-                    var pl = manager.getPlayerOfTeamID(tid);
-
-                    pl.control = vpl.control;
-                    pl.money = vpl.money;
-                    pl.deployDelay = vpl.deployDelay;
-
-                    if(pl.control == -1) pl.nullify();
-                }
-
-                ui.transitionToState = GAMEPLAY;
-
-                maxDisplayTilesPerRow = defaultTilesPerRow;
-                updateTileSizes();
                 versusPlayMapBtn.button.resetOutput();
             }
     }

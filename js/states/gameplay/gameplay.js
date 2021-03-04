@@ -76,6 +76,9 @@ function gameplayUISetup() {
 function gameplaySetup() {
     gameBottomBarHeight = 140 * pixelSize;
 
+    for(let i = 0; i < 16; i++)
+        maps.push(readFile("maps/map" + i.toString() + ".txt"));
+
     map = new GameMap(maps[currentMapIndex]);
     manager = new PlayerManager(map);
 

@@ -35,7 +35,6 @@ var editorMapData = defaultEditorMapString;
 function editorSaveMap() {
     editorMapData = editorMap.getMapString(editorManager);
     saveFile(editorMapData, "flickTacticsMap.txt");
-    console.log(editorMapData);
 }
 
 function editorLoadMap() {
@@ -113,14 +112,14 @@ function editorSetup() {
         new Label(tr(), "SAVE", undefined, "black"),
         new Button(tr(), "#88FF88BB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(saveMapBtn);
-    loadMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 4, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
+    editorLoadMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 4, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
         new Label(tr(), "LOAD", undefined, "black"),
         new Button(tr(), "#FF8888BB", "#000000FF", "#FFFFFFFF"));
-    editorBtnGroup.push(loadMapBtn);
-    playMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 3, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
+    editorBtnGroup.push(editorLoadMapBtn);
+    editorPlayMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 3, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
         new Label(tr(), "PLAY", undefined, "black"),
         new Button(tr(), "#88FFFFBB", "#000000FF", "#FFFFFFFF"));
-    editorBtnGroup.push(playMapBtn);
+    editorBtnGroup.push(editorPlayMapBtn);
     changeMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 4, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
         new Label(tr(), editorMapIndex <= -1 ? "EXT." : "MAP " + (editorMapIndex+1).toString(), undefined, "black"),
         new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
@@ -397,18 +396,18 @@ function editorEvent(deltaTime) {
             editorSaveMap();
             saveMapBtn.button.resetOutput();
     }
-    switch (loadMapBtn.button.output) {
+    switch (editorLoadMapBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(loadMapBtn.button.hoverTrigger) {
+            if(editorLoadMapBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
-                loadMapBtn.button.hoverTrigger = false;
+                editorLoadMapBtn.button.hoverTrigger = false;
             }
             break;
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
             editorLoadMap();
-            loadMapBtn.button.resetOutput();
+            editorLoadMapBtn.button.resetOutput();
     }
     switch (clearMapBtn.button.output) {
         case UIOUTPUT_HOVER:
@@ -471,5 +470,19 @@ function editorEvent(deltaTime) {
             if(editorMapIndex >= 16) editorMapIndex = -1;
             changeMapBtn.label.text = editorMapIndex <= -1 ? "EXT." : "MAP " + (editorMapIndex+1).toString();
             changeMapBtn.button.resetOutput();
+    }
+    switch (editorPlayMapBtn.button.output) {
+        case UIOUTPUT_HOVER:
+            if(editorPlayMapBtn.button.hoverTrigger) {
+                playSFX(SFX_BUTTON_HOVER);
+                editorPlayMapBtn.button.hoverTrigger = false;
+            }
+            break;
+
+        case UIOUTPUT_SELECT:
+            playSFX(SFX_BUTTON_CLICK);
+            editorToVersus(editorMap.getMapString(editorManager));
+            console.log(editorMap.getMapString(editorManager));
+            editorPlayMapBtn.button.resetOutput();
     }
 }
