@@ -48,7 +48,7 @@ function draw(deltaTime) {
             drawRect(renderer, vec2(0, 0), vec2(window.innerWidth, window.innerHeight), true, getActiveTeamColor() + "66");
             gameplayDraw(deltaTime);
             break;
-        case ABOUT:aboutDraw(deltaTime); break;
+        case ABOUT: aboutDraw(deltaTime); break;
         case BATTLESCREEN: battlescreenDraw(deltaTime); break;
         case POWERSCREEN: powerscreenDraw(deltaTime); break;
         case WORLDMAP: worldmapDraw(deltaTime); break;

@@ -84,7 +84,7 @@ function versusSetup() {
         new Button(tr(), "#00006666", "#FFFFFFFF", "#662200FF"), "");
     versusBottomMiddleUI.push(versusPlayMapBtn);
 
-    versus.push(new FlexGroup(tr(vec2((gameWidth / 4), ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x))), vec2(gameWidth / 2, gameHeight - ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x)))),
+    versus.push(new FlexGroup(tr(vec2((gameWidth / 2), ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x))), vec2(gameWidth / 2, gameHeight - ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x)))),
         new SubState(tr(), versusBottomMiddleUI), false, vec2(0.001, 0.001), vec2(2, 5), true));
 }
 
@@ -102,11 +102,36 @@ function versusDraw(deltaTime) {
         versusManager.drawInRect(toVec2((gameWidth/4)/MAP_SIZE.x), toVec2(gameWidth/2));
     }
 
+    var COoffset = 80 * pixelSize;
+
+    //Dark CO bodies
+    spritesRenderer.globalCompositeOperation = "overlay";
+    for(let i = 0; i < 5; i++) {
+        var pl = versusManager.getPlayerOfTeamID(i == 4 ? 3 : i);
+        if(pl != -1 && pl.getHQUnitIndex() != -1) {
+            bodyNFacesSheet.transform.position = vec2(COoffset + ((64 * pixelSize) * i), (gameHeight / 2) + (gameHeight / 4));
+            bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
+            bodyNFacesSheet.drawScIn(vec2(1024 * i), toVec2(1024));
+        }
+    }
+    spritesRenderer.globalCompositeOperation = "source-over";
+
     //Highlighting Team's HQ upon selection
     var pl = versusManager.getPlayerOfTeamID(versusTeamID);
-    if(pl != -1 && pl.getHQUnitIndex() != -1)
+    if(pl != -1 && pl.getHQUnitIndex() != -1) {
         drawCircle(renderer, pl.unitGroup.mapUnits[pl.getHQUnitIndex()].unit.position,
             16.0*pixelSize, false, "white", 4.0*pixelSize);
+
+        //Selected CO body
+        bodyNFacesSheet.transform.position = vec2(COoffset + ((64 * pixelSize) * versusTeamID), (gameHeight / 2) + (gameHeight / 4));
+        bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
+        bodyNFacesSheet.drawScIn(vec2(1024 * versusTeamID), toVec2(1024));
+        if(versusTeamID == 3) { //Hulu and Jonah case
+            bodyNFacesSheet.transform.position = vec2(COoffset + ((64 * pixelSize) * (versusTeamID+1)), (gameHeight / 2) + (gameHeight / 4));
+            bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
+            bodyNFacesSheet.drawScIn(vec2(1024 * (versusTeamID+1)), toVec2(1024));
+        }
+    }
 }
 
 function versusUpdate(deltaTime) {
@@ -194,12 +219,14 @@ function versusEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
 
+            var limit = 10;
             do {
             versusTeamID++;
             if(versusTeamID > BLACK_TEAM) versusTeamID = RED_TEAM;
 
             var pl = versusManager.getPlayerOfTeamID(versusTeamID);
-            } while(pl == -1);
+            limit--;
+            } while(pl == -1 && limit > 0);
 
             switch(versusTeamID)
             {
