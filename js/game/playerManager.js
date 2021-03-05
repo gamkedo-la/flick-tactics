@@ -81,6 +81,7 @@ class PlayerManager {
             if(map.getTileTypeFromPosition(mapUnit.mapPosition) == TOXIC_TILE || isTileOnFire(mapUnit.mapPosition)) {
                 if(mapUnit.unit.rank >= 3) mapUnit.hp -= 1.0;
                 else mapUnit.hp -= 2.0;
+                if(mapUnit.hp > 0.0) new TileParticle(tilePositionToPixelPosition(mapUnit.mapPosition), damageSequence);
             }
         });
 

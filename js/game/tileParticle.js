@@ -19,6 +19,24 @@ var fireSequence = [
     {index: 99, duration: 600},
 ];
 
+var rankUpSequence = [
+    {index: 10, duration: 120},
+    {index: 30, duration: 120},
+    {index: 50, duration: 120}
+];
+
+var repairSequence = [
+    {index: 11, duration: 120},
+    {index: 31, duration: 120},
+    {index: 51, duration: 120}
+];
+
+var damageSequence = [
+    {index: 12, duration: 120},
+    {index: 32, duration: 120},
+    {index: 52, duration: 120}
+];
+
 const FOREST_FIRE_TURNS = 4;
 const AFTER_FOREST_SMOKE_TURNS = 3;
 const MECH_FIRE_TURNS = 2;
@@ -86,14 +104,15 @@ function decrementTileParticlesTurns() {
 }
 
 function drawTileParticles(deltaTime, camPos) {
-    for(let i = 0; i < particles.length; i++)
-        particles[i].draw(deltaTime, camPos);
+    if(maxDisplayTilesPerRow != totalTilesInRow)
+        for(let i = 0; i < particles.length; i++)
+            particles[i].draw(deltaTime, camPos);
 }
 
 function isTileOnSmoke(pos) {
     for(let i = 0; i < particles.length; i++) {
         if((particles[i].sequence[0].index == 78 || particles[i].sequence[0].index == 79)
-        && pos.isEqual(pixelPositionToTilePosition(particles[i].position)))
+        && pos.isEqual(pixelPositionToTilePositionForDefaultDisplayTilesPerRow(particles[i].position)))
             return true;
     }
     return false;
@@ -102,7 +121,7 @@ function isTileOnSmoke(pos) {
 function isTileOnFire(pos) {
     for(let i = 0; i < particles.length; i++) {
         if((particles[i].sequence[0].index == 98 || particles[i].sequence[0].index == 99)
-        && pos.isEqual(pixelPositionToTilePosition(particles[i].position)))
+        && pos.isEqual(pixelPositionToTilePositionForDefaultDisplayTilesPerRow(particles[i].position)))
             return true;
     }
     return false;

@@ -546,6 +546,7 @@ function buildingPanelEvent() {
         if(warBuilding_upgradeBtn != 0 && warBuilding_upgradeBtn.button.output == UIOUTPUT_SELECT) {
             getPlayer().money -= buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank);
             buildingMapUnit.unit.rank++;
+            new TileParticle(tilePositionToPixelPosition(buildingMapUnit.mapPosition), rankUpSequence);
             warBuilding_upgradeBtn.button.resetOutput();
         }
 
@@ -562,6 +563,7 @@ function buildingPanelEvent() {
         if(cityBuilding_upgradeBtn != 0 && cityBuilding_upgradeBtn.button.output == UIOUTPUT_SELECT) {
             getPlayer().money -= buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank);
             buildingMapUnit.unit.rank++;
+            new TileParticle(tilePositionToPixelPosition(buildingMapUnit.mapPosition), rankUpSequence);
             cityBuilding_upgradeBtn.button.resetOutput();
         }
     }

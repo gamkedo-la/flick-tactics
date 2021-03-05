@@ -51,6 +51,17 @@ function pixelPositionToTilePosition(pixelPos) {
         Math.floor((pixelPos.y / (tileSize + tileGap))+0.01));
 }
 
+function pixelPositionToTilePositionForDefaultDisplayTilesPerRow(pixelPos) {
+    var prevTilesPerRow = maxDisplayTilesPerRow;
+    maxDisplayTilesPerRow = defaultTilesPerRow;
+    updateTileSizes();
+    var pos = vec2(Math.floor((pixelPos.x / (tileSize + tileGap))+0.01),
+        Math.floor((pixelPos.y / (tileSize + tileGap))+0.01));
+    maxDisplayTilesPerRow = prevTilesPerRow;
+    updateTileSizes();
+    return pos;
+}
+
 function tilePositionToPixelPosition(tilePos) {
     return vec2(Math.floor((tilePos.x * tileSize) + (tilePos.x * tileGap)),
         Math.floor((tilePos.y * tileSize) + (tilePos.y * tileGap)));
@@ -192,6 +203,14 @@ class GameMap {
                         index += 20;
                 }
                 drawSheet(index, pos, sc);
+
+                if(maxDisplayTilesPerRow == totalTilesInRow && gameTime % 1200 < 600) {
+                    if(isTileOnFire(pixelPositionToTilePosition(pos))) {
+                        drawSheet(fireSequence[0].index, pos, sc);
+                    } else if(isTileOnSmoke(pixelPositionToTilePosition(pos))) {
+                        drawSheet(smokeSequence[0].index, pos, sc);
+                    }
+                }
             }
         }
         //Getting Tile at which the mouse is hovering on (or about to click)
@@ -475,6 +494,7 @@ class GameMap {
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= (munit1.hp / 10.0) * 3;
+                    if(munit2.hp > 0.0) new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
                 }
                 if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
@@ -487,6 +507,7 @@ class GameMap {
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= (munit1.hp / 10.0) * 6;
+                    if(munit2.hp > 0.0) new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
                 }
                 if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
@@ -501,6 +522,7 @@ class GameMap {
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= (munit1.hp / 10.0) * 8;
+                    if(munit2.hp > 0.0) new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
                 }
                 if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
@@ -519,6 +541,7 @@ class GameMap {
                 //repair
                 if (munit2 != -1) {
                     munit2.hp += (munit1.hp / 10.0) * 2;
+                    new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), repairSequence);
                     if(munit2.hp > 10.0) munit2.hp = 10.0;
                 }
                 break;
@@ -530,6 +553,7 @@ class GameMap {
                     var affMUnit = getMUnitI(getIndexPair(munit1.mapPosition.add(affOffset[i])));
                     if(affMUnit != -1) {
                         affMUnit.hp -= (munit1.hp / 10.0) * 4;
+                        if(affMUnit.hp > 0.0) new TileParticle(tilePositionToPixelPosition(affMUnit.mapPosition), damageSequence);
                         affMUnit.push(affOffset[i]);
                     }
                 }

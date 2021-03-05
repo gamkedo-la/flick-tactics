@@ -207,11 +207,14 @@ class MapUnit {
             var pushedOverToMUnit = getMUnitI(getIndexPair(this.mapPosition.add(offset)));
             if(map.getTileTypeFromPosition(this.mapPosition.add(offset)) == MOUNTAIN_TILE) {
                 this.hp -= 2.0;
+                new TileParticle(tilePositionToPixelPosition(this.mapPosition), damageSequence);
             } else if(pushedOverToMUnit != -1) {
                 var prevHp = pushedOverToMUnit.hp;
                 pushedOverToMUnit.hp -= this.hp / 10.0;
                 this.hp -= prevHp / 10.0;
                 if(pushedOverToMUnit.hp <= 0.0) pushedOverToMUnit.destroyTime = gameTime + 250;
+                new TileParticle(tilePositionToPixelPosition(this.mapPosition), damageSequence);
+                new TileParticle(tilePositionToPixelPosition(pushedOverToMUnit.mapPosition), damageSequence);
             } else {
                 this.mapPosition = this.mapPosition.add(offset);
             }
@@ -286,8 +289,8 @@ class MapUnit {
         if (this.hp > 0 && this.unit.type != RUIN_BUILDING) {
             if (ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
                 spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
-                drawText(spritesRenderer, Math.floor(this.hp).toString(), offset.add(this.unit.position.add(vec2(-29.6 * pixelSize, -14.6 * pixelSize))), "black");
-                drawText(spritesRenderer, Math.floor(this.hp).toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
+                drawText(spritesRenderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-29.6 * pixelSize, -14.6 * pixelSize))), "black");
+                drawText(spritesRenderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
             }
         } else if (this.hp <= 0 && ui.stateIndex != BATTLESCREEN && this.destroyTime < gameTime) {
             //Destroying/Removing a Unit
