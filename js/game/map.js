@@ -17,6 +17,15 @@ const FOREST_TILE = 3;
 const MOUNTAIN_TILE = 4;
 const TOXIC_TILE = 5;
 
+const terrainTacticEffect = [
+    { attack: 0.0,      defense: 10.0   },
+    { attack: -10.0,    defense: 0.0    },
+    { attack: 0.0,      defense: 0.0    },
+    { attack: -10.0,    defense: 25.0   },
+    { attack: 75.0,     defense: 50.0   },
+    { attack: 0.0,      defense: 0.0    }
+];
+
 //Map Tile Unit = 0_0_0
 //1st digit -> Terrain
 //2nd digit -> Unit (Builidng/Mech)
@@ -485,6 +494,15 @@ class GameMap {
         passiveMapUnit = munit2;
     }
 
+    calculateDamage(munit1, munit2) {
+        var damage = (munit1.unit.attack[munit2.unit.isBuilding ? 5 : munit2.unit.type] * (munit1.hp / 10.0));
+        damage += (damage / 100.0) * terrainTacticEffect[this.getTileTypeFromPosition(munit1.mapPosition)].attack;
+        if(!munit2.unit.isBuilding && munit2.unit.type != TELEPORT_MECH) damage -= (damage / 100.0) * terrainTacticEffect[this.getTileTypeFromPosition(munit2.mapPosition)].defense;
+        damage += (damage / 100.0) * (((Math.random() - 0.5) * 2.0) * 5.0);
+        console.log(damage);
+        return damage;
+    }
+
     attack(munit1, munit2, placement) {
 
         if(munit1.unit.ammo > 0) munit1.unit.ammo--;
@@ -493,7 +511,7 @@ class GameMap {
             case RIFLE_MECH:
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
-                    munit2.hp -= (munit1.hp / 10.0) * 3;
+                    munit2.hp -= this.calculateDamage(munit1, munit2);
                     if(munit2.hp > 0.0) new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
                 }
                 if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
@@ -506,7 +524,7 @@ class GameMap {
             case CANNON_MECH:
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
-                    munit2.hp -= (munit1.hp / 10.0) * 6;
+                    munit2.hp -= this.calculateDamage(munit1, munit2);
                     if(munit2.hp > 0.0) new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
                 }
                 if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
@@ -521,7 +539,7 @@ class GameMap {
             case ARTILLERY_MECH:
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
-                    munit2.hp -= (munit1.hp / 10.0) * 8;
+                    munit2.hp -= this.calculateDamage(munit1, munit2);
                     if(munit2.hp > 0.0) new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
                 }
                 if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
@@ -540,7 +558,7 @@ class GameMap {
             case SUPPORT_MECH:
                 //repair
                 if (munit2 != -1) {
-                    munit2.hp += (munit1.hp / 10.0) * 2;
+                    munit2.hp += munit1.unit.repair[munit2.unit.isBuilding ? 5 : munit2.unit.type];
                     new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), repairSequence);
                     if(munit2.hp > 10.0) munit2.hp = 10.0;
                 }
@@ -552,7 +570,7 @@ class GameMap {
                 for(let i = 0; i < affOffset.length; i++) {
                     var affMUnit = getMUnitI(getIndexPair(munit1.mapPosition.add(affOffset[i])));
                     if(affMUnit != -1) {
-                        affMUnit.hp -= (munit1.hp / 10.0) * 4;
+                        affMUnit.hp -= this.calculateDamage(munit1, affMUnit);
                         if(affMUnit.hp > 0.0) new TileParticle(tilePositionToPixelPosition(affMUnit.mapPosition), damageSequence);
                         affMUnit.push(affOffset[i]);
                     }

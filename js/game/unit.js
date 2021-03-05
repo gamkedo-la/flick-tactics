@@ -49,6 +49,8 @@ class Unit {
                 this.movement = 3;
                 this.movementObstacles = [SEA_TILE];
                 this.movementReducers = [MOUNTAIN_TILE];
+
+                this.attack = [6.0, 2.0, 5.0, 4.0, 9.0, 2.0];
                 this.ammo = -1;
                 this.deployTime = 0;
                 this.smokeAmmoCapacity = 1;
@@ -60,6 +62,8 @@ class Unit {
                 this.boostMovement = 2;
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
+
+                this.attack = [10.0, 5.0, 12.0, 7.0, 14.0, 7.0];
                 this.ammoCapacity = 3;
                 this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
@@ -72,6 +76,8 @@ class Unit {
                 this.movement = 2;
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
+
+                this.attack = [12.0, 8.0, 16.0, 8.0, 7.5, 8.0];
                 this.ammoCapacity = 3;
                 this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
@@ -83,6 +89,8 @@ class Unit {
                 this.movement = 5;
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
+
+                this.repair = [2.5, 1.0, 1.0, 2.0, 4.0, 2.0];
                 this.ammo = -1;
                 this.deployTime = 0;
                 break;
@@ -91,6 +99,8 @@ class Unit {
                 this.movement = 5;
                 this.movementObstacles = [MOUNTAIN_TILE];
                 this.movementReducers = [];
+
+                this.attack = [5.0, 2.0, 3.0, 2.5, 7.5, 2.5];
                 this.ammoCapacity = 6;
                 this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
@@ -326,9 +336,6 @@ class MapUnit {
 
         this.unit.draw(teamID, vec2(), sc, this.flip);
     }
-
-    //Destroy Map Unit on Mountain/Water/Toxic/etc.
-    //getTileTypeFromPosition(pos)
 }
 
 class MapUnitGroup {
