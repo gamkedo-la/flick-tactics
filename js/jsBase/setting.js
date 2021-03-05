@@ -55,6 +55,7 @@ function init() {
     uiInit();
 
     gameSheet = new Sprite(tr(), new ImageObject("images/sheet.png"));
+    bodyNFacesSheet = new Sprite(tr(), new ImageObject("images/bodyNFacesSheet.png"));
 
     inputSetup();
 }

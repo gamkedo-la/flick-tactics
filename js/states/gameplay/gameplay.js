@@ -27,14 +27,6 @@ function getMUnitI(indexPair) {
     if(indexPair[0] != -1 && indexPair[1] != -1) return manager.players[indexPair[0]].unitGroup.mapUnits[indexPair[1]];
     return -1;
 }
-
-//#endregion
-
-function gameplayReset() {
-    //Resetting building panel properties
-    buildingPanelCOSelection = 0;
-}
-
 function getActiveTeamColor() {
     if (ui.stateIndex != GAMEPLAY && ui.stateIndex != POWERSCREEN) return "#000000";
     switch (getPlayer().unitGroup.teamID) {
@@ -44,6 +36,13 @@ function getActiveTeamColor() {
         case BLACK_TEAM: return "#625565";
         default: return "#000000";
     }
+}
+
+//#endregion
+
+function gameplayReset() {
+    //Resetting building panel properties
+    buildingPanelCOSelection = 0;
 }
 
 function gameplayUISetup() {
@@ -98,7 +97,8 @@ function gameplayDraw(deltaTime) {
     manager.draw(cam);
     drawTileParticles(deltaTime, cam);
     map.drawUnitExtras();
-    overviewUIDraw(cam);
+    if(dialogues.length <= 0) overviewUIDraw(cam);
+    else dialogueDraw();
 }
 
 function gameplayUIDisplayUpdate() {
@@ -147,18 +147,30 @@ function gameplayUIDisplayUpdate() {
 function gameplayUpdate(deltaTime) {
     playBGM(BGM_WORLDMAP);
 
-    aiUpdate(deltaTime);
+    if(dialogues.length <= 0) {
 
-    if (maxDisplayTilesPerRow == defaultTilesPerRow)
-        cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.25);
+        aiUpdate(deltaTime);
 
-    gameplayUIDisplayUpdate();
+        if (maxDisplayTilesPerRow == defaultTilesPerRow)
+            cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.25);
 
-    controlBarUIUpdate();
-    quickStatsUIUpdate();
+        gameplayUIDisplayUpdate();
+
+        controlBarUIUpdate();
+        quickStatsUIUpdate();
+
+        gameplayZoomBtn.enabled = true;
+
+    } else {
+        dialogueUpdate(deltaTime);
+        buildingPanel.enabled = qStatsPanel.enabled = gameplayZoomBtn.enabled = false;
+    }
 }
 
 function gameplayEvent(deltaTime) {
+
+    if(dialogues.length > 0) return;
+
     controlBarUIEvents();
     overviewUIEvents();
 

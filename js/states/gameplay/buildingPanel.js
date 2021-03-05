@@ -375,7 +375,7 @@ function buildingPanelUpdate(buildingMapUnit) {
 }
 
 function buildingPanelDraw() {
-    if(getPlayer().getSelectedMapUnit().unit.type == HQ_BUILDING && maxDisplayTilesPerRow == defaultTilesPerRow)
+    if(getPlayer().getSelectedMapUnit().unit.type == HQ_BUILDING && maxDisplayTilesPerRow == defaultTilesPerRow && buildingPanel.enabled)
     {
         renderer.fillStyle = "#00000088";
         renderer.beginPath();

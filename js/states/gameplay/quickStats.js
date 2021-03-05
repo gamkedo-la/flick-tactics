@@ -87,7 +87,7 @@ function quickStatsUIUpdate() {
 }
 
 function quickStatsUIDraw() {
-    if(maxDisplayTilesPerRow == defaultTilesPerRow && prevQuickStatsUnit != -1) {
+    if(maxDisplayTilesPerRow == defaultTilesPerRow && prevQuickStatsUnit != -1 && qStatsPanel.enabled) {
         prevQuickStatsUnit.draw(prevQuickStatsTeamID, vec2(-prevQuickStatsUnit.position.x, -prevQuickStatsUnit.position.y).add(qStatsPanel.subState.uiObjects[0].transform.position).add(qStatsSize.divide(toVec2(2.0))), toVec2(pixelSize/1.5));
     }
 }

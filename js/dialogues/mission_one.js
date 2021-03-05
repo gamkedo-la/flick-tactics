@@ -8,147 +8,147 @@ face => FACE_NEUTRAL, FACE_HAPPY, FACE_SAD, FACE_UPSET, FACE_ANGRY, FACE_SHOCK
 const mission_one = [
     {
         speaker: GURU,
-        dialogue: "Welcome to Flick Tactics Zareem!  Here, we'll train you to be the most powerful strategest the world has ever created!",
+        text: "Welcome to Flick Tactics Zareem!  Here, we'll train you to be the most powerful strategest the world has ever created!",
         face: FACE_HAPPY
         //event: ??? (coming soon)
     },
     {
         speaker: ZAREEM,
-        dialogue: "Uh... Hello sir!",
+        text: "Uh... Hello sir!",
         face: FACE_NEUTRAL
     },
     {
         speaker: GURU,
-        dialogue: "It's GURU SIR!",
+        text: "It's GURU SIR!",
         face: FACE_UPSET
     },
     {
         speaker: ZAREEM,
-        dialogue: "YES! GURU SIR!",
+        text: "YES! GURU SIR!",
         face: FACE_NEUTRAL
     },
     {
         speaker: GURU,
-        dialogue: "That's right young'n. When I was your age, I'd already fought a bear with my bear hands and it couldn't bear it at all!",
+        text: "That's right young'n. When I was your age, I'd already fought a bear with my bear hands and it couldn't bear it at all!",
         face: FACE_HAPPY
     },
     {
         speaker: ZAREEM,
-        dialogue: "(Rolls Eyes) Right... sir....?",
+        text: "(Rolls Eyes) Right... sir....?",
         face: FACE_NEUTRAL
     },
     {
         speaker: GURU,
-        dialogue: "That's GURU SIR!",
+        text: "That's GURU SIR!",
         face: FACE_UPSET
     },
     {
         speaker: ZAREEM,
-        dialogue: "YES! GURU SIR!",
+        text: "YES! GURU SIR!",
         face: FACE_NEUTRAL
     },
     {
         speaker: GURU,
-        dialogue: "Let's learn Movement, click a unit and select \"Move\" then select a square to move to!",
+        text: "Let's learn Movement, click a unit and select \"Move\" then select a square to move to!",
         face: FACE_NEUTRAL
     },
     {
         speaker: ZAREEM,
-        dialogue: "On it's GURU SIR!",
+        text: "On it's GURU SIR!",
         face: FACE_NEUTRAL
 
         //event: centered on unit, player needs to move the unit to another position. Text should still display Guru's instructions so player knows what to do.
     },
     {
         speaker: GURU,
-        dialogue: "Good job, now select where you want to move to",
+        text: "Good job, now select where you want to move to",
         face: FACE_NEUTRAL
     },
     {
         speaker: ZAREEM,
-        dialogue: "Here?",
+        text: "Here?",
         face: FACE_NEUTRAL
     },
     {
         speaker: GURU,
-        dialogue: "That's a good spot!",
+        text: "That's a good spot!",
         face: FACE_HAPPY
     },
     {
         speaker: ZAREEM,
-        dialogue: "Err.... thank you sir... I guess?",
+        text: "Err.... thank you sir... I guess?",
         face: FACE_NEUTRAL
     },
     {
         speaker: GURU,
-        dialogue: "Nonsense - I said it's good, so it's good, Got it!?",
+        text: "Nonsense - I said it's good, so it's good, Got it!?",
         face: FACE_UPSET    
     },
     {
         speaker: ZAREEM,
-        dialogue: "?? Whispers, This old geezer....",
+        text: "?? Whispers, This old geezer....",
         face: FACE_NEUTRAL
     },
     {
         speaker: GURU,
-        dialogue: "What did you say!",
+        text: "What did you say!",
         face: FACE_UPSET    
     },
     {
         speaker: ZAREEM,
-        dialogue: "Nothing, nothing.  Are you going to teach me anything?",
+        text: "Nothing, nothing.  Are you going to teach me anything?",
         face: FACE_NEUTRAL
     },
         //Event, Terrain Tutorial Begins
     {
         speaker: GURU,
-        dialogue: "This kid...., Look at where you placed the units",
+        text: "This kid...., Look at where you placed the units",
         face: FACE_NEUTRAL   
     },
     {
         speaker: ZAREEM,
-        dialogue: "Where?",
+        text: "Where?",
         face: FACE_NEUTRAL
     },
     {
         speaker: GURU,
         //units now on a mountain
-        dialogue: "They're on a Mountain! Look!",
+        text: "They're on a Mountain! Look!",
         face: FACE_SHOCK   
     },
     {
         speaker: ZAREEM,
-        dialogue: "Oh... oh oh, yea, so what?",
+        text: "Oh... oh oh, yea, so what?",
         face: FACE_NEUTRAL
     },
     {
         speaker: GURU,
-        dialogue: "Select them",
+        text: "Select them",
         face: FACE_NEUTRAL  
     },
     {
         speaker: ZAREEM,
-        dialogue: "Okayyyyy",
+        text: "Okayyyyy",
         face: FACE_NEUTRAL
     },
     {
         speaker: GURU,
-        dialogue: "Look at their defense now",
+        text: "Look at their defense now",
         face: FACE_NEUTRAL  
     },
     {
         speaker: ZAREEM,
-        dialogue: "Oh it's higher!",
+        text: "Oh it's higher!",
         face: FACE_SHOCK
     },
     {
         speaker: GURU,
-        dialogue: "Exactly!  Units on mountains get more defense points.  Remember that!",
+        text: "Exactly!  Units on mountains get more defense points.  Remember that!",
         face: FACE_HAPPY 
     },
     {
         speaker: ZAREEM,
-        dialogue: "YES! GURU SIR!",
+        text: "YES! GURU SIR!",
         face: FACE_HAPPY
     },
 ];

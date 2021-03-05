@@ -23,7 +23,7 @@ var missionPoints = [
 
 function worldmapSetup() {
     worldmapFlagSprite = new Sprite(tr(), new ImageObject("images/worldMapFlags.png"));
-    dialogueSetup(worldmap);
+    dialogueSetup(worldmap, gameplay);
 }
 
 function worldmapResize() {
@@ -82,7 +82,7 @@ function worldmapDraw(deltaTime) {
 function worldmapUpdate(deltaTime) {
     playBGM(BGM_WORLDMAP);
     if(!dialogueUpdate(deltaTime))
-        if(isTouched){
+        if(isTouched) {
             //ui.transitionToState = GAMEPLAY; //When Campaign is Added
             
             ui.transitionToState = STARTSCREEN;
