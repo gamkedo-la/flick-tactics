@@ -240,33 +240,9 @@ function buildingPanelUpdate(buildingMapUnit) {
             setBButton(0, 2, "End Turn");
 
             setBTab(1, "CO");
-            switch(manager.players[buildingPanelCOSelection].CO) {
-                case ZAREEM:
-                    setBLabel(1, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: Zareem.");
-                    setBLabel(1, 1, "CO Power: Rifle Boomer.");
-                    setBLabel(1, 2, "All your buildings deploys a Rifle Mech.");
-                    break;
-                case GURU:
-                    setBLabel(1, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: Guru.");
-                    setBLabel(1, 1, "CO Power: Extra Action.");
-                    setBLabel(1, 2, "Receives 3 Action Points.");
-                    break;
-                case TAJA:
-                    setBLabel(1, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: Taja.");
-                    setBLabel(1, 1, "CO Power: Distant Chaos.");
-                    setBLabel(1, 2, "+1 Tile & +25% Fire Power to all Range Attacks.");
-                    break;
-                case HULU:
-                    setBLabel(1, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: Hulu.");
-                    setBLabel(1, 1, "CO Power: Terror Infliction.");
-                    setBLabel(1, 2, "-1 to all Opponent Mechs HP.");
-                    break;
-                case JONAH:
-                    setBLabel(1, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: Jonah.");
-                    setBLabel(1, 1, "CO Power: Me My Mine.");
-                    setBLabel(1, 2, "Strongest Opponent Mech(s) becomes his Mech(s).");
-                    break;
-            }
+            setBLabel(1, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: " + COSPECIFICS[manager.players[buildingPanelCOSelection].CO].name + ".");
+            setBLabel(1, 1, "CO Power: " + COSPECIFICS[manager.players[buildingPanelCOSelection].CO].powerName + ".");
+            setBLabel(1, 2, COSPECIFICS[manager.players[buildingPanelCOSelection].CO].powerDesc);
 
             setBButton(1, 0, "Previous CO");
 

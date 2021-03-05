@@ -11,12 +11,6 @@ var dialogueInput;
 var characterTimer = 0.0;
 var characterIndex = 0;
 
-var GURU = 0;
-var ZAREEM = 1;
-var TAJA = 2;
-var HULU = 3;
-var JONAH = 4;
-
 var FACE_NEUTRAL = 0;
 var FACE_HAPPY = 1;
 var FACE_SAD = 2;

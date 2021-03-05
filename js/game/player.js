@@ -1,8 +1,22 @@
 
+var GURU = 0;
+var ZAREEM = 1;
+var TAJA = 2;
+var HULU = 3;
+var JONAH = 4;
+
 const RED_TEAM = 0;
 const BLUE_TEAM = 1;
 const GREEN_TEAM = 2;
 const BLACK_TEAM = 3;
+
+const COSPECIFICS = [
+    { name: "Guru",     powerName: "Extra Action",      powerDesc: "Receives 3 Action Points." },
+    { name: "Zareem",   powerName: "Rifle Boomer",      powerDesc: "All your buildings deploys a Rifle Mech." },
+    { name: "Taja",     powerName: "Distant Chaos",     powerDesc: "Increased Artillery Range and Fire Power." },
+    { name: "Hulu",     powerName: "Terror Infliction", powerDesc: "-1 to all Opponent Mechs HP." },
+    { name: "Jonah",    powerName: "Me My Mine",        powerDesc: "Strongest Opponent Mech(s) becomes his Mech(s)." }
+];
 
 class Player {
     constructor(teamID, mapUnits, co = -1) {

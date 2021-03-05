@@ -36,7 +36,7 @@ function gameplayReset() {
 }
 
 function getActiveTeamColor() {
-    if (ui.stateIndex != GAMEPLAY) return "#000000";
+    if (ui.stateIndex != GAMEPLAY && ui.stateIndex != POWERSCREEN) return "#000000";
     switch (getPlayer().unitGroup.teamID) {
         case RED_TEAM: return "#c32454";
         case BLUE_TEAM: return "#4d65b4";
