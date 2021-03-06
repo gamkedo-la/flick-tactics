@@ -291,7 +291,8 @@ class MapUnit {
         else {
             //Darken(multiply draw) the unit if they have moved or they can't move anymore.
             //OR Brighten(overlay draw) the unit if they are boosted!
-            if(this.up == -1 || getPlayer().actionPoints <= 0) {
+            var darken = this.up == -1 || (getPlayer().actionPoints <= 0 && !this.unit.isBuilding && getPlayer().checkMapUnit(this));
+            if(darken) {
                 renderer.globalAlpha = 1.0;
                 renderer.globalCompositeOperation = "multiply";
             }
@@ -302,7 +303,7 @@ class MapUnit {
 
             this.unit.draw(teamID, offset, sc, this.flip);
 
-            if(this.up == -1 || getPlayer().actionPoints <= 0) {
+            if(darken) {
                 renderer.globalAlpha = 1.0;
                 renderer.globalCompositeOperation = "source-over";
             }

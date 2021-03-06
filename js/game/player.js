@@ -79,6 +79,13 @@ class Player {
         return this.unitGroup.mapUnits[this.selectedIndex];
     }
 
+    checkMapUnit(mUnit) {
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
+            if(mUnit == this.unitGroup.mapUnits[i])
+                return true;
+        return false;
+    }
+
     getHQUnitIndex() {
         for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
             if(this.unitGroup.mapUnits[i].unit.isBuilding
