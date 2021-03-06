@@ -561,14 +561,14 @@ class GameMap {
             case SUPPORT_MECH:
                 //repair
                 if (munit2 != -1) {
-                    munit2.hp += munit1.unit.repair[munit2.unit.isBuilding ? 5 : munit2.unit.type];
+                    munit2.hp += (Math.ceil(munit1.hp) / 10.0) * munit1.unit.repair[munit2.unit.isBuilding ? 5 : munit2.unit.type];
                     new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), repairSequence);
                     if(munit2.hp > 10.0) munit2.hp = 10.0;
                 }
                 break;
 
             case TELEPORT_MECH:
-                //self-destruct
+                //boom!
                 var affOffset = [vec2(1, 0), vec2(-1, 0), vec2(0, 1), vec2(0, -1)];
                 for(let i = 0; i < affOffset.length; i++) {
                     var affMUnit = getMUnitI(getIndexPair(munit1.mapPosition.add(affOffset[i])));

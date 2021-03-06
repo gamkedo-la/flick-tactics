@@ -57,8 +57,7 @@ function battlescreenDraw(deltaTime) {
         battlescreenActiveUnitX = lerp(battlescreenActiveUnitX, 0.0, deltaTime / 120);
         battlescreenPassiveUnitX = lerp(battlescreenPassiveUnitX, 0.0, deltaTime / 120);
     } else {
-        passiveMUnit.hp = lerp(passiveMUnit.hp, passiveMUnitHp, deltaTime / 120);
-        if(passiveMUnit.hp <= 0.5) passiveMUnit.hp = 0.0;
+        passiveMUnit.hp = passiveMUnitHp;
     }
 
     //Black BG

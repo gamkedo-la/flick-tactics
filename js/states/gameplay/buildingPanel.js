@@ -279,7 +279,7 @@ function buildingPanelUpdate(buildingMapUnit) {
 
             setBTab(0, "CITY");
             setBLabel(0, 0, "Generates Income with which new mechs are deployed via War Building.");
-            setBLabel(0, 1, "Cost is also a requirement for supply/repair. Income Generation per turn: " + (buildingMapUnit.hp * (buildingMapUnit.unit.incomePerHp + (buildingMapUnit.unit.incomePerHp * buildingMapUnit.unit.incomeRankMultiplier * buildingMapUnit.unit.rank))).toString() + ".");
+            setBLabel(0, 1, "Cost is also a requirement for supply/repair. Income Generation per turn: " + (Math.ceil(buildingMapUnit.hp) * (buildingMapUnit.unit.incomePerHp + (buildingMapUnit.unit.incomePerHp * buildingMapUnit.unit.incomeRankMultiplier * buildingMapUnit.unit.rank))).toString() + ".");
 
             if(buildingMapUnit.unit.boost == 0) {
                 setBLabel(0, 2, "Use BOOST to get 2 times the income for a turn (Uses 1 AP, " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * buildingMapUnit.unit.rank)) + " Cooldown Turns).");
@@ -484,17 +484,21 @@ function buildingPanelEvent() {
                 var pos = buildingPanelPrevSelected.mapPosition;
                 var newMapUnit = null;
                 if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, 1)))[0] == -1) {
-                    removeTileParticles(pos.add(vec2(0, 1)))
+                    removeTileParticles(pos.add(vec2(0, 1)));
                     newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, 1)));
+                    newMapUnit.hp = Math.ceil(buildingMapUnit.hp);
                 } else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(1, 0)))[0] == -1) {
-                    removeTileParticles(pos.add(vec2(1, 0)))
+                    removeTileParticles(pos.add(vec2(1, 0)));
                     newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(1, 0)));
+                    newMapUnit.hp = Math.ceil(buildingMapUnit.hp);
                 } else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, -1)))[0] == -1) {
-                    removeTileParticles(pos.add(vec2(0, -1)))
+                    removeTileParticles(pos.add(vec2(0, -1)));
                     newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, -1)));
+                    newMapUnit.hp = Math.ceil(buildingMapUnit.hp);
                 } else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(-1, 0)))[0] == -1) {
-                    removeTileParticles(pos.add(vec2(-1, 0)))
+                    removeTileParticles(pos.add(vec2(-1, 0)));
                     newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(-1, 0)));
+                    newMapUnit.hp = Math.ceil(buildingMapUnit.hp);
                 }
                 if(newMapUnit != null) {
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];

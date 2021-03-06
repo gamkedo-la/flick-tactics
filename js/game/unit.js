@@ -331,6 +331,12 @@ class MapUnit {
                 drawText(spritesRenderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
             }
         } else if (this.hp <= 0 && ui.stateIndex != BATTLESCREEN && this.destroyTime < gameTime) {
+            if(this.unit.isBuilding && this.unit.type != RUIN_BUILDING) {
+                new TileParticle(this.unit.position, unitDestroySequence);
+                this.unit.type = RUIN_BUILDING;
+                return;
+            } else if(this.unit.type == RUIN_BUILDING) return;
+
             //Destroying/Removing a Unit
             var indexPair = getIndexPair(this.mapPosition);
             if(indexPair[0] != -1)

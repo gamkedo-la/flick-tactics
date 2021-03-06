@@ -188,14 +188,18 @@ function gameplayEvent(deltaTime) {
 
     //Gameplay UI Button Events
     if (leftUnitChangeBtn.button.output == UIOUTPUT_SELECT) {
-        getPlayer().selectedIndex--;
+        var limit = 128;
+        do { getPlayer().selectedIndex--; limit--;
         if (getPlayer().selectedIndex <= -1) getPlayer().selectedIndex = getPlayer().unitGroup.mapUnits.length - 1;
+        } while (getPlayer().getSelectedMapUnit().unit.type == RUIN_BUILDING && limit > 0);
         updateUnitActionButtons();
         leftUnitChangeBtn.button.resetOutput();
     }
     else if (rightUnitChangeBtn.button.output == UIOUTPUT_SELECT) {
-        getPlayer().selectedIndex++;
+        var limit = 128;
+        do { getPlayer().selectedIndex++; limit--;
         if (getPlayer().selectedIndex >= getPlayer().unitGroup.mapUnits.length) getPlayer().selectedIndex = 0;
+        } while (getPlayer().getSelectedMapUnit().unit.type == RUIN_BUILDING && limit > 0);
         updateUnitActionButtons();
         rightUnitChangeBtn.button.resetOutput();
     }

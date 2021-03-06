@@ -53,7 +53,7 @@ function updateUnitActionButtons() {
         case TELEPORT_MECH:
             unitUpBtn.label.text = "MOVE";
             unitLeftBtn.label.text = "TELEPORT";
-            unitRightBtn.label.text = "SELF-DESTRUCT";
+            unitRightBtn.label.text = "BOOM!";
             break;
     }
 }

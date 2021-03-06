@@ -86,7 +86,7 @@ class PlayerManager {
 
             //Money Increases (receives city building income)
             if(mUnit.unit.isBuilding && typeof mUnit.unit.incomePerHp != "undefined") {
-                this.getActivePlayer().money += (mUnit.hp * (mUnit.unit.incomePerHp + (mUnit.unit.incomePerHp * mUnit.unit.incomeRankMultiplier * mUnit.unit.rank))) * (mUnit.unit.boost == 1 ? 2 : 1);
+                this.getActivePlayer().money += (Math.ceil(mUnit.hp) * (mUnit.unit.incomePerHp + (mUnit.unit.incomePerHp * mUnit.unit.incomeRankMultiplier * mUnit.unit.rank))) * (mUnit.unit.boost == 1 ? 2 : 1);
             }
 
             //Deploy Time Decreases
