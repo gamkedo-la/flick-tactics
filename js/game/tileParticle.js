@@ -37,6 +37,20 @@ var damageSequence = [
     {index: 52, duration: 120}
 ];
 
+var incomeSequence = [
+    {index: 9, duration: 60},
+    {index: 29, duration: 80},
+    {index: 49, duration: 120},
+    {index: 29, duration: 80},
+    {index: 9, duration: 60}
+];
+
+var teleportSequence = [
+    {index: 8, duration: 120},
+    {index: 28, duration: 120},
+    {index: 48, duration: 120}
+];
+
 const FOREST_FIRE_TURNS = 4;
 const AFTER_FOREST_SMOKE_TURNS = 3;
 const MECH_FIRE_TURNS = 2;

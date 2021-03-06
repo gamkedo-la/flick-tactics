@@ -559,7 +559,6 @@ class GameMap {
                 break;
 
             case SUPPORT_MECH:
-                //repair
                 if (munit2 != -1) {
                     munit2.hp += (Math.ceil(munit1.hp) / 10.0) * munit1.unit.repair[munit2.unit.isBuilding ? 5 : munit2.unit.type];
                     new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), repairSequence);
@@ -568,7 +567,6 @@ class GameMap {
                 break;
 
             case TELEPORT_MECH:
-                //boom!
                 var affOffset = [vec2(1, 0), vec2(-1, 0), vec2(0, 1), vec2(0, -1)];
                 for(let i = 0; i < affOffset.length; i++) {
                     var affMUnit = getMUnitI(getIndexPair(munit1.mapPosition.add(affOffset[i])));
@@ -670,7 +668,6 @@ class GameMap {
                 break;
 
             case SUPPORT_MECH:
-                //support
                 if (munit2 != -1 && !munit2.unit.isBuilding) {
                     if(typeof munit2.unit.ammoCapacity != "undefined") munit2.unit.ammo = munit2.unit.ammoCapacity;
                     if(typeof munit2.unit.smokeAmmoCapacity != "undefined") munit2.unit.smokeAmmo = munit2.unit.smokeAmmoCapacity;
@@ -678,8 +675,13 @@ class GameMap {
                 break;
 
             case TELEPORT_MECH:
-                //teleport
-                //NONE!
+                if (munit2 != -1 && !munit2.unit.isBuilding) {
+
+                } else {
+                    new TileParticle(tilePositionToPixelPosition(munit1.mapPosition), teleportSequence);
+                    new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), teleportSequence);
+                    munit1.mapPosition = munit1.mapPosition.add(placement);
+                }
                 break;
         }
     }
