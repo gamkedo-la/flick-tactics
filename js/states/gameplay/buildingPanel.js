@@ -377,16 +377,14 @@ function buildingPanelUpdate(buildingMapUnit) {
 function buildingPanelDraw() {
     if(getPlayer().getSelectedMapUnit().unit.type == HQ_BUILDING && maxDisplayTilesPerRow == defaultTilesPerRow && buildingPanel.enabled)
     {
-        renderer.fillStyle = "#00000088";
-        renderer.beginPath();
-        renderer.arc(gameWidth/2, gameHeight - panelH + (18.0*pixelSize), 32.0*pixelSize, 0, 2*Math.PI);
-        renderer.lineTo(gameWidth/2, gameHeight - panelH + (18.0*pixelSize));
-        renderer.fill();
-        renderer.fillStyle = rgb(Math.floor(Math.abs(180.0 * Math.sin(gameTime*0.0025))), 255, Math.floor(Math.abs(180.0 * Math.sin(gameTime*0.0025))));
-        renderer.beginPath();
-        renderer.arc(gameWidth/2, gameHeight - panelH + (18.0*pixelSize), 24.0*pixelSize, 0, (getPlayer().powerMeter * 2.0) * Math.PI);
-        renderer.lineTo(gameWidth/2, gameHeight - panelH + (18.0*pixelSize));
-        renderer.fill();
+        var sc = pixelSize/3.0
+        bodyNFacesSheet.transform.scale = toVec2(sc);
+        bodyNFacesSheet.transform.position = vec2(panelX + panelW/2, panelY - (8.0 * pixelSize));
+        bodyNFacesSheet.drawScIn(facePositions[getPlayer().powerMeter >= 1.0 ? FACE_HAPPY : FACE_NEUTRAL].add(vec2(1024 * getPlayer().CO)), toVec2(256));
+
+        drawRect(renderer, vec2(panelX - 128 * sc + panelW/2, panelY + sc * 104.0), vec2(sc * 256, sc * 12.0), true, "black");
+        drawRect(renderer, vec2(panelX - 128 * sc + panelW/2, panelY + sc * 104.0), vec2(sc * 256 * getPlayer().powerMeter, sc * 12.0), true, getPlayer().powerMeter >= 1.0 && gameTime % 600 < 300 ? "white" : "#66ff66");
+        bodyNFacesSheet.transform.scale = toVec2(pixelSize/2.0);
     }
 }
 

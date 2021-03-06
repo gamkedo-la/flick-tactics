@@ -1,11 +1,12 @@
 const BATTLESCREEN = 3;
 var battlescreen = [];
 
-var battlescreenDelay = 2500;
+var battlescreenDelay = 3000;
 var battlescreenTimer = 0;
 var battlescreenOpacity = 0.0;
 var battlescreenMaxBlack = 0.7;
-var battlescreenSwitcherTime = 500;
+var battlescreenSwitcherLowTime = 400;
+var battlescreenSwitcherHighTime = 1200;
 var battlescreenCharacterDisplaySize = 80;
 var battlescreenHealthBarSize = vec2(204, 60);
 var battlescreenSingleBarSize = vec2(18, 56);
@@ -40,7 +41,7 @@ function battlescreenDraw(deltaTime) {
     map.draw(cam);
     manager.draw(cam);
 
-    if (battlescreenTimer > battlescreenSwitcherTime) {
+    if (battlescreenTimer > battlescreenSwitcherHighTime) {
         battlescreenOpacity = lerp(battlescreenOpacity, 1.0, deltaTime / 120);
         battlescreenActiveUnitX = lerp(battlescreenActiveUnitX, 0.0, deltaTime / 120);
         battlescreenPassiveUnitX = lerp(battlescreenPassiveUnitX, 0.0, deltaTime / 120);
@@ -51,11 +52,16 @@ function battlescreenDraw(deltaTime) {
     drawRect(spritesRenderer, vec2(0, 0), vec2(gameWidth, gameHeight), true, "black");
     spritesRenderer.globalAlpha = battlescreenOpacity;
 
-    //Characters
+    //Character Faces
     drawRect(spritesRenderer, vec2(0, 0),
         vec2(battlescreenCharacterDisplaySize * pixelSize, battlescreenCharacterDisplaySize * pixelSize), true, "white");
     drawRect(spritesRenderer, vec2(gameWidth - (battlescreenCharacterDisplaySize * pixelSize), gameHeight - (battlescreenCharacterDisplaySize * pixelSize)),
         vec2(battlescreenCharacterDisplaySize * pixelSize, battlescreenCharacterDisplaySize * pixelSize), true, "white");
+    bodyNFacesSheet.transform.scale = vec2(pixelSize * (battlescreenCharacterDisplaySize/256.0), pixelSize * (battlescreenCharacterDisplaySize/256.0));
+    bodyNFacesSheet.transform.position = toVec2(battlescreenCharacterDisplaySize * pixelSize / 2.0);
+    bodyNFacesSheet.drawScIn(facePositions[battlescreenTimer > battlescreenSwitcherHighTime ? FACE_NEUTRAL : FACE_HAPPY].add(vec2(1024 * getPlayer().CO)), toVec2(256));
+    bodyNFacesSheet.transform.position = vec2(gameWidth - (battlescreenCharacterDisplaySize * pixelSize / 2), gameHeight - (battlescreenCharacterDisplaySize * pixelSize / 2));
+    bodyNFacesSheet.drawScIn(facePositions[battlescreenTimer > battlescreenSwitcherHighTime ? FACE_UPSET : FACE_SAD].add(vec2(1024 * (getPlayerI(getIndexPair(passiveMapUnit.mapPosition))).CO)), toVec2(256));
 
     //Unit Health Bars
     drawRect(spritesRenderer, vec2(battlescreenCharacterDisplaySize * pixelSize, 0),
@@ -95,16 +101,16 @@ function battlescreenDraw(deltaTime) {
                 vec2(pixelSize, pixelSize));
 
             if(activeMapUnit.unit.type == RIFLE_MECH) {
-                if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherTime && gameTime % 160 < 80) {
+                if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherHighTime && gameTime % 160 < 80) {
                     drawSheet(rifleMuzzles[muzzleIndex], activeMapUnit.unit.position.add(vec2((200 * pixelSize) + muzzleSpace, (150 * pixelSize) + (100 * pixelSize * i))),
                         vec2(pixelSize, pixelSize));
                     recoilPositionOffset = lerp(recoilPositionOffset, 0.0, 0.75);
                 } else {
                     muzzleIndex = Math.floor(Math.random() * 3);
-                    recoilPositionOffset = (2.0 * pixelSize) + (Math.random() * (4.0 * pixelSize));
+                    recoilPositionOffset = (4.0 * pixelSize) + (Math.random() * (4.0 * pixelSize));
                 }
             } else if (activeMapUnit.unit.type == CANNON_MECH) {
-                if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherTime) {
+                if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherHighTime) {
                     muzzleIndex += 0.0015 * deltaTime;
                     if(muzzleIndex > 1 && muzzleIndex < 2)
                         recoilPositionOffset = muzzleIndex * pixelSize * 15.0;
@@ -114,7 +120,7 @@ function battlescreenDraw(deltaTime) {
                         vec2(pixelSize, pixelSize));
                 }
             } else if (activeMapUnit.unit.type == ARTILLERY_MECH) {
-                if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherTime) {
+                if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherHighTime) {
                     muzzleIndex += 0.0015 * deltaTime;
                     if(muzzleIndex > 1 && muzzleIndex < 2)
                         recoilPositionOffset = muzzleIndex * pixelSize * 15.0;
@@ -133,16 +139,16 @@ function battlescreenDraw(deltaTime) {
                 vec2(pixelSize, pixelSize));
 
             if(activeMapUnit.unit.type == RIFLE_MECH) {
-                if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherTime && gameTime % 160 < 80) {
+                if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherHighTime && gameTime % 160 < 80) {
                     drawSheet(rifleMuzzles[muzzleIndex], activeMapUnit.unit.position.add(vec2((300 * pixelSize) + muzzleSpace + recoilPositionOffset, (200 * pixelSize) + (100 * pixelSize * i))),
                         vec2(pixelSize, pixelSize));
                     recoilPositionOffset = lerp(recoilPositionOffset, 0.0, 0.75);
                 } else {
                     muzzleIndex = Math.floor(Math.random() * 3);
-                    recoilPositionOffset = (2.0 * pixelSize) + (Math.random() * (4.0 * pixelSize));
+                    recoilPositionOffset = (4.0 * pixelSize) + (Math.random() * (4.0 * pixelSize));
                 }
             } else if (activeMapUnit.unit.type == CANNON_MECH) {
-                if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherTime) {
+                if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherHighTime) {
                     muzzleIndex += 0.0015 * deltaTime;
                     if(muzzleIndex > 1 && muzzleIndex < 2)
                         recoilPositionOffset = muzzleIndex * pixelSize * 15.0;
@@ -152,7 +158,7 @@ function battlescreenDraw(deltaTime) {
                         vec2(pixelSize, pixelSize));
                 }
             } else if (activeMapUnit.unit.type == ARTILLERY_MECH) {
-                if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherTime) {
+                if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherHighTime) {
                     muzzleIndex += 0.0015 * deltaTime;
                     if(muzzleIndex > 1 && muzzleIndex < 2)
                         recoilPositionOffset = muzzleIndex * pixelSize * 15.0;
@@ -199,7 +205,7 @@ function battlescreenUpdate(deltaTime) {
     if (battlescreenTimer > 0) {
         battlescreenTimer -= deltaTime;
 
-        if (battlescreenTimer < battlescreenSwitcherTime) {
+        if (battlescreenTimer < battlescreenSwitcherLowTime) {
             battlescreenOpacity = lerp(battlescreenOpacity, 0.0, deltaTime / 120);
             battlescreenActiveUnitX = lerp(battlescreenActiveUnitX, -battlescreenStartUnitX * pixelSize, deltaTime / 120);
             battlescreenPassiveUnitX = lerp(battlescreenPassiveUnitX, battlescreenStartUnitX * pixelSize, deltaTime / 120);
