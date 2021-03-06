@@ -46,13 +46,22 @@ const MECH_SMOKE_TURNS = 3;
 var particles = [];
 
 class TileParticle {
-    constructor(position, sequence, endFunction = function(self){}) {
+    constructor(position, sequence, endFunction = function(self){}, addToParticles = true) {
         this.position = position;
         this.endFunction = endFunction;
         this.currentIndex = 0;
         this.sequence = sequence;
         this.timer = 0;
-        particles.push(this);
+        if(addToParticles) particles.push(this);
+    }
+
+    copy(tp) {
+        this.position = tp.position;
+        this.endFunction = tp.endFunction;
+        this.currentIndex = tp.currentIndex;
+        this.sequence = tp.sequence;
+        this.timer = tp.timer;
+        if(typeof tp.turns != "undefined") this.turns = tp.turns;
     }
 
     forTurns(turns) {
@@ -87,6 +96,28 @@ class TileParticle {
             (tileSize / 64) + gridBlackLinesFixFactor);
         
         drawSheet(this.sequence[this.currentIndex].index, this.position.add(camPos), sc);
+    }
+
+    drawIsolate(deltaTime, camPos, sc) {
+        if(this.timer >= this.sequence[this.currentIndex].duration)
+        {
+            this.timer = this.sequence[this.currentIndex].duration - this.timer;
+            this.currentIndex++;
+
+            if(this.currentIndex >= this.sequence.length) {
+                return false;
+            }
+        } else {
+            this.timer += deltaTime;
+        }
+
+        if(typeof sc == "undefined")
+            sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
+            (tileSize / 64) + gridBlackLinesFixFactor);
+        
+        drawSheet(this.sequence[this.currentIndex].index, this.position.add(camPos), sc);
+
+        return true;
     }
 };
 

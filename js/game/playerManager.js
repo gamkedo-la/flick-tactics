@@ -2,20 +2,34 @@
 var actionPointsPerTurn = 3;
 
 class PlayerManager {
-    constructor(map, forceAllPlayers = 0) {
+    constructor(map = 0, forceAllPlayers = 0) {
         this.players = []
-        if(map.redData.length > 0) this.players.push(new Player(RED_TEAM, map.redData));
-        else if(forceAllPlayers > 0) this.players.push(new Player(RED_TEAM, []));
-        if(map.blueData.length > 0) this.players.push(new Player(BLUE_TEAM, map.blueData));
-        else if(forceAllPlayers > 0) this.players.push(new Player(BLUE_TEAM, []));
-        if(map.greenData.length > 0) this.players.push(new Player(GREEN_TEAM, map.greenData));
-        else if(forceAllPlayers > 0) this.players.push(new Player(GREEN_TEAM, []));
-        if(map.blackData.length > 0) this.players.push(new Player(BLACK_TEAM, map.blackData));
-        else if(forceAllPlayers > 0) this.players.push(new Player(BLACK_TEAM, []));
+        if(map != 0) {
+            if(map.redData.length > 0) this.players.push(new Player(RED_TEAM, map.redData));
+            else if(forceAllPlayers > 0) this.players.push(new Player(RED_TEAM, []));
+            if(map.blueData.length > 0) this.players.push(new Player(BLUE_TEAM, map.blueData));
+            else if(forceAllPlayers > 0) this.players.push(new Player(BLUE_TEAM, []));
+            if(map.greenData.length > 0) this.players.push(new Player(GREEN_TEAM, map.greenData));
+            else if(forceAllPlayers > 0) this.players.push(new Player(GREEN_TEAM, []));
+            if(map.blackData.length > 0) this.players.push(new Player(BLACK_TEAM, map.blackData));
+            else if(forceAllPlayers > 0) this.players.push(new Player(BLACK_TEAM, []));
+        }
         this.index = typeof index == "undefined" ? 0 : index;
 
         this.turnCount = 0;
         this.endTurnCounter = 0;
+    }
+
+    copy(manager) {
+        this.players = [];
+        for(let i = 0; i < manager.players.length; i++) {
+            var pl = new Player(manager.players[i].unitGroup.teamID, []);
+            pl.copy(manager.players[i]);
+            this.players.push(pl);
+        }
+        this.index = manager.index;
+        this.turnCount = manager.turnCount;
+        this.endTurnCounter = manager.endTurnCounter;
     }
 
     getPlayerOfTeamID(teamID) {
@@ -37,6 +51,28 @@ class PlayerManager {
         return [-1, -1];
     }
 
+    saveState() {
+        this.managerBeforeTurn = null;
+        this.managerBeforeTurn = new PlayerManager();
+        this.managerBeforeTurn.copy(this);
+        this.particlesBeforeTurn = [];
+        for(let i = 0; i < particles.length; i++) {
+            var tp = new TileParticle(particles[i].position, particles[i].sequence, particles[i].endFunction, false);
+            tp.copy(particles[i]);
+            this.particlesBeforeTurn.push(tp);
+        }
+    }
+
+    restoreState() {
+        this.copy(this.managerBeforeTurn);
+        particles = [];
+        for(let i = 0; i < this.particlesBeforeTurn.length; i++) {
+            var tp = new TileParticle(this.particlesBeforeTurn[i].position, this.particlesBeforeTurn[i].sequence, this.particlesBeforeTurn[i].endFunction, false);
+            tp.copy(this.particlesBeforeTurn[i]);
+            particles.push(tp);
+        }
+    }
+
     endTurn() {
         this.getActivePlayer().clearDisabledActions();
 
@@ -46,42 +82,42 @@ class PlayerManager {
         //Player AP replenishes
         this.getActivePlayer().actionPoints += actionPointsPerTurn;
 
-        this.getActivePlayer().applyToAllMapUnits( (mapUnit) => {
+        this.getActivePlayer().applyToAllMapUnits( (mUnit) => {
 
             //Money Increases (receives city building income)
-            if(mapUnit.unit.isBuilding && typeof mapUnit.unit.incomePerHp != "undefined") {
-                this.getActivePlayer().money += (mapUnit.hp * (mapUnit.unit.incomePerHp + (mapUnit.unit.incomePerHp * mapUnit.unit.incomeRankMultiplier * mapUnit.unit.rank))) * (mapUnit.unit.boost == 1 ? 2 : 1);
+            if(mUnit.unit.isBuilding && typeof mUnit.unit.incomePerHp != "undefined") {
+                this.getActivePlayer().money += (mUnit.hp * (mUnit.unit.incomePerHp + (mUnit.unit.incomePerHp * mUnit.unit.incomeRankMultiplier * mUnit.unit.rank))) * (mUnit.unit.boost == 1 ? 2 : 1);
             }
 
             //Deploy Time Decreases
-            if(typeof mapUnit.unit.deployTime != "undefined"
-                && mapUnit.unit.deployTime > 0) {
-                mapUnit.unit.deployTime--;
+            if(typeof mUnit.unit.deployTime != "undefined"
+                && mUnit.unit.deployTime > 0) {
+                mUnit.unit.deployTime--;
             }
 
             //Clearing Disabled Actions
-            mapUnit.clearDisabledActions();
+            mUnit.clearDisabledActions();
 
             //Cannon Mech Boost Regulation
-            if(mapUnit.unit.type == CANNON_MECH) {
-                if(mapUnit.unit.boost == 1) {
-                    mapUnit.unit.movement -= mapUnit.unit.boostMovement;
-                    mapUnit.unit.boost = -(mapUnit.unit.boostCooldown - (mapUnit.unit.boostCooldownDecreasePerRank * mapUnit.unit.rank));
+            if(mUnit.unit.type == CANNON_MECH) {
+                if(mUnit.unit.boost == 1) {
+                    mUnit.unit.movement -= mUnit.unit.boostMovement;
+                    mUnit.unit.boost = -(mUnit.unit.boostCooldown - (mUnit.unit.boostCooldownDecreasePerRank * mUnit.unit.rank));
                 }
-                else if(mapUnit.unit.boost < 0) mapUnit.unit.boost++;
+                else if(mUnit.unit.boost < 0) mUnit.unit.boost++;
             }
 
             //Buildings Boost Regulation
-            if(mapUnit.unit.isBuilding && typeof mapUnit.unit.boost != "undefined") {
-                if(mapUnit.unit.boost == 1) mapUnit.unit.boost = -(mapUnit.unit.boostCooldown - (mapUnit.unit.boostCooldownDecreasePerRank * mapUnit.unit.rank));
-                else if(mapUnit.unit.boost < 0) mapUnit.unit.boost++;
+            if(mUnit.unit.isBuilding && typeof mUnit.unit.boost != "undefined") {
+                if(mUnit.unit.boost == 1) mUnit.unit.boost = -(mUnit.unit.boostCooldown - (mUnit.unit.boostCooldownDecreasePerRank * mUnit.unit.rank));
+                else if(mUnit.unit.boost < 0) mUnit.unit.boost++;
             }
 
             //Fire and Toxic Tile Damage
-            if(map.getTileTypeFromPosition(mapUnit.mapPosition) == TOXIC_TILE || isTileOnFire(mapUnit.mapPosition)) {
-                if(mapUnit.unit.rank >= 3) mapUnit.hp -= 1.0;
-                else mapUnit.hp -= 2.0;
-                if(mapUnit.hp > 0.0) new TileParticle(tilePositionToPixelPosition(mapUnit.mapPosition), damageSequence);
+            if(map.getTileTypeFromPosition(mUnit.mapPosition) == TOXIC_TILE || isTileOnFire(mUnit.mapPosition)) {
+                if(mUnit.unit.rank >= 3) mUnit.hp -= 1.0;
+                else mUnit.hp -= 2.0;
+                if(mUnit.hp > 0.0) new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), damageSequence);
             }
         });
 
@@ -114,6 +150,10 @@ class PlayerManager {
         buildingPanelCOSelection = this.index;
 
         updateUnitActionButtons();
+
+        //Saving Manager's State Before the Start of a new Turn
+        //in order for Reset button to restore it
+        this.saveState();
     }
 
     draw(offset, index) {

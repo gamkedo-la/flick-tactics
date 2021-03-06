@@ -48,6 +48,25 @@ class Player {
         this.deployDelay = true;
     }
 
+    copy(player) {
+        this.unitGroup = new MapUnitGroup([]);
+        this.unitGroup.copy(player.unitGroup);
+
+        this.selectedIndex = this.getHQUnitIndex();
+        //Without HQ, the player is unplayable and all its units will be destroyed!
+        if(this.selectedIndex == -1 && typeof ui != "undefined" && ui.stateIndex != EDITOR) {
+            this.nullify();
+        }
+
+        this.CO = player.CO;
+        this.control = player.control;
+        this.powerMeter = player.powerMeter;
+        this.powered = player.powered;
+        this.actionPoints = player.actionPoints;
+        this.money = player.money;
+        this.deployDelay = player.deployDelay;
+    }
+
     nullify() {
         this.selectedIndex = -1;
         for(let i = 0; i < this.unitGroup.mapUnits.length; i++) {

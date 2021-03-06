@@ -80,6 +80,7 @@ function gameplaySetup() {
 
     map = new GameMap(maps[currentMapIndex]);
     manager = new PlayerManager(map);
+    manager.saveState();
 
     cam = vec2(Math.floor((gameWidth / maxDisplayTilesPerRow) / 2), Math.floor((gameWidth / maxDisplayTilesPerRow) / 2));
 

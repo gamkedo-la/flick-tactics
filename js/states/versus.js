@@ -93,7 +93,7 @@ function versusResize() {
 
 function versusDraw(deltaTime) {
     drawWorldMapBG("#116611DD");
-    drawPerspectiveUnitsBG(RUIN_BUILDING, TELEPORT_MECH, ARTILLERY_MECH, BLACK_TEAM);
+    //drawPerspectiveUnitsBG(RUIN_BUILDING, TELEPORT_MECH, ARTILLERY_MECH, BLACK_TEAM);
     drawRect(renderer, vec2(), vec2(gameWidth, gameHeight), true, "#00000088");
 
     if(ui.transitionToState != GAMEPLAY)
@@ -159,6 +159,8 @@ function versusPlay() {
     ui.transitionToState = GAMEPLAY;
     maxDisplayTilesPerRow = defaultTilesPerRow;
     updateTileSizes();
+
+    manager.saveState();
 }
 
 function editorToVersus( mapString ) {

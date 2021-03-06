@@ -487,11 +487,12 @@ class GameMap {
     }
 
     battlescreenTransition(munit1, munit2) {
+        passiveMUnitPrevHP = munit2.hp;
         ui.stateIndex = BATTLESCREEN;
         activeTeamID = getPlayerI(getIndexPair(munit1.mapPosition)).unitGroup.teamID;
-        activeMapUnit = munit1;
+        activeMUnit = munit1;
         passiveTeamID = getPlayerI(getIndexPair(munit2.mapPosition)).unitGroup.teamID;
-        passiveMapUnit = munit2;
+        passiveMUnit = munit2;
     }
 
     calculateDamage(munit1, munit2) {
@@ -499,7 +500,6 @@ class GameMap {
         damage += (damage / 100.0) * terrainTacticEffect[this.getTileTypeFromPosition(munit1.mapPosition)].attack;
         if(!munit2.unit.isBuilding && munit2.unit.type != TELEPORT_MECH) damage -= (damage / 100.0) * terrainTacticEffect[this.getTileTypeFromPosition(munit2.mapPosition)].defense;
         damage += (damage / 100.0) * (((Math.random() - 0.5) * 2.0) * 5.0);
-        console.log(damage);
         return damage;
     }
 
@@ -512,7 +512,8 @@ class GameMap {
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= this.calculateDamage(munit1, munit2);
-                    if(munit2.hp > 0.0) new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
+                    if(munit2.hp <= 0.0) munit2.hp = -0.01;
+                    else new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
                 }
                 if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
@@ -525,7 +526,8 @@ class GameMap {
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= this.calculateDamage(munit1, munit2);
-                    if(munit2.hp > 0.0) new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
+                    if(munit2.hp <= 0.0) munit2.hp = -0.01;
+                    else new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
                 }
                 if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
@@ -540,7 +542,8 @@ class GameMap {
                 if (munit2 != -1) {
                     this.battlescreenTransition(munit1, munit2);
                     munit2.hp -= this.calculateDamage(munit1, munit2);
-                    if(munit2.hp > 0.0) new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
+                    if(munit2.hp <= 0.0) munit2.hp = -0.01;
+                    else new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
                 }
                 if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
@@ -571,8 +574,9 @@ class GameMap {
                     var affMUnit = getMUnitI(getIndexPair(munit1.mapPosition.add(affOffset[i])));
                     if(affMUnit != -1) {
                         affMUnit.hp -= this.calculateDamage(munit1, affMUnit);
-                        if(affMUnit.hp > 0.0) new TileParticle(tilePositionToPixelPosition(affMUnit.mapPosition), damageSequence);
-                        affMUnit.push(affOffset[i]);
+                        if(affMUnit.hp <= 0.0) affMUnit.hp = -0.01;
+                        else new TileParticle(tilePositionToPixelPosition(affMUnit.mapPosition), damageSequence);
+                        if(Math.ceil(munit1.hp) >= 5) affMUnit.push(affOffset[i]);
                     }
                 }
                 munit1.hp = 0;

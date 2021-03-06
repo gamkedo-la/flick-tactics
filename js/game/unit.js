@@ -41,6 +41,12 @@ class Unit {
         this.setupUnitProperties();
     }
 
+    copy(unit) {
+        this.type = unit.type;
+        this.position = unit.position;
+        this.copyProperties(unit);
+    }
+
     setupUnitProperties() {
         this.isBuilding = false;
         this.rank = 0;
@@ -141,6 +147,15 @@ class Unit {
         }
     }
 
+    copyProperties(unit) {
+        this.isBuilding = unit.isBuilding;
+        this.rank = unit.rank;
+        if(typeof this.ammo != "undefined") this.ammo = unit.ammo;
+        if(typeof this.deployTime != "undefined") this.deployTime = unit.deployTime;
+        if(typeof this.smokeAmmo != "undefined") this.smokeAmmo = unit.smokeAmmo;
+        if(typeof this.boost != "undefined") this.boost = unit.boost;
+    }
+
     draw(teamID, offset, scale, flip = false, animIndexOffset = 0) {
         if (typeof scale == "undefined") scale = vec2(1, 1);
 
@@ -185,10 +200,6 @@ class MapUnit {
     constructor(type, mapPos) {
         this.mapPosition = mapPos;
 
-        //RECORD MAP TILE POSITION FOR RESET!
-        this.mapPositionAtStartTurn = this.mapPosition;
-        this.prevMapPosition = this.mapPosition;
-
         this.mapPathIndex = -1;
         this.mapPath = [];
 
@@ -199,6 +210,23 @@ class MapUnit {
         this.destroyTime = gameTime;
 
         this.flip = false;
+
+        this.clearDisabledActions();
+    }
+
+    copy(mUnit) {
+        this.mapPosition = mUnit.mapPosition;
+
+        this.mapPathIndex = -1;
+        this.mapPath = [];
+
+        this.unit = new Unit(mUnit.unit.type, mUnit.unit.position);
+        this.unit.copy(mUnit.unit);
+
+        this.hp = mUnit.hp;
+        this.destroyTime = gameTime;
+
+        this.flip = mUnit.flip;
 
         this.clearDisabledActions();
     }
@@ -342,6 +370,16 @@ class MapUnitGroup {
     constructor(mapUnits) {
         this.mapUnits = mapUnits;
         this.teamID = RED_TEAM;
+    }
+
+    copy(unitGroup) {
+        this.mapUnits = [];
+        this.teamID = unitGroup.teamID;
+        for(let i = 0; i < unitGroup.mapUnits.length; i++) {
+            var mUnit = new MapUnit(unitGroup.mapUnits[i].unit.type, unitGroup.mapUnits[i].mapPosition);
+            mUnit.copy(unitGroup.mapUnits[i]);
+            this.mapUnits.push(mUnit);
+        }
     }
 
     clearDisabledActions() {

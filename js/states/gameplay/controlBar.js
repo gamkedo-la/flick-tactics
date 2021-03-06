@@ -82,7 +82,7 @@ function controlBarUIEvents() {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
-            stepBackAction();
+            if(!stepBackAction()) manager.restoreState();
             resetTurnBtn.button.resetOutput();
     }
 }
