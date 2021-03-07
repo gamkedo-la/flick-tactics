@@ -209,6 +209,8 @@ function getBButton(tabIndex, index, type) {
 
 function buildingPanelUpdate(buildingMapUnit) {
 
+    if(gameTime % 100 < 50) return;
+
     if(buildingPanelPrevSelected == null
     || buildingPanelPrevSelected != buildingMapUnit)
     {
@@ -483,22 +485,15 @@ function buildingPanelEvent() {
             if (warBuilding_buyBtn != 0 && warBuilding_buyBtn.button.output == UIOUTPUT_SELECT) {
                 var pos = buildingPanelPrevSelected.mapPosition;
                 var newMapUnit = null;
-                if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, 1)))[0] == -1) {
-                    removeTileParticles(pos.add(vec2(0, 1)));
-                    newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, 1)));
-                    newMapUnit.hp = Math.ceil(buildingMapUnit.hp);
-                } else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(1, 0)))[0] == -1) {
-                    removeTileParticles(pos.add(vec2(1, 0)));
-                    newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(1, 0)));
-                    newMapUnit.hp = Math.ceil(buildingMapUnit.hp);
-                } else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(0, -1)))[0] == -1) {
-                    removeTileParticles(pos.add(vec2(0, -1)));
-                    newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(0, -1)));
-                    newMapUnit.hp = Math.ceil(buildingMapUnit.hp);
-                } else if(manager.getPlayerAndUnitIndexOnTile(pos.add(vec2(-1, 0)))[0] == -1) {
-                    removeTileParticles(pos.add(vec2(-1, 0)));
-                    newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(vec2(-1, 0)));
-                    newMapUnit.hp = Math.ceil(buildingMapUnit.hp);
+                var offsets = [vec2(0, 1), vec2(1, 0), vec2(0, -1), vec2(-1, 0)];
+                for(let o = 0; o < offsets.length; o++) {
+                    if(manager.getPlayerAndUnitIndexOnTile(pos.add(offsets[o]))[0] == -1) {
+                        removeTileParticles(pos.add(offsets[o]));
+                        new TileParticle(tilePositionToPixelPosition(pos.add(offsets[o])), teleportSequence);
+                        newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(offsets[o]));
+                        newMapUnit.hp = Math.ceil(buildingMapUnit.hp);
+                        break;
+                    }
                 }
                 if(newMapUnit != null) {
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];

@@ -498,7 +498,11 @@ class GameMap {
     calculateDamage(munit1, munit2) {
         var damage = (munit1.unit.attack[munit2.unit.isBuilding ? 5 : munit2.unit.type] * (munit1.hp / 10.0));
         damage += (damage / 100.0) * terrainTacticEffect[this.getTileTypeFromPosition(munit1.mapPosition)].attack;
-        if(!munit2.unit.isBuilding && munit2.unit.type != TELEPORT_MECH) damage -= (damage / 100.0) * terrainTacticEffect[this.getTileTypeFromPosition(munit2.mapPosition)].defense;
+        damage += (damage / 100.0) * (munit1.unit.rank * RANK_ATTACK_BONUS);
+        if(!munit2.unit.isBuilding && munit2.unit.type != TELEPORT_MECH) {
+            damage -= (damage / 100.0) * terrainTacticEffect[this.getTileTypeFromPosition(munit2.mapPosition)].defense;
+            damage -= (damage / 100.0) * (munit2.unit.rank * RANK_DEFENSE_BONUS);
+        }
         damage += (damage / 100.0) * (((Math.random() - 0.5) * 2.0) * 5.0);
         return damage;
     }
@@ -616,7 +620,7 @@ class GameMap {
 
     drawUnitSpecial(offset, mapUnit) {
         var skipRange = mapUnit.unit.type == TELEPORT_MECH ? 1 : 0;
-        var range = mapUnit.unit.type == TELEPORT_MECH ? 5 : 1;
+        var range = mapUnit.unit.type == TELEPORT_MECH ? 4 : 1;
         for (let y = -range; y <= range; y++) {
             for (let x = -range; x <= range; x++) {
 
@@ -624,6 +628,10 @@ class GameMap {
                     || Math.abs(x) + Math.abs(y) <= skipRange
                     || (x == 0 && y == 0))
                     continue;
+
+                var tType = this.getTileTypeFromPosition(mapUnit.mapPosition.add(vec2(x, y)));
+                var mUnit = getMUnitI(getIndexPair(mapUnit.mapPosition.add(vec2(x, y))));
+                if ((mUnit != -1 && mapUnit.unit.type == TELEPORT_MECH && mUnit.unit.isBuilding) || tType == -1 || tType == MOUNTAIN_TILE) continue;
 
                 var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * tileSize) + ((mapUnit.mapPosition.x + x) * tileGap)),
                     Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * tileSize) + ((mapUnit.mapPosition.y + y) * tileGap)));
@@ -676,11 +684,17 @@ class GameMap {
 
             case TELEPORT_MECH:
                 if (munit2 != -1 && !munit2.unit.isBuilding) {
-
+                    var munit2NewPosition = vec2(munit1.mapPosition.x, munit1.mapPosition.y);
+                    munit1.mapPosition = vec2(munit2.mapPosition.x, munit2.mapPosition.y);
+                    munit2.mapPosition = vec2(munit2NewPosition.x, munit2NewPosition.y);
+                    new TileParticle(tilePositionToPixelPosition(munit1.mapPosition), teleportSequence);
+                    new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), teleportSequence);
+                    munit1.unit.ammo--;
                 } else {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition), teleportSequence);
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), teleportSequence);
                     munit1.mapPosition = munit1.mapPosition.add(placement);
+                    munit1.unit.ammo--;
                 }
                 break;
         }
@@ -699,22 +713,26 @@ class GameMap {
         if (isTouched) {
             isTouched = false;
             var skipRange = mapUnit.unit.type == TELEPORT_MECH ? 1 : 0;
-            var range = mapUnit.unit.type == TELEPORT_MECH ? 5 : 1;
+            var range = mapUnit.unit.type == TELEPORT_MECH ? 4 : 1;
             for (let y = -range; y <= range; y++) {
                 for (let x = -range; x <= range; x++) {
 
                     if (Math.abs(x) + Math.abs(y) > range
-                        || Math.abs(x) + Math.abs(y) <= skipRange
-                        || (x == 0 && y == 0))
+                    || Math.abs(x) + Math.abs(y) <= skipRange
+                    || (x == 0 && y == 0))
                         continue;
 
                     if (this.cursorTile.x == mapUnit.mapPosition.x + x
                         && this.cursorTile.y == mapUnit.mapPosition.y + y) {
                         var mUnit = getMUnitI(getIndexPair(this.cursorTile));
-                        if (mUnit != -1)
+                        var tType = this.getTileTypeFromPosition(mapUnit.mapPosition.add(vec2(x, y)));
+                        if(tType == -1 || tType == MOUNTAIN_TILE) continue;
+                        if (mUnit != -1) {
+                            if (mapUnit.unit.type == TELEPORT_MECH && mUnit.unit.isBuilding) continue;
                             this.special(mapUnit, mUnit, vec2(x, y));
-                        else
+                        } else {
                             this.special(mapUnit, -1, vec2(x, y));
+                        }
                         mapUnit.left = -1;
                         return true;
                     }
@@ -730,17 +748,26 @@ class GameMap {
         //Unit Action Event End Point
         if (getPlayer().getSelectedMapUnit().up == 0) { //Move
             if (this.eventUnitMovement(getPlayer().getSelectedMapUnit())) {
+                getPlayer().getSelectedMapUnit().actionPointsUsed++;
                 getPlayer().actionPoints--;
+                getPlayer().powerMeter += 0.02;
+                if(getPlayer().powerMeter > 1.0) getPlayer().powerMeter = 1.0;
             }
         }
         else if (getPlayer().getSelectedMapUnit().right == 0) { //Attack
             if (this.eventUnitAttack(getPlayer().getSelectedMapUnit())) {
+                getPlayer().getSelectedMapUnit().actionPointsUsed++;
                 getPlayer().actionPoints--;
+                getPlayer().powerMeter += 0.02;
+                if(getPlayer().powerMeter > 1.0) getPlayer().powerMeter = 1.0;
             }
         }
         else if (getPlayer().getSelectedMapUnit().left == 0) { //Special
             if (this.eventUnitSpecial(getPlayer().getSelectedMapUnit())) {
+                getPlayer().getSelectedMapUnit().actionPointsUsed++;
                 getPlayer().actionPoints--;
+                getPlayer().powerMeter += 0.02;
+                if(getPlayer().powerMeter > 1.0) getPlayer().powerMeter = 1.0;
             }
         }
 

@@ -58,6 +58,7 @@ function versusSetup() {
     versusBottomMiddleUI.push(fillerLabel);
 
     versusMoney = 0;
+    versusAP = 3;
     versusMoneyBtn = new TextButton(tr(),
         new Label(tr(), "STARTING MONEY: " + versusMoney.toString() + "$",
             fontSize.toString() + "px " + uiContext.fontFamily),
@@ -68,9 +69,12 @@ function versusSetup() {
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
     versusBottomMiddleUI.push(versusDeployDelayBtn);
+    versusAPBtn = new TextButton(tr(),
+        new Label(tr(), "AP PER TURN: 3",
+            fontSize.toString() + "px " + uiContext.fontFamily),
+        new Button(tr(), "#22228866", "#FFFFFFFF", "#002299FF"), "");
+    versusBottomMiddleUI.push(versusAPBtn);
 
-    fillerLabel = new Label(tr());
-    versusBottomMiddleUI.push(fillerLabel);
     versusBottomMiddleUI.push(fillerLabel);
 
     versusToMenuBtn = new TextButton(tr(),
@@ -148,12 +152,15 @@ function versusPlay() {
     map = new GameMap(versusMapString);
     manager = new PlayerManager(map);
 
+    manager.actionPointsPerTurn = versusManager.actionPointsPerTurn;
+    for(let i = 0; i < versusManager.players.length; i++) versusManager.players[i].actionPoints = versusAP;
     for(let tid = 0; tid < 4; tid++) {
         var vpl = versusManager.getPlayerOfTeamID(tid);
         var pl = manager.getPlayerOfTeamID(tid);
         pl.control = vpl.control;
         pl.money = vpl.money;
         pl.deployDelay = vpl.deployDelay;
+        pl.actionPoints = vpl.actionPoints;
         if(pl.control == -1) pl.nullify();
     }
     ui.transitionToState = GAMEPLAY;
@@ -185,6 +192,10 @@ function versusEvent(deltaTime) {
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
             versusLoadBtn.click();
+            for(let i = 0; i < versusManager.players.length; i++) versusManager.players[i].money = versusMoney;
+            for(let i = 0; i < versusManager.players.length; i++) versusManager.players[i].deployDelay = (versusDeployDelayBtn.label.text == "DEPLOY DELAY: ON");
+            for(let i = 0; i < versusManager.players.length; i++) versusManager.players[i].actionPoints = versusAP;
+            versusManager.actionPointsPerTurn = versusAP;
             versusLoadMapBtn.button.resetOutput();
     }
 
@@ -206,6 +217,10 @@ function versusEvent(deltaTime) {
             versusMapString = readFile("maps/map" + versusMapIndex.toString() + ".txt");
             versusMap = new GameMap(versusMapString);
             versusManager = new PlayerManager(versusMap, 1);
+            for(let i = 0; i < versusManager.players.length; i++) versusManager.players[i].money = versusMoney;
+            for(let i = 0; i < versusManager.players.length; i++) versusManager.players[i].deployDelay = (versusDeployDelayBtn.label.text == "DEPLOY DELAY: ON");
+            for(let i = 0; i < versusManager.players.length; i++) versusManager.players[i].actionPoints = versusAP;
+            versusManager.actionPointsPerTurn = versusAP;
             versusChangeMapBtn.button.resetOutput();
     }
 
@@ -350,6 +365,30 @@ function versusEvent(deltaTime) {
             }
 
             versusDeployDelayBtn.button.resetOutput();
+    }
+
+    switch (versusAPBtn.button.output)
+    {
+        case UIOUTPUT_HOVER:
+            if(versusAPBtn.button.hoverTrigger)
+            {
+                playSFX(SFX_BUTTON_HOVER);
+                versusAPBtn.button.hoverTrigger = false;
+            }
+            break;
+
+        case UIOUTPUT_SELECT:
+            switch(versusAP) {
+                case 3: versusAP = 5; break;
+                case 5: versusAP = 10; break;
+                case 10: versusAP = 15; break;
+                case 15: versusAP = 30; break;
+                case 30: versusAP = 3; break;
+                default: versusAP = 3;
+            }
+            versusAPBtn.label.text = "AP PER TURN: " + versusAP.toString();
+            versusManager.actionPointsPerTurn = versusAP;
+            versusAPBtn.button.resetOutput();
     }
 
     switch (versusToMenuBtn.button.output)

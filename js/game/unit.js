@@ -17,6 +17,9 @@ const CITY_BUILDING = 64;
 const WAR_BUILDING = 68;
 const RUIN_BUILDING = 72;
 
+const RANK_ATTACK_BONUS = 5;
+const RANK_DEFENSE_BONUS = 5;
+
 function getMechIndexFromType(type, teamNo, animDelayMax = 1200, animDelayMin = 600) {
     return (gameTime % animDelayMax < animDelayMin ? 20 : 0) + 100 + (4 * type) + teamNo;
 }
@@ -102,7 +105,7 @@ class Unit {
                 break;
 
             case TELEPORT_MECH:
-                this.movement = 5;
+                this.movement = 3;
                 this.movementObstacles = [MOUNTAIN_TILE];
                 this.movementReducers = [];
 
@@ -132,8 +135,8 @@ class Unit {
                 this.boost = 0;
                 this.boostCooldown = 5;
                 this.boostCooldownDecreasePerRank = 1;
-                this.rankUpgradeCost = 50000;
-                this.rankUpgradeCostMultiplier = 1.5;
+                this.rankUpgradeCost = 25000;
+                this.rankUpgradeCostMultiplier = 2.0;
                 this.mechDeployDelay = [
                     [1, 4, 4, 2, 2],
                     [1, 3, 3, 1, 1],
@@ -211,6 +214,8 @@ class MapUnit {
 
         this.flip = false;
 
+        this.actionPointsUsed = 0;
+
         this.clearDisabledActions();
     }
 
@@ -261,6 +266,19 @@ class MapUnit {
     }
 
     draw(teamID, offset) {
+        if(this.actionPointsUsed >= 9 && this.unit.rank <= 0) {
+            this.unit.rank = 1;
+            new TileParticle(tilePositionToPixelPosition(this.mapPosition), rankUpSequence);
+        }
+        else if(this.actionPointsUsed >= 18 && this.unit.rank <= 1) {
+            this.unit.rank = 2;
+            new TileParticle(tilePositionToPixelPosition(this.mapPosition), rankUpSequence);
+        }
+        else if(this.actionPointsUsed >= 36 && this.unit.rank <= 2) {
+            this.unit.rank = 3;
+            new TileParticle(tilePositionToPixelPosition(this.mapPosition), rankUpSequence);
+        }
+
         var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
             (tileSize / 64) + gridBlackLinesFixFactor);
 
@@ -332,17 +350,21 @@ class MapUnit {
                 drawText(spritesRenderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
             }
         } else if (this.hp <= 0 && ui.stateIndex != BATTLESCREEN && this.destroyTime < gameTime) {
-            if(this.unit.isBuilding && this.unit.type != RUIN_BUILDING) {
-                new TileParticle(this.unit.position, unitDestroySequence);
-                this.unit.type = RUIN_BUILDING;
-                return;
-            } else if(this.unit.type == RUIN_BUILDING) return;
+            if(this.unit.isBuilding) {
+                if(this.unit.type == HQ_BUILDING) {
+                    getPlayerI(getIndexPair(this.mapPosition)).nullify();
+                }
+                if(this.unit.type != RUIN_BUILDING) {
+                    new TileParticle(this.unit.position, unitDestroySequence);
+                    this.unit.type = RUIN_BUILDING;
+                    return;
+                } else if(this.unit.type == RUIN_BUILDING) return;
+            }
 
             //Destroying/Removing a Unit
             var indexPair = getIndexPair(this.mapPosition);
             if(indexPair[0] != -1)
             for(var i = 0; i < getPlayerI(indexPair).unitGroup.mapUnits.length; i++) { 
-
                 if (getMUnitI([indexPair[0], i]) === this) {            
                     new TileParticle(this.unit.position, unitDestroySequence);
 
@@ -353,6 +375,9 @@ class MapUnit {
                     }
 
                     getPlayerI(indexPair).unitGroup.mapUnits.splice(i, 1);
+
+                    getPlayerI(indexPair).powerMeter += 0.04;
+                    if(getPlayerI(indexPair).powerMeter > 1.0) getPlayerI(indexPair).powerMeter = 1.0;
                 }            
             }
         }

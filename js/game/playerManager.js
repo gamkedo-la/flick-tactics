@@ -1,6 +1,4 @@
 
-var actionPointsPerTurn = 3;
-
 class PlayerManager {
     constructor(map = 0, forceAllPlayers = 0) {
         this.players = []
@@ -18,6 +16,7 @@ class PlayerManager {
 
         this.turnCount = 0;
         this.endTurnCounter = 0;
+        this.actionPointsPerTurn = 3;
     }
 
     copy(manager) {
@@ -76,11 +75,8 @@ class PlayerManager {
     endTurn() {
         this.getActivePlayer().clearDisabledActions();
 
-        //TEMP: Power Meter increases a bit
-        this.getActivePlayer().powerMeter += 0.25;
-
         //Player AP replenishes
-        this.getActivePlayer().actionPoints += actionPointsPerTurn;
+        this.getActivePlayer().actionPoints += this.actionPointsPerTurn;
 
         this.getActivePlayer().applyToAllMapUnits( (mUnit) => {
 

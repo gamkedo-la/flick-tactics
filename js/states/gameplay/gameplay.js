@@ -136,8 +136,10 @@ function gameplayUIDisplayUpdate() {
         = unitRightBtn.button.output = UIOUTPUT_DISABLED;
     
     if (getPlayer().getSelectedMapUnit().unit.ammo == 0
-    || isTileOnSmoke(getPlayer().getSelectedMapUnit().mapPosition))
-        unitRightBtn.button.output = UIOUTPUT_DISABLED;
+    || isTileOnSmoke(getPlayer().getSelectedMapUnit().mapPosition)) {
+        if(getPlayer().getSelectedMapUnit.unit.type == TELEPORT_MECH) unitLeftBtn.button.output = UIOUTPUT_DISABLED;
+        else unitRightBtn.button.output = UIOUTPUT_DISABLED;
+    }
     
     if ((getPlayer().getSelectedMapUnit().unit.type == RIFLE_MECH
     || getPlayer().getSelectedMapUnit().unit.type == ARTILLERY_MECH)

@@ -43,7 +43,7 @@ class Player {
         this.control = 0; //-1 = nullify, 0 = user, 1 = AI
         this.powerMeter = 0.0;
         this.powered = false;
-        this.actionPoints = 3;
+        this.actionPoints = 0;
         this.money = 0;
         this.deployDelay = true;
     }
@@ -69,10 +69,8 @@ class Player {
 
     nullify() {
         this.selectedIndex = -1;
-        for(let i = 0; i < this.unitGroup.mapUnits.length; i++) {
-            if(this.unitGroup.mapUnits[i].unit.isBuilding) this.unitGroup.mapUnits[i].unit.type = RUIN_BUILDING;
-            else { this.unitGroup.mapUnits.splice(i, 1); i--; }
-        }
+        this.control = -1;
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++) this.unitGroup.mapUnits[i].hp = 0.0;
     }
 
     getSelectedMapUnit() {
