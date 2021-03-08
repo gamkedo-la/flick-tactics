@@ -398,17 +398,10 @@ class GameMap {
     }
 
     drawUnitMovement(offset, mapUnit) {
+        spritesRenderer.globalAlpha = 0.25 + ((Math.sin(gameTime/200.0) + 1.0) / 4.0);
+        spritesRenderer.globalCompositeOperation = "lighter";
         for (let y = -mapUnit.unit.movement; y <= mapUnit.unit.movement; y++) {
             for (let x = -mapUnit.unit.movement; x <= mapUnit.unit.movement; x++) {
-
-                /*
-                if (Math.abs(x) + Math.abs(y) > mapUnit.unit.movement
-                    || (x == 0 && y == 0)
-                    || getIndexPair(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y))[0] != -1
-                    || (this.getTileTypeFromPosition(vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y)) == SEA_TILE
-                        && mapUnit.unit.type != TELEPORT_MECH))
-                    continue;
-                */
 
                 if (this.canUnitReachTile(mapUnit, vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y))) {
                     var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * tileSize) + ((mapUnit.mapPosition.x + x) * tileGap)),
@@ -419,7 +412,9 @@ class GameMap {
                 }
             }
         }
-
+        spritesRenderer.globalCompositeOperation = "source-over";
+        spritesRenderer.globalAlpha += 0.25;
+        if(spritesRenderer.globalAlpha > 1.0) spritesRenderer.globalAlpha = 1.0;
         var path = this.calculateUnitMovement(mapUnit);
         for (let i = 0; i < path.length; i++) {
             var posi = vec2(Math.floor(offset.x + (path[i].x * tileSize) + (path[i].x * tileGap)),
@@ -428,6 +423,7 @@ class GameMap {
                 vec2(tileSize - (32 * pixelSize), tileSize - (32 * pixelSize)), true,
                 (this.cursorTile.x == path[i].x && this.cursorTile.y == path[i].y) ? "#000000FF" : "#000000BB");
         }
+        spritesRenderer.globalAlpha = 1.0;
     }
 
     eventUnitMovement(mapUnit) {
@@ -466,6 +462,11 @@ class GameMap {
     //#region unit_attack
 
     drawUnitAttack(offset, mapUnit) {
+        spritesRenderer.globalAlpha = 0.75 + ((Math.sin(gameTime/200.0) + 1.0) / 8.0);
+        spritesRenderer.globalCompositeOperation = "darken";
+        var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor, (tileSize / 64) + gridBlackLinesFixFactor);
+        var fire = false;
+        var smoke = false;
         var skipRange = mapUnit.unit.type == ARTILLERY_MECH ? 2 : 0;
         var range = mapUnit.unit.type == ARTILLERY_MECH ? 4 : 1;
         for (let y = -range; y <= range; y++) {
@@ -479,11 +480,25 @@ class GameMap {
                 var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * tileSize) + ((mapUnit.mapPosition.x + x) * tileGap)),
                     Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * tileSize) + ((mapUnit.mapPosition.y + y) * tileGap)));
 
-                drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
-                    vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true,
-                    (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#FF0000BB" : "#FF000088");
+                if(this.cursorTile.isEqual(mapUnit.mapPosition.add(vec2(x, y)))) {
+                    drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
+                        vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true, "#FF0000FF");
+                    if(mapUnit.unit.type != SUPPORT_MECH) {
+                        if(mapUnit.unit.type != RIFLE_MECH) {
+                            fire = this.getTileTypeFromPosition(mapUnit.mapPosition.add(vec2(x, y))) == FOREST_TILE;
+                        }
+                        smoke = this.getTileTypeFromPosition(mapUnit.mapPosition.add(vec2(x, y))) == SAND_TILE;
+                    }
+                } else {
+                    drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
+                        vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true, "#FF000088");
+                }
             }
         }
+        spritesRenderer.globalAlpha = 1.0;
+        spritesRenderer.globalCompositeOperation = "source-over";
+        if (fire && gameTime % 600 < 300) drawSheet(fireSequence[0].index, tilePositionToPixelPosition(this.cursorTile).add(offset), sc);
+        if (smoke && gameTime % 600 < 300) drawSheet(smokeSequence[0].index, tilePositionToPixelPosition(this.cursorTile).add(offset), sc);
     }
 
     battlescreenTransition(munit1, munit2) {
@@ -519,9 +534,10 @@ class GameMap {
                     if(munit2.hp <= 0.0) munit2.hp = -0.01;
                     else new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
                 }
-                if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
+                //Rifle Mech cannot create Fire on the Forest Tile
+                /*if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
-                } else if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == SAND_TILE && !isTileOnSmoke(munit1.mapPosition.add(placement))) {
+                } else */if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == SAND_TILE && !isTileOnSmoke(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), smokeSequence).forTurns(SAND_SMOKE_TURNS);
                 }
                 break;
@@ -619,8 +635,10 @@ class GameMap {
     //#region unit_special
 
     drawUnitSpecial(offset, mapUnit) {
+        spritesRenderer.globalAlpha = 0.5 + ((Math.sin(gameTime/200.0) + 1.0) / 2.0);
+        spritesRenderer.globalCompositeOperation = "darken";
         var skipRange = mapUnit.unit.type == TELEPORT_MECH ? 1 : 0;
-        var range = mapUnit.unit.type == TELEPORT_MECH ? 4 : 1;
+        var range = mapUnit.unit.type == TELEPORT_MECH ? (mapUnit.unit.ammo > (mapUnit.unit.ammoCapacity/2) ? 4 : 3) : 1;
         for (let y = -range; y <= range; y++) {
             for (let x = -range; x <= range; x++) {
 
@@ -641,6 +659,8 @@ class GameMap {
                     (this.cursorTile.x == mapUnit.mapPosition.x + x && this.cursorTile.y == mapUnit.mapPosition.y + y) ? "#0000FFBB" : "#0000FF88");
             }
         }
+        spritesRenderer.globalAlpha = 1.0;
+        spritesRenderer.globalCompositeOperation = "source-over";
     }
 
     special(munit1, munit2, placement) {
@@ -689,7 +709,8 @@ class GameMap {
                     munit2.mapPosition = vec2(munit2NewPosition.x, munit2NewPosition.y);
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition), teleportSequence);
                     new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), teleportSequence);
-                    munit1.unit.ammo--;
+                    munit1.unit.ammo -= 2;
+                    if(munit1.unit.ammo < 0) munit1.unit.ammo = 0;
                 } else {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition), teleportSequence);
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), teleportSequence);
@@ -713,7 +734,7 @@ class GameMap {
         if (isTouched) {
             isTouched = false;
             var skipRange = mapUnit.unit.type == TELEPORT_MECH ? 1 : 0;
-            var range = mapUnit.unit.type == TELEPORT_MECH ? 4 : 1;
+            var range = mapUnit.unit.type == TELEPORT_MECH ? (mapUnit.unit.ammo > (mapUnit.unit.ammoCapacity/2) ? 4 : 3) : 1;
             for (let y = -range; y <= range; y++) {
                 for (let x = -range; x <= range; x++) {
 

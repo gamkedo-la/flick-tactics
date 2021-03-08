@@ -495,7 +495,9 @@ function buildingPanelEvent() {
                 var newMapUnit = null;
                 var offsets = [vec2(0, 1), vec2(1, 0), vec2(0, -1), vec2(-1, 0)];
                 for(let o = 0; o < offsets.length; o++) {
-                    if(manager.getPlayerAndUnitIndexOnTile(pos.add(offsets[o]))[0] == -1) {
+                    if(manager.getPlayerAndUnitIndexOnTile(pos.add(offsets[o]))[0] == -1
+                    && map.getTileTypeFromPosition(pos.add(offsets[o])) != SEA_TILE
+                    && map.getTileTypeFromPosition(pos.add(offsets[o])) != MOUNTAIN_TILE) {
                         removeTileParticles(pos.add(offsets[o]));
                         new TileParticle(tilePositionToPixelPosition(pos.add(offsets[o])), teleportSequence);
                         newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(offsets[o]));
@@ -519,6 +521,8 @@ function buildingPanelEvent() {
                     }
 
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
+                } else {
+                    //TODO NEGATIVE UI SOUND EFFECT
                 }
                 warBuilding_buyBtn.button.resetOutput();
             }

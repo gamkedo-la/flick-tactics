@@ -113,8 +113,10 @@ class PlayerManager {
             }
 
             //Fire and Toxic Tile Damage
-            if(map.getTileTypeFromPosition(mUnit.mapPosition) == TOXIC_TILE || isTileOnFire(mUnit.mapPosition)) {
-                if(mUnit.unit.rank >= 3) mUnit.hp -= 1.0;
+            //Teleport Mech won't receive Damage from Toxic Tile as they hover in air.
+            if((map.getTileTypeFromPosition(mUnit.mapPosition) == TOXIC_TILE && mUnit.unit.type != TELEPORT_MECH)
+            || isTileOnFire(mUnit.mapPosition)) {
+                if(mUnit.unit.rank >= 3 || mUnit.unit.type == CANNON_MECH || mUnit.unit.type == SUPPORT_MECH) mUnit.hp -= 1.0;
                 else mUnit.hp -= 2.0;
                 if(mUnit.hp > 0.0) new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), damageSequence);
             }
