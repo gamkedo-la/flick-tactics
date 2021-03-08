@@ -383,10 +383,18 @@ function buildingPanelDraw() {
         bodyNFacesSheet.transform.scale = toVec2(sc);
         bodyNFacesSheet.transform.position = vec2(panelX + panelW/2, panelY - (8.0 * pixelSize));
         drawRect(renderer, bodyNFacesSheet.transform.position.subtract(toVec2(128 * sc)), toVec2(256 * sc), true, getActiveTeamColor());
-        bodyNFacesSheet.drawScIn(facePositions[getPlayer().powerMeter >= 1.0 ? FACE_HAPPY : FACE_NEUTRAL].add(vec2(1024 * getPlayer().CO)), toVec2(256));
+        bodyNFacesSheet.drawScIn(facePositions[getPlayer().powerMeter >= 1.0 || getPlayer().powered ? FACE_HAPPY : FACE_NEUTRAL].add(vec2(1024 * getPlayer().CO)), toVec2(256));
         
-        drawRect(renderer, vec2(panelX - 128 * sc + panelW/2, panelY + sc * 104.0), vec2(sc * 256, sc * 12.0), true, "black");
-        drawRect(renderer, vec2(panelX - 128 * sc + panelW/2, panelY + sc * 104.0), vec2(sc * 256 * getPlayer().powerMeter, sc * 12.0), true, getPlayer().powerMeter >= 1.0 && gameTime % 600 < 300 ? "white" : "#66ff66");
+        if(!getPlayer().powered) {
+            drawRect(renderer, vec2(panelX - 128 * sc + panelW/2, panelY + sc * 104.0), vec2(sc * 256, sc * 12.0), true, "black");
+            drawRect(renderer, vec2(panelX - 128 * sc + panelW/2, panelY + sc * 104.0), vec2(sc * 256 * getPlayer().powerMeter, sc * 12.0), true, getPlayer().powerMeter >= 1.0 && gameTime % 600 < 300 ? "white" : "#66ff66");
+        } else {
+            renderer.globalAlpha = ((Math.sin(gameTime/100.0) + 1.0) / 8.0);
+            renderer.globalCompositeOperation = "lighter";
+            drawRect(renderer, bodyNFacesSheet.transform.position.subtract(toVec2(128 * sc)), toVec2(256 * sc), true, "white");
+            renderer.globalAlpha = 1.0;
+            renderer.globalCompositeOperation = "source-over";
+        }
         bodyNFacesSheet.transform.scale = toVec2(pixelSize/2.0);
     }
 }

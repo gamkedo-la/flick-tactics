@@ -304,9 +304,17 @@ class MapUnit {
         }
         
         //Unit Draw
-        if(this.mapPathIndex > -1)
+        if(this.mapPathIndex > -1) {
             this.unit.draw(teamID, offset, sc, this.flip, ANIM_MECH_WALK);
-        else {
+
+            if(getPlayer().powered && getPlayerI(getIndexPair(this.mapPosition)).powered) {
+                renderer.globalAlpha = ((Math.sin(gameTime/100.0) + 1.0) / 4.0);
+                renderer.globalCompositeOperation = "lighter";
+                this.unit.draw(teamID, offset, sc, this.flip, ANIM_MECH_WALK);
+                renderer.globalAlpha = 1.0;
+                renderer.globalCompositeOperation = "source-over";
+            }
+        } else {
             //Darken(multiply draw) the unit if they have moved or they can't move anymore.
             //OR Brighten(overlay draw) the unit if they are boosted!
             var darken = this.up == -1 || (getPlayer().actionPoints <= 0 && !this.unit.isBuilding && getPlayer().checkMapUnit(this));
@@ -320,6 +328,14 @@ class MapUnit {
             }
 
             this.unit.draw(teamID, offset, sc, this.flip);
+
+            if(getPlayer().powered && getPlayerI(getIndexPair(this.mapPosition)).powered) {
+                renderer.globalAlpha = ((Math.sin(gameTime/100.0) + 1.0) / 4.0);
+                renderer.globalCompositeOperation = "lighter";
+                this.unit.draw(teamID, offset, sc, this.flip);
+                renderer.globalAlpha = 1.0;
+                renderer.globalCompositeOperation = "source-over";
+            }
 
             if(darken) {
                 renderer.globalAlpha = 1.0;
@@ -376,7 +392,7 @@ class MapUnit {
 
                     getPlayerI(indexPair).unitGroup.mapUnits.splice(i, 1);
 
-                    getPlayerI(indexPair).powerMeter += 0.04;
+                    if(!getPlayer().powered) getPlayerI(indexPair).powerMeter += 0.04;
                     if(getPlayerI(indexPair).powerMeter > 1.0) getPlayerI(indexPair).powerMeter = 1.0;
                 }            
             }

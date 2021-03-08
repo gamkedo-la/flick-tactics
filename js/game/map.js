@@ -750,7 +750,7 @@ class GameMap {
             if (this.eventUnitMovement(getPlayer().getSelectedMapUnit())) {
                 getPlayer().getSelectedMapUnit().actionPointsUsed++;
                 getPlayer().actionPoints--;
-                getPlayer().powerMeter += 0.02;
+                if(!getPlayer().powered) getPlayer().powerMeter += 0.02;
                 if(getPlayer().powerMeter > 1.0) getPlayer().powerMeter = 1.0;
             }
         }
@@ -758,7 +758,7 @@ class GameMap {
             if (this.eventUnitAttack(getPlayer().getSelectedMapUnit())) {
                 getPlayer().getSelectedMapUnit().actionPointsUsed++;
                 getPlayer().actionPoints--;
-                getPlayer().powerMeter += 0.02;
+                if(!getPlayer().powered) getPlayer().powerMeter += 0.02;
                 if(getPlayer().powerMeter > 1.0) getPlayer().powerMeter = 1.0;
             }
         }
@@ -766,7 +766,7 @@ class GameMap {
             if (this.eventUnitSpecial(getPlayer().getSelectedMapUnit())) {
                 getPlayer().getSelectedMapUnit().actionPointsUsed++;
                 getPlayer().actionPoints--;
-                getPlayer().powerMeter += 0.02;
+                if(!getPlayer().powered) getPlayer().powerMeter += 0.02;
                 if(getPlayer().powerMeter > 1.0) getPlayer().powerMeter = 1.0;
             }
         }

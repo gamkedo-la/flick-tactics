@@ -2,6 +2,9 @@ const VOLUME_TRANSITION_FACTOR = 0.025;
 
 const BGM_MENU = 0;
 const BGM_WORLDMAP = 1;
+const BGM_GAMEPLAY = 2;
+const BGM_GOODPOWER = 3;
+const BGM_BADPOWER = 4;
 var BGM = [
         {
             content: document.createElement('audio'),
@@ -12,6 +15,21 @@ var BGM = [
             content: document.createElement('audio'),
             state: false,
             path: 'music/FT_WorldMap_Loop.webm'
+        },
+        {
+            content: document.createElement('audio'),
+            state: false,
+            path: 'music/FT_Gameplay_Loop.webm'
+        },
+        {
+            content: document.createElement('audio'),
+            state: false,
+            path: 'music/FT_PlayerCO_Loop.webm'
+        },
+        {
+            content: document.createElement('audio'),
+            state: false,
+            path: 'music/FT_EnemyCO_Loop.webm'
         },
     ];
 
@@ -89,15 +107,19 @@ function audioSetup()
 
 function playBGM(id)
 {
-    if(gameOptions.BGMEnabled) {
+    if(id <= -1) {
+        for(let i = 0; i < BGM.length; i++)
+        {
+            if(i == id) continue;
+            BGM[i].state = false;
+        }
+    } else if(gameOptions.BGMEnabled) {
         BGM[id].content.play();
         BGM[id].state = true;
         for(let i = 0; i < BGM.length; i++)
         {
             if(i == id) continue;
             BGM[i].state = false;
-            //BGM[i].content.pause();
-            //BGM[i].content.currentTime = 0;
         }
     }
 }

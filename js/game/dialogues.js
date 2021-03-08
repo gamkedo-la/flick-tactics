@@ -69,7 +69,6 @@ function dialogueSetup(uiArray1, uiArray2)
 
 function dialogueProcess(isDelay)
 {
-    console.log(dialogues[0].text);
     dialogueSpeaker.text = dialogueCO[dialogues[0].speaker].name;
     if(renderer.measureText(dialogueLine1.text).width < (gameWidth - (gameWidth/6)) - (gameWidth/10) - dialogueOffsetWhenDisplayingFace)
     {

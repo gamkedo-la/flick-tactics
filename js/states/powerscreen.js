@@ -1,20 +1,23 @@
 const POWERSCREEN = 4;
 var powerscreen = [];
 
-var powerscreenDelay = 2500;
+var powerscreenDelay = 5000;
 var powerscreenTimer = 0;
 var powerscreenOpacity = 0.0;
 var powerscreenMaxBlack = 0.7;
-var powerscreenSwitcherTime = 500;
+var powerscreenSwitcherTime = 1000;
 var powerscreenFontSize;
 
 var powerscreenTotalRects = 800;
 var powerscreenRects = [];
 
 function activatePower() {
+    gameplaySilence = true;
     dialogues.push(powerDialogues[(getPlayer().CO * 4) + Math.floor(Math.random() * 4)]);
     afterDialoguesEvent = function() {
         ui.stateIndex = POWERSCREEN;
+        gameplaySilence = false;
+        getPlayer().powered = true;
         powerscreen[0].text = powerscreen[1].text = COSPECIFICS[getPlayer().CO].powerName;
         for(let i = 0; i < powerscreenTotalRects; i++) {
             powerscreenRects.push({
@@ -72,6 +75,8 @@ function powerscreenDraw(deltaTime) {
 }
 
 function powerscreenUpdate(deltaTime) {
+    if(getPlayer().CO == HULU || getPlayer().CO == JONAH) playBGM(BGM_BADPOWER);
+    else playBGM(BGM_GOODPOWER);
     if (powerscreenTimer > 0) {
         powerscreenTimer -= deltaTime;
 

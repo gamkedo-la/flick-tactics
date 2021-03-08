@@ -75,6 +75,8 @@ class PlayerManager {
     endTurn() {
         this.getActivePlayer().clearDisabledActions();
 
+        this.getActivePlayer().powered = false;
+
         //Player AP replenishes
         this.getActivePlayer().actionPoints += this.actionPointsPerTurn;
 

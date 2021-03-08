@@ -1,5 +1,6 @@
 const GAMEPLAY = 1;
 var gameplay = [];
+var gameplaySilence = false;
 
 //#region helper_functions
 //'manager.getActivePlayer()' => 'getPlayer()'
@@ -137,7 +138,7 @@ function gameplayUIDisplayUpdate() {
     
     if (getPlayer().getSelectedMapUnit().unit.ammo == 0
     || isTileOnSmoke(getPlayer().getSelectedMapUnit().mapPosition)) {
-        if(getPlayer().getSelectedMapUnit.unit.type == TELEPORT_MECH) unitLeftBtn.button.output = UIOUTPUT_DISABLED;
+        if(getPlayer().getSelectedMapUnit().unit.type == TELEPORT_MECH) unitLeftBtn.button.output = UIOUTPUT_DISABLED;
         else unitRightBtn.button.output = UIOUTPUT_DISABLED;
     }
     
@@ -148,7 +149,11 @@ function gameplayUIDisplayUpdate() {
 }
 
 function gameplayUpdate(deltaTime) {
-    playBGM(BGM_WORLDMAP);
+    if(gameplaySilence) playBGM(-1);
+    else if(getPlayer().powered) {
+        if(getPlayer().CO == HULU || getPlayer().CO == JONAH) playBGM(BGM_BADPOWER);
+        else playBGM(BGM_GOODPOWER);
+    } else playBGM(BGM_GAMEPLAY);
 
     if(dialogues.length <= 0) {
 
