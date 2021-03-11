@@ -264,9 +264,13 @@ function buildingPanelUpdate(buildingMapUnit) {
                 setBButton(2, 1, "not enough power", true);
 
             setBTab(3, "STATS");
-            setBLabel(3, 0, "Player Mechs: " + getPlayer().getTotalNumberOfMechs().toString() + ", Player Buildings: " + getPlayer().getTotalNumberOfBuildings().toString());
-            setBLabel(3, 1, "Enemy Mechs: XX, Enemy Buildings: XX");
-            setBLabel(3, 2, "Player Income: XX, Enemy Income: XX");
+            setBLabel(3, 0, "Total Mechs: " + getPlayer().getTotalNumberOfMechs().toString() + ", Total Buildings: " + getPlayer().getTotalNumberOfBuildings().toString());
+            setBLabel(3, 1, "Rifle: " + getPlayer().getTotalNumberOfMechs(RIFLE_MECH).toString() +
+                ", Cannon: " + getPlayer().getTotalNumberOfMechs(CANNON_MECH).toString() +
+                ", Artillery: " + getPlayer().getTotalNumberOfMechs(ARTILLERY_MECH).toString() +
+                ", Support: " + getPlayer().getTotalNumberOfMechs(SUPPORT_MECH).toString() +
+                ", Teleport: " + getPlayer().getTotalNumberOfMechs(TELEPORT_MECH).toString());
+            setBLabel(3, 2, "Income Per Turn: " + getPlayer().getTotalIncome() + ", Repair Required: " + (getPlayer().isAnyBuildingDamaged() ? ("Yes, Income after repairs: " + getPlayer().getTotalIncome(true).toString()) : "No"));
 
             setBTab(4, "OPTIONS");
             setBLabel(4, 1, "Tip: Try to move Rifle Mechs to mountains in order to gain defense.");
@@ -337,8 +341,8 @@ function buildingPanelUpdate(buildingMapUnit) {
             else setBButton(1, 2, "insufficient cash", true);
 
             setBTab(2, "ABILITY MECHS");
-            setBLabel(2, 0, "SUPPORT (" + MECHCOST[SUPPORT_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][SUPPORT_MECH].toString() + " turn(s)" : "") + "): Essential Mech that Provides Supply and Repair Buildings.");
-            setBLabel(2, 1, "TELEPORT (" + MECHCOST[TELEPORT_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][TELEPORT_MECH].toString() + " turn(s)" : "") + "): Fastest Mech with the Ability to Teleport same team mechs.");
+            setBLabel(2, 0, "SUPPORT (" + MECHCOST[SUPPORT_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][SUPPORT_MECH].toString() + " turn(s)" : "") + "): Essential Mech that Provides Supplies and Repair Units.");
+            setBLabel(2, 1, "TELEPORT (" + MECHCOST[TELEPORT_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][TELEPORT_MECH].toString() + " turn(s)" : "") + "): Mech with the Ability to Teleport and Swap Positions.");
 
             if(getPlayer().money >= MECHCOST[SUPPORT_MECH]) setBButton(2, 1, "Buy Support");
             else setBButton(2, 1, "insufficient cash", true);

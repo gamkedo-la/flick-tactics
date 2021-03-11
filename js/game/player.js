@@ -97,19 +97,37 @@ class Player {
             toMapUnit(this.unitGroup.mapUnits[i]);
     }
 
-    getTotalNumberOfMechs() {
+    getTotalNumberOfMechs(type = -1) {
         var no = 0;
         for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
             if(this.unitGroup.mapUnits[i].unit.isBuilding == false
-                && this.unitGroup.mapUnits[i].unit.deployTime <= 0) no++;
+                && this.unitGroup.mapUnits[i].unit.deployTime <= 0
+                && (this.unitGroup.mapUnits[i].unit.type == type || type == -1)) no++;
         return no;
     }
 
-    getTotalNumberOfBuildings() {
+    getTotalNumberOfBuildings(type = -1) {
         var no = 0;
         for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
-            if(this.unitGroup.mapUnits[i].unit.isBuilding) no++;
+            if(this.unitGroup.mapUnits[i].unit.isBuilding
+            && (this.unitGroup.mapUnits[i].unit.type == type || type == -1)) no++;
         return no;
+    }
+
+    isAnyBuildingDamaged() {
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
+            if(this.unitGroup.mapUnits[i].unit.isBuilding
+            && Math.ceil(this.unitGroup.mapUnits[i].hp) < 10) return true;
+        return false;
+    }
+
+    getTotalIncome(afterRepair = false) {
+        var income = 0;
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
+            if(this.unitGroup.mapUnits[i].unit.isBuilding
+            && typeof this.unitGroup.mapUnits[i].unit.incomePerHp != "undefined")
+                income += ((afterRepair ? 10 : Math.ceil(this.unitGroup.mapUnits[i].hp)) * (this.unitGroup.mapUnits[i].unit.incomePerHp + (this.unitGroup.mapUnits[i].unit.incomePerHp * this.unitGroup.mapUnits[i].unit.incomeRankMultiplier * this.unitGroup.mapUnits[i].unit.rank))) * (this.unitGroup.mapUnits[i].unit.boost == 1 ? 2 : 1);
+        return income;
     }
 
     getCameraPosition() {

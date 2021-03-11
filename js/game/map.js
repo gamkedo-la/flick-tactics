@@ -270,6 +270,9 @@ class GameMap {
     }
 
     isTileMovementReducerToMapUnit(mapUnit, tilePosition) {
+        //Boosted Cannon Mech's Movement is not reducible!
+        if(mapUnit.unit.type == CANNON_MECH && mapUnit.unit.boost >= 1) return false;
+
         var tileType = this.getTileTypeFromPosition(tilePosition);
         for(let i = 0; i < mapUnit.unit.movementReducers.length; i++)
             if(mapUnit.unit.movementReducers[i] == tileType)

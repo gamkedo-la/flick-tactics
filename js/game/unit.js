@@ -84,7 +84,7 @@ class Unit {
             case ARTILLERY_MECH:
                 this.movement = 2;
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
-                this.movementReducers = [FOREST_TILE];
+                this.movementReducers = [FOREST_TILE, SAND_TILE];
 
                 this.attack = [12.0, 8.0, 16.0, 8.0, 7.5, 8.0];
                 this.ammoCapacity = 3;
