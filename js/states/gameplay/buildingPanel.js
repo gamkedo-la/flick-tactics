@@ -169,39 +169,31 @@ function resetB() {
 }
 function setBTab(index, text) {
     if(text == "") buildingPanelTabs[index].visible = false;
-    else
-    {
+    else {
         buildingPanelTabs[index].visible = true;
         buildingPanelTabs[index].textButton.label.text = text;
     }
 }
 function setBLabel(tabIndex, index, text) {
-    var tIndex = (tabIndex * 3) + index;
-    if(text == "") buildingPanelLabels[tIndex].visible = false;
-    else
-    {
-        buildingPanelLabels[tIndex].visible = true;
-        buildingPanelLabels[tIndex].text = text;
+    if(text == "") buildingPanelLabels[(tabIndex * 3) + index].visible = false;
+    else {
+        buildingPanelLabels[(tabIndex * 3) + index].visible = true;
+        buildingPanelLabels[(tabIndex * 3) + index].text = text;
     }
 }
 function setBButton(tabIndex, index, text, disabled = false) {
-    var tIndex = (tabIndex * 3) + index;
-    if(text == "") buildingPanelButtons[tIndex].visible = false;
-    else
-    {
-        buildingPanelButtons[tIndex].visible = true;
-        buildingPanelButtons[tIndex].label.text = text;
+    if(text == "") buildingPanelButtons[(tabIndex * 3) + index].visible = false;
+    else {
+        buildingPanelButtons[(tabIndex * 3) + index].visible = true;
+        buildingPanelButtons[(tabIndex * 3) + index].label.text = text;
 
-        if(disabled)
-            buildingPanelButtons[tIndex].button.output = UIOUTPUT_DISABLED;
-        else
-            buildingPanelButtons[tIndex].button.output = UIOUTPUT_RUNNING;
+        if(disabled) buildingPanelButtons[(tabIndex * 3) + index].button.output = UIOUTPUT_DISABLED;
+        else buildingPanelButtons[(tabIndex * 3) + index].button.output = UIOUTPUT_RUNNING;
     }
 }
 function getBButton(tabIndex, index, type) {
-    var tIndex = (tabIndex * 3) + index;
-    if(buildingPanelButtons[tIndex].visible && buildingPanelPrevSelected != null && buildingPanelPrevSelected.unit.type == type)
-        return buildingPanelButtons[tIndex];
+    if(buildingPanelButtons[(tabIndex * 3) + index].visible && buildingPanelPrevSelected != null && buildingPanelPrevSelected.unit.type == type)
+        return buildingPanelButtons[(tabIndex * 3) + index];
     return 0;
 }
 
@@ -212,8 +204,7 @@ function buildingPanelUpdate(buildingMUnit) {
     if(gameTime % 100 < 50) return;
 
     if(buildingPanelPrevSelected == null
-    || buildingPanelPrevSelected != buildingMUnit)
-    {
+    || buildingPanelPrevSelected != buildingMUnit) {
         buildingPanelPrevSelected = buildingMUnit;
         buildingPanelTabs[0].select();
     }
@@ -227,12 +218,9 @@ function buildingPanelUpdate(buildingMUnit) {
     }
 
     buildingPanel.color = getActiveTeamColor();
-
-    switch(buildingMUnit.unit.type)
-    {
+    resetB();
+    switch(buildingMUnit.unit.type) {
         case HQ_BUILDING:
-            resetB();
-
             setBTab(0, "OBJECTIVE");
             setBLabel(0, 0, "WIN: Destroy the Enemy HQ(s).");
             setBLabel(0, 1, "LOSE: Your HQ gets destroyed.");
@@ -248,20 +236,16 @@ function buildingPanelUpdate(buildingMUnit) {
 
             setBButton(1, 0, "Previous CO");
 
-            if(getPlayer().powerMeter >= 0.999)
-                setBButton(1, 1, "Use Power!");
-            else
-                setBButton(1, 1, "not enough power", true);
+            if(getPlayer().powerMeter >= 0.999) setBButton(1, 1, "Use Power!");
+            else setBButton(1, 1, "not enough power", true);
 
             setBButton(1, 2, "Next CO");
 
             setBLabel(2, 0, "CO Power: Rifle Boomer.");
             setBLabel(2, 1, "All your buildings deploys a Rifle Mech.");
 
-            if(getPlayer().powerMeter >= 0.999)
-                setBButton(2, 1, "Use Power!");
-            else
-                setBButton(2, 1, "not enough power", true);
+            if(getPlayer().powerMeter >= 0.999) setBButton(2, 1, "Use Power!");
+            else setBButton(2, 1, "not enough power", true);
 
             setBTab(3, "STATS");
             setBLabel(3, 0, "Total Mechs: " + getPlayer().getTotalNumberOfMechs().toString() + ", Total Buildings: " + getPlayer().getTotalNumberOfBuildings().toString());
@@ -281,8 +265,6 @@ function buildingPanelUpdate(buildingMUnit) {
         break;
 
         case CITY_BUILDING:
-            resetB();
-
             setBTab(0, "CITY");
             setBLabel(0, 0, "Generates Income with which new mechs are deployed via War Building.");
             setBLabel(0, 1, "Cost is also a requirement for supply/repair. Income Generation per turn: " + (Math.ceil(buildingMUnit.hp) * (buildingMUnit.unit.incomePerHp + (buildingMUnit.unit.incomePerHp * buildingMUnit.unit.incomeRankMultiplier * buildingMUnit.unit.rank))).toString() + ".");
@@ -312,8 +294,6 @@ function buildingPanelUpdate(buildingMUnit) {
         break;
 
         case WAR_BUILDING:
-            resetB();
-
             setBTab(0, "WAR BUILDING");
             setBLabel(0, 0, "Deploy New Mechs to attack the enemy and support the existing mechs.");
             setBLabel(0, 1, "ATTACK: Rifle, Cannon and Artillery. ABILITY: Support and Teleport.");
@@ -374,7 +354,6 @@ function buildingPanelUpdate(buildingMUnit) {
         break;
 
         case RUIN_BUILDING:
-            resetB();
             buildingPanel.enabled = false;
         break;
     }
@@ -403,6 +382,9 @@ function buildingPanelDraw() {
 }
 
 function buildingPanelEvent() {
+
+    if(gameTime % 100 < 25) return;
+
     if(isTouchInsideBPanel())
     {
         var buildingMUnit = getPlayer().getSelectedMapUnit();

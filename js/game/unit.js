@@ -360,7 +360,7 @@ class MapUnit {
 
         //Unit Status
         if (this.hp > 0 && this.unit.type != RUIN_BUILDING) {
-            if (ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
+            if (Math.ceil(this.hp) < 10 && ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
                 spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
                 drawText(spritesRenderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-29.6 * pixelSize, -14.6 * pixelSize))), "black");
                 drawText(spritesRenderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
