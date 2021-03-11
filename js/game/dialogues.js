@@ -183,6 +183,7 @@ function dialogueDraw()
             soldierFaceSprite.drawSc();
         } else {
             bodyNFacesSheet.transform.position = soldierFaceSprite.transform.position;
+            bodyNFacesSheet.transform.scale = toVec2(pixelSize/2.0);
             bodyNFacesSheet.drawScIn(facePositions[dialogues[0].face].add(vec2(1024 * dialogues[0].speaker)), toVec2(256));
         }
     }

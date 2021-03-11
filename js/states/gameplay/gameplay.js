@@ -28,6 +28,15 @@ function getMUnitI(indexPair) {
     if(indexPair[0] != -1 && indexPair[1] != -1) return manager.players[indexPair[0]].unitGroup.mapUnits[indexPair[1]];
     return -1;
 }
+function getTeamColor(team) {
+    switch (team) {
+        case RED_TEAM: return "#c32454";
+        case BLUE_TEAM: return "#4d65b4";
+        case GREEN_TEAM: return "#239063";
+        case BLACK_TEAM: return "#625565";
+        default: return "#000000";
+    }
+}
 function getActiveTeamColor() {
     if (ui.stateIndex != GAMEPLAY && ui.stateIndex != POWERSCREEN) return "#000000";
     switch (getPlayer().unitGroup.teamID) {
@@ -144,6 +153,7 @@ function gameplayUIDisplayUpdate() {
     
     if ((getPlayer().getSelectedMapUnit().unit.type == RIFLE_MECH
     || getPlayer().getSelectedMapUnit().unit.type == ARTILLERY_MECH)
+    || getPlayer().getSelectedMapUnit().unit.boost < 0
     && getPlayer().getSelectedMapUnit().unit.smokeAmmo == 0)
         unitLeftBtn.button.output = UIOUTPUT_DISABLED;
 }

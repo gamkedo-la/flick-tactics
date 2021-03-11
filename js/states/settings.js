@@ -10,6 +10,7 @@ function uiInit() {
     worldmapSetup();
     versusSetup();
     editorSetup();
+    endscreenSetup();
 
     uistates = [];
     uistates.push(new UIState(startscreen));
@@ -20,6 +21,7 @@ function uiInit() {
     uistates.push(new UIState(worldmap));
     uistates.push(new UIState(versus));
     uistates.push(new UIState(editor));
+    uistates.push(new UIState(endscreen));
     ui = new UI(uistates, STARTSCREEN);
 }
 
@@ -28,13 +30,17 @@ function resizeGame() {
     updateTileSizes();
 
     uiContext.set(renderer, 0, "OrangeKid", 12 * pixelSize);
-    startscreenResize();
-    gameplayResize();
-    aboutResize();
-    battlescreenResize();
-    worldmapResize();
-    versusResize();
-    editorResize();
+    switch (ui.stateIndex) {
+        case STARTSCREEN: startscreenResize(); break;
+        case GAMEPLAY: gameplayResize(); break;
+        case ABOUT: aboutResize(); break;
+        case BATTLESCREEN: battlescreenResize(); break;
+        case POWERSCREEN: powerscreenResize(); break;
+        case WORLDMAP: worldmapResize(); break;
+        case VERSUS: versusResize(); break;
+        case EDITOR: editorResize(); break;
+        case POWERSCREEN: endscreenResize(); break;
+    }
 
     prevPixelSize = pixelSize;
     prevGameWidth = gameWidth;

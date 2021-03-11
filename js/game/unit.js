@@ -388,6 +388,12 @@ class MapUnit {
                     if(manager.index == indexPair[0]) {
                         if(getPlayer().selectedIndex > i) getPlayer().selectedIndex--;
                         else if(getPlayer().selectedIndex == i) getPlayer().selectedIndex = getPlayer().getHQUnitIndex();
+                        if(getPlayer().selectedIndex <= -1) {
+                            lose(getPlayer().CO);
+                            getPlayer().control = -1;
+                            getPlayer().selectedIndex = -1;
+                            manager.endTurn(true);
+                        }
                     }
 
                     getPlayerI(indexPair).unitGroup.mapUnits.splice(i, 1);

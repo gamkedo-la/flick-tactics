@@ -72,55 +72,57 @@ class PlayerManager {
         }
     }
 
-    endTurn() {
-        this.getActivePlayer().clearDisabledActions();
+    endTurn(destroyed = false) {
+        if(!destroyed) {
+            this.getActivePlayer().clearDisabledActions();
 
-        this.getActivePlayer().powered = false;
+            this.getActivePlayer().powered = false;
 
-        //Player AP replenishes
-        this.getActivePlayer().actionPoints += this.actionPointsPerTurn;
+            //Player AP replenishes
+            this.getActivePlayer().actionPoints += this.actionPointsPerTurn;
 
-        this.getActivePlayer().applyToAllMapUnits( (mUnit) => {
+            this.getActivePlayer().applyToAllMapUnits( (mUnit) => {
 
-            //Money Increases (receives city building income)
-            if(mUnit.unit.isBuilding && typeof mUnit.unit.incomePerHp != "undefined") {
-                new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), incomeSequence);
-                this.getActivePlayer().money += (Math.ceil(mUnit.hp) * (mUnit.unit.incomePerHp + (mUnit.unit.incomePerHp * mUnit.unit.incomeRankMultiplier * mUnit.unit.rank))) * (mUnit.unit.boost == 1 ? 2 : 1);
-            }
-
-            //Deploy Time Decreases
-            if(typeof mUnit.unit.deployTime != "undefined"
-                && mUnit.unit.deployTime > 0) {
-                mUnit.unit.deployTime--;
-            }
-
-            //Clearing Disabled Actions
-            mUnit.clearDisabledActions();
-
-            //Cannon Mech Boost Regulation
-            if(mUnit.unit.type == CANNON_MECH) {
-                if(mUnit.unit.boost == 1) {
-                    mUnit.unit.movement -= mUnit.unit.boostMovement;
-                    mUnit.unit.boost = -(mUnit.unit.boostCooldown - (mUnit.unit.boostCooldownDecreasePerRank * mUnit.unit.rank));
+                //Money Increases (receives city building income)
+                if(mUnit.unit.isBuilding && typeof mUnit.unit.incomePerHp != "undefined") {
+                    new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), incomeSequence);
+                    this.getActivePlayer().money += (Math.ceil(mUnit.hp) * (mUnit.unit.incomePerHp + (mUnit.unit.incomePerHp * mUnit.unit.incomeRankMultiplier * mUnit.unit.rank))) * (mUnit.unit.boost == 1 ? 2 : 1);
                 }
-                else if(mUnit.unit.boost < 0) mUnit.unit.boost++;
-            }
 
-            //Buildings Boost Regulation
-            if(mUnit.unit.isBuilding && typeof mUnit.unit.boost != "undefined") {
-                if(mUnit.unit.boost == 1) mUnit.unit.boost = -(mUnit.unit.boostCooldown - (mUnit.unit.boostCooldownDecreasePerRank * mUnit.unit.rank));
-                else if(mUnit.unit.boost < 0) mUnit.unit.boost++;
-            }
+                //Deploy Time Decreases
+                if(typeof mUnit.unit.deployTime != "undefined"
+                    && mUnit.unit.deployTime > 0) {
+                    mUnit.unit.deployTime--;
+                }
 
-            //Fire and Toxic Tile Damage
-            //Teleport Mech won't receive Damage from Toxic Tile as they hover in air.
-            if((map.getTileTypeFromPosition(mUnit.mapPosition) == TOXIC_TILE && mUnit.unit.type != TELEPORT_MECH)
-            || isTileOnFire(mUnit.mapPosition)) {
-                if(mUnit.unit.rank >= 3 || mUnit.unit.type == CANNON_MECH || mUnit.unit.type == SUPPORT_MECH) mUnit.hp -= 1.0;
-                else mUnit.hp -= 2.0;
-                if(mUnit.hp > 0.0) new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), damageSequence);
-            }
-        });
+                //Clearing Disabled Actions
+                mUnit.clearDisabledActions();
+
+                //Cannon Mech Boost Regulation
+                if(mUnit.unit.type == CANNON_MECH) {
+                    if(mUnit.unit.boost == 1) {
+                        mUnit.unit.movement -= mUnit.unit.boostMovement;
+                        mUnit.unit.boost = -(mUnit.unit.boostCooldown - (mUnit.unit.boostCooldownDecreasePerRank * mUnit.unit.rank));
+                    }
+                    else if(mUnit.unit.boost < 0) mUnit.unit.boost++;
+                }
+
+                //Buildings Boost Regulation
+                if(mUnit.unit.isBuilding && typeof mUnit.unit.boost != "undefined") {
+                    if(mUnit.unit.boost == 1) mUnit.unit.boost = -(mUnit.unit.boostCooldown - (mUnit.unit.boostCooldownDecreasePerRank * mUnit.unit.rank));
+                    else if(mUnit.unit.boost < 0) mUnit.unit.boost++;
+                }
+
+                //Fire and Toxic Tile Damage
+                //Teleport Mech won't receive Damage from Toxic Tile as they hover in air.
+                if((map.getTileTypeFromPosition(mUnit.mapPosition) == TOXIC_TILE && mUnit.unit.type != TELEPORT_MECH)
+                || isTileOnFire(mUnit.mapPosition)) {
+                    if(mUnit.unit.rank >= 3 || mUnit.unit.type == CANNON_MECH || mUnit.unit.type == SUPPORT_MECH) mUnit.hp -= 1.0;
+                    else mUnit.hp -= 2.0;
+                    if(mUnit.hp > 0.0) new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), damageSequence);
+                }
+            });
+        }
 
         //All Players HQ are reselected
         for (let i = 0; i < this.players.length; i++) {

@@ -29,12 +29,12 @@ const loseDialogues = [
     {
         speaker: ZAREEM,
         text: "I will get stronger!",
-        face: FACE_SAD
+        face: FACE_ANGRY
     },
     {
         speaker: ZAREEM,
         text: "My Rifle Mechs got shredded.",
-        face: FACE_UPSET
+        face: FACE_SAD
     },
     {
         speaker: ZAREEM,

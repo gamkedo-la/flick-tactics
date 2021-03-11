@@ -207,14 +207,14 @@ function getBButton(tabIndex, index, type) {
 
 //#endregion
 
-function buildingPanelUpdate(buildingMapUnit) {
+function buildingPanelUpdate(buildingMUnit) {
 
     if(gameTime % 100 < 50) return;
 
     if(buildingPanelPrevSelected == null
-    || buildingPanelPrevSelected != buildingMapUnit)
+    || buildingPanelPrevSelected != buildingMUnit)
     {
-        buildingPanelPrevSelected = buildingMapUnit;
+        buildingPanelPrevSelected = buildingMUnit;
         buildingPanelTabs[0].select();
     }
 
@@ -228,7 +228,7 @@ function buildingPanelUpdate(buildingMapUnit) {
 
     buildingPanel.color = getActiveTeamColor();
 
-    switch(buildingMapUnit.unit.type)
+    switch(buildingMUnit.unit.type)
     {
         case HQ_BUILDING:
             resetB();
@@ -285,25 +285,25 @@ function buildingPanelUpdate(buildingMapUnit) {
 
             setBTab(0, "CITY");
             setBLabel(0, 0, "Generates Income with which new mechs are deployed via War Building.");
-            setBLabel(0, 1, "Cost is also a requirement for supply/repair. Income Generation per turn: " + (Math.ceil(buildingMapUnit.hp) * (buildingMapUnit.unit.incomePerHp + (buildingMapUnit.unit.incomePerHp * buildingMapUnit.unit.incomeRankMultiplier * buildingMapUnit.unit.rank))).toString() + ".");
+            setBLabel(0, 1, "Cost is also a requirement for supply/repair. Income Generation per turn: " + (Math.ceil(buildingMUnit.hp) * (buildingMUnit.unit.incomePerHp + (buildingMUnit.unit.incomePerHp * buildingMUnit.unit.incomeRankMultiplier * buildingMUnit.unit.rank))).toString() + ".");
 
-            if(buildingMapUnit.unit.boost == 0) {
-                setBLabel(0, 2, "Use BOOST to get 2 times the income for a turn (Uses 1 AP, " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * buildingMapUnit.unit.rank)) + " Cooldown Turns).");
+            if(buildingMUnit.unit.boost == 0) {
+                setBLabel(0, 2, "Use BOOST to get 2 times the income for a turn (Uses 1 AP, " + (buildingMUnit.unit.boostCooldown - (buildingMUnit.unit.boostCooldownDecreasePerRank * buildingMUnit.unit.rank)) + " Cooldown Turns).");
                 if(getPlayer().actionPoints > 0) setBButton(0, 2, "Boost");
                 else setBButton(0, 2, "No AP", true);
-            } else if (buildingMapUnit.unit.boost < 0) {
-                setBLabel(0, 2, "It will take " + (-buildingMapUnit.unit.boost).toString() + " turn(s) before it can be boost can be used again.");
+            } else if (buildingMUnit.unit.boost < 0) {
+                setBLabel(0, 2, "It will take " + (-buildingMUnit.unit.boost).toString() + " turn(s) before it can be boost can be used again.");
             } else {
                 setBLabel(0, 2, "BOOSTED: You will receive twice the income for a turn!");
             }
 
             setBTab(4, "RANK");
-            if(buildingMapUnit.unit.rank < 3) {
-                setBLabel(4, 0, "Current City Rank: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
-                setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + (buildingMapUnit.hp * (buildingMapUnit.unit.incomePerHp + (buildingMapUnit.unit.incomePerHp * buildingMapUnit.unit.incomeRankMultiplier * (buildingMapUnit.unit.rank + 1)))).toString() + ".");
-                setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * (buildingMapUnit.unit.rank + 1))) + ".");
+            if(buildingMUnit.unit.rank < 3) {
+                setBLabel(4, 0, "Current City Rank: " + buildingMUnit.unit.rank + ". Upgrade's Cost: " + (buildingMUnit.unit.rankUpgradeCost + (buildingMUnit.unit.rankUpgradeCost * buildingMUnit.unit.rankUpgradeCostMultiplier * buildingMUnit.unit.rank)).toString() + ".");
+                setBLabel(4, 1, "Income Generation per turn AFTER UPGRADE: " + (buildingMUnit.hp * (buildingMUnit.unit.incomePerHp + (buildingMUnit.unit.incomePerHp * buildingMUnit.unit.incomeRankMultiplier * (buildingMUnit.unit.rank + 1)))).toString() + ".");
+                setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + (buildingMUnit.unit.boostCooldown - (buildingMUnit.unit.boostCooldownDecreasePerRank * (buildingMUnit.unit.rank + 1))) + ".");
                 
-                if(getPlayer().money >= buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank))
+                if(getPlayer().money >= buildingMUnit.unit.rankUpgradeCost + (buildingMUnit.unit.rankUpgradeCost * buildingMUnit.unit.rankUpgradeCostMultiplier * buildingMUnit.unit.rank))
                     setBButton(4, 2, "Upgrade");
                 else
                     setBButton(4, 2, "insufficient cash", true);
@@ -317,21 +317,21 @@ function buildingPanelUpdate(buildingMapUnit) {
             setBTab(0, "WAR BUILDING");
             setBLabel(0, 0, "Deploy New Mechs to attack the enemy and support the existing mechs.");
             setBLabel(0, 1, "ATTACK: Rifle, Cannon and Artillery. ABILITY: Support and Teleport.");
-            if(buildingMapUnit.unit.boost == 0) {
-                if(getPlayer().deployDelay) setBLabel(0, 2, "Use BOOST to deploy a complete mech without any turn delay (Uses 1 AP, " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * buildingMapUnit.unit.rank)) + " Cooldown Turns).");
-                else setBLabel(0, 2, "Use BOOST to deploy a max rank mech (Uses 1 AP, " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * buildingMapUnit.unit.rank)) + " Cooldown Turns).");
+            if(buildingMUnit.unit.boost == 0) {
+                if(getPlayer().deployDelay) setBLabel(0, 2, "Use BOOST to deploy a complete mech without any turn delay (Uses 1 AP, " + (buildingMUnit.unit.boostCooldown - (buildingMUnit.unit.boostCooldownDecreasePerRank * buildingMUnit.unit.rank)) + " Cooldown Turns).");
+                else setBLabel(0, 2, "Use BOOST to deploy a max rank mech (Uses 1 AP, " + (buildingMUnit.unit.boostCooldown - (buildingMUnit.unit.boostCooldownDecreasePerRank * buildingMUnit.unit.rank)) + " Cooldown Turns).");
                 if(getPlayer().actionPoints > 0) setBButton(0, 2, "Boost");
                 else setBButton(0, 2, "No AP", true);
-            } else if(buildingMapUnit.unit.boost < 0) {
-                setBLabel(0, 2, "It will take " + (-buildingMapUnit.unit.boost).toString() + " turn(s) before it can be boost can be used again.");
+            } else if(buildingMUnit.unit.boost < 0) {
+                setBLabel(0, 2, "It will take " + (-buildingMUnit.unit.boost).toString() + " turn(s) before it can be boosted again.");
             } else {
                 setBLabel(0, 2, "BOOSTED: " + (getPlayer().deployDelay ? "Build a complete mech without any turn delay!" : "Build a max rank mech!"));
             }
 
             setBTab(1, "ATTACK MECHS");
-            setBLabel(1, 0, "RIFLE (" + MECHCOST[RIFLE_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][RIFLE_MECH].toString() + " turn(s)" : "") + "): Light Weight but Less Attacking Power.");
-            setBLabel(1, 1, "CANNON (" + MECHCOST[CANNON_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][CANNON_MECH].toString() + " turn(s)" : "") + "): Heavy Weight with Immense Attacking Power.");
-            setBLabel(1, 2, "ARTILLERY (" + MECHCOST[ARTILLERY_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][ARTILLERY_MECH].toString() + " turn(s)" : "") + "): Only Mech that can attack from a Long Distance.");
+            setBLabel(1, 0, "RIFLE (" + MECHCOST[RIFLE_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank][RIFLE_MECH].toString() + " turn(s)" : "") + "): Light Weight but Less Attacking Power.");
+            setBLabel(1, 1, "CANNON (" + MECHCOST[CANNON_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank][CANNON_MECH].toString() + " turn(s)" : "") + "): Heavy Weight with Immense Attacking Power.");
+            setBLabel(1, 2, "ARTILLERY (" + MECHCOST[ARTILLERY_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank][ARTILLERY_MECH].toString() + " turn(s)" : "") + "): Only Mech that can attack from a Long Distance.");
 
             if(getPlayer().money >= MECHCOST[RIFLE_MECH]) setBButton(1, 0, "Buy Rifle");
             else setBButton(1, 0, "insufficient cash", true);
@@ -341,8 +341,8 @@ function buildingPanelUpdate(buildingMapUnit) {
             else setBButton(1, 2, "insufficient cash", true);
 
             setBTab(2, "ABILITY MECHS");
-            setBLabel(2, 0, "SUPPORT (" + MECHCOST[SUPPORT_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][SUPPORT_MECH].toString() + " turn(s)" : "") + "): Essential Mech that Provides Supplies and Repair Units.");
-            setBLabel(2, 1, "TELEPORT (" + MECHCOST[TELEPORT_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][TELEPORT_MECH].toString() + " turn(s)" : "") + "): Mech with the Ability to Teleport and Swap Positions.");
+            setBLabel(2, 0, "SUPPORT (" + MECHCOST[SUPPORT_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank][SUPPORT_MECH].toString() + " turn(s)" : "") + "): Essential Mech that Provides Supplies and Repair Units.");
+            setBLabel(2, 1, "TELEPORT (" + MECHCOST[TELEPORT_MECH] + "$" + (getPlayer().deployDelay ? ", deploys in " + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank][TELEPORT_MECH].toString() + " turn(s)" : "") + "): Mech with the Ability to Teleport and Swap Positions.");
 
             if(getPlayer().money >= MECHCOST[SUPPORT_MECH]) setBButton(2, 1, "Buy Support");
             else setBButton(2, 1, "insufficient cash", true);
@@ -350,21 +350,21 @@ function buildingPanelUpdate(buildingMapUnit) {
             else setBButton(2, 2, "insufficient cash", true);
 
             setBTab(4, "RANK");
-            if(buildingMapUnit.unit.rank < 3) {
-                setBLabel(4, 0, "Current War Building Rank: " + buildingMapUnit.unit.rank + ". Upgrade's Cost: " + (buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank)).toString() + ".");
+            if(buildingMUnit.unit.rank < 3) {
+                setBLabel(4, 0, "Current War Building Rank: " + buildingMUnit.unit.rank + ". Upgrade's Cost: " + (buildingMUnit.unit.rankUpgradeCost + (buildingMUnit.unit.rankUpgradeCost * buildingMUnit.unit.rankUpgradeCostMultiplier * buildingMUnit.unit.rank)).toString() + ".");
                 if(getPlayer().deployDelay)
                     setBLabel(4, 1, "Mech Deploy Delay Turns AFTER UPGRADE: "
-                    + "Rifle " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][RIFLE_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][RIFLE_MECH].toString()
-                    + ", Cannon " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][CANNON_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][CANNON_MECH].toString()
-                    + ", Artillery " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][ARTILLERY_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][ARTILLERY_MECH].toString()
-                    + ", Support " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][SUPPORT_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][SUPPORT_MECH].toString()
-                    + ", Teleport " + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][TELEPORT_MECH].toString() + "->" + buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank+1][TELEPORT_MECH].toString()
+                    + "Rifle " + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank][RIFLE_MECH].toString() + "->" + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank+1][RIFLE_MECH].toString()
+                    + ", Cannon " + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank][CANNON_MECH].toString() + "->" + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank+1][CANNON_MECH].toString()
+                    + ", Artillery " + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank][ARTILLERY_MECH].toString() + "->" + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank+1][ARTILLERY_MECH].toString()
+                    + ", Support " + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank][SUPPORT_MECH].toString() + "->" + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank+1][SUPPORT_MECH].toString()
+                    + ", Teleport " + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank][TELEPORT_MECH].toString() + "->" + buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank+1][TELEPORT_MECH].toString()
                     + ".");
                 else
-                    setBLabel(4, 1, "Mech Deploy Rank AFTER UPGRADE: " + buildingMapUnit.unit.rank.toString() + "->" + (buildingMapUnit.unit.rank+1).toString() + ".");
-                setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + (buildingMapUnit.unit.boostCooldown - (buildingMapUnit.unit.boostCooldownDecreasePerRank * (buildingMapUnit.unit.rank + 1))) + ".");
+                    setBLabel(4, 1, "Mech Deploy Rank AFTER UPGRADE: " + buildingMUnit.unit.rank.toString() + "->" + (buildingMUnit.unit.rank+1).toString() + ".");
+                setBLabel(4, 2, "Boost Cooldown Turns AFTER UPGRADE: " + (buildingMUnit.unit.boostCooldown - (buildingMUnit.unit.boostCooldownDecreasePerRank * (buildingMUnit.unit.rank + 1))) + ".");
                 
-                if(getPlayer().money >= buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank))
+                if(getPlayer().money >= buildingMUnit.unit.rankUpgradeCost + (buildingMUnit.unit.rankUpgradeCost * buildingMUnit.unit.rankUpgradeCostMultiplier * buildingMUnit.unit.rank))
                     setBButton(4, 2, "Upgrade");
                 else
                     setBButton(4, 2, "insufficient cash", true);
@@ -399,14 +399,13 @@ function buildingPanelDraw() {
             renderer.globalAlpha = 1.0;
             renderer.globalCompositeOperation = "source-over";
         }
-        bodyNFacesSheet.transform.scale = toVec2(pixelSize/2.0);
     }
 }
 
 function buildingPanelEvent() {
     if(isTouchInsideBPanel())
     {
-        var buildingMapUnit = getPlayer().getSelectedMapUnit();
+        var buildingMUnit = getPlayer().getSelectedMapUnit();
 
         //HQ BUILDING EVENTS
         var hqBuilding_helpBtn = getBButton(0, 1, HQ_BUILDING);
@@ -480,8 +479,8 @@ function buildingPanelEvent() {
         var warBuilding_boostBtn = getBButton(0, 2, WAR_BUILDING);
         if(warBuilding_boostBtn != 0 && warBuilding_boostBtn.button.output == UIOUTPUT_SELECT) {
             getPlayer().actionPoints--;
-            if(buildingMapUnit.unit.boost == 0)
-                buildingMapUnit.unit.boost = 1;
+            if(buildingMUnit.unit.boost >= 0)
+                buildingMUnit.unit.boost = 1;
             warBuilding_boostBtn.button.resetOutput();
         }
 
@@ -505,7 +504,7 @@ function buildingPanelEvent() {
                         removeTileParticles(pos.add(offsets[o]));
                         new TileParticle(tilePositionToPixelPosition(pos.add(offsets[o])), teleportSequence);
                         newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(offsets[o]));
-                        newMapUnit.hp = Math.ceil(buildingMapUnit.hp);
+                        newMapUnit.hp = Math.ceil(buildingMUnit.hp);
                         break;
                     }
                 }
@@ -514,14 +513,14 @@ function buildingPanelEvent() {
 
                     //Deploy Delay Effect
                     if(getPlayer().deployDelay) newMapUnit.unit.deployTime
-                        = buildingMapUnit.unit.mechDeployDelay[buildingMapUnit.unit.rank][mechToBuyBtn[i][2]];
-                    else newMapUnit.unit.rank = buildingMapUnit.unit.rank;
+                        = buildingMUnit.unit.mechDeployDelay[buildingMUnit.unit.rank][mechToBuyBtn[i][2]];
+                    else newMapUnit.unit.rank = buildingMUnit.unit.rank;
 
                     //Boosted Unit Build
-                    if(buildingMapUnit.unit.boost == 1) {
+                    if(buildingMUnit.unit.boost == 1) {
                         if(getPlayer().deployDelay) newMapUnit.unit.deployTime = 0;
                         else newMapUnit.unit.rank = 3; //3 is max rank
-                        buildingMapUnit.unit.boost = 0;
+                        buildingMUnit.unit.boost = -(buildingMUnit.unit.boostCooldown - (buildingMUnit.unit.boostCooldownDecreasePerRank * buildingMUnit.unit.rank));
                     }
 
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
@@ -534,9 +533,9 @@ function buildingPanelEvent() {
 
         var warBuilding_upgradeBtn = getBButton(4, 2, WAR_BUILDING);
         if(warBuilding_upgradeBtn != 0 && warBuilding_upgradeBtn.button.output == UIOUTPUT_SELECT) {
-            getPlayer().money -= buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank);
-            buildingMapUnit.unit.rank++;
-            new TileParticle(tilePositionToPixelPosition(buildingMapUnit.mapPosition), rankUpSequence);
+            getPlayer().money -= buildingMUnit.unit.rankUpgradeCost + (buildingMUnit.unit.rankUpgradeCost * buildingMUnit.unit.rankUpgradeCostMultiplier * buildingMUnit.unit.rank);
+            buildingMUnit.unit.rank++;
+            new TileParticle(tilePositionToPixelPosition(buildingMUnit.mapPosition), rankUpSequence);
             warBuilding_upgradeBtn.button.resetOutput();
         }
 
@@ -544,16 +543,16 @@ function buildingPanelEvent() {
         var cityBuilding_boostBtn = getBButton(0, 2, CITY_BUILDING);
         if(cityBuilding_boostBtn != 0 && cityBuilding_boostBtn.button.output == UIOUTPUT_SELECT) {
             getPlayer().actionPoints--;
-            if(buildingMapUnit.unit.boost == 0)
-                buildingMapUnit.unit.boost = 1;
+            if(buildingMUnit.unit.boost == 0)
+                buildingMUnit.unit.boost = 1;
             cityBuilding_boostBtn.button.resetOutput();
         }
 
         var cityBuilding_upgradeBtn = getBButton(4, 2, CITY_BUILDING);
         if(cityBuilding_upgradeBtn != 0 && cityBuilding_upgradeBtn.button.output == UIOUTPUT_SELECT) {
-            getPlayer().money -= buildingMapUnit.unit.rankUpgradeCost + (buildingMapUnit.unit.rankUpgradeCost * buildingMapUnit.unit.rankUpgradeCostMultiplier * buildingMapUnit.unit.rank);
-            buildingMapUnit.unit.rank++;
-            new TileParticle(tilePositionToPixelPosition(buildingMapUnit.mapPosition), rankUpSequence);
+            getPlayer().money -= buildingMUnit.unit.rankUpgradeCost + (buildingMUnit.unit.rankUpgradeCost * buildingMUnit.unit.rankUpgradeCostMultiplier * buildingMUnit.unit.rank);
+            buildingMUnit.unit.rank++;
+            new TileParticle(tilePositionToPixelPosition(buildingMUnit.mapPosition), rankUpSequence);
             cityBuilding_upgradeBtn.button.resetOutput();
         }
     }

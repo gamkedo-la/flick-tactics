@@ -21,6 +21,7 @@ function event(deltaTime) {
         case WORLDMAP: worldmapEvent(deltaTime); break;
         case VERSUS: versusEvent(deltaTime); break;
         case EDITOR: editorEvent(deltaTime); break;
+        case ENDSCREEN: endscreenEvent(deltaTime); break;
     }
 }
 
@@ -34,6 +35,7 @@ function update(deltaTime) {
         case WORLDMAP: worldmapUpdate(deltaTime); break;
         case VERSUS: versusUpdate(deltaTime); break;
         case EDITOR: editorUpdate(deltaTime); break;
+        case ENDSCREEN: endscreenUpdate(deltaTime); break;
     }
     audioUpdate();
     ui.update(deltaTime);
@@ -54,6 +56,7 @@ function draw(deltaTime) {
         case WORLDMAP: worldmapDraw(deltaTime); break;
         case VERSUS: versusDraw(deltaTime); break;
         case EDITOR: editorDraw(deltaTime); break;
+        case ENDSCREEN: endscreenDraw(deltaTime); break;
     }
     ui.draw();
     if(ui.stateIndex == GAMEPLAY) {

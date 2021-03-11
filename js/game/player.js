@@ -87,7 +87,8 @@ class Player {
     getHQUnitIndex() {
         for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
             if(this.unitGroup.mapUnits[i].unit.isBuilding
-            && this.unitGroup.mapUnits[i].unit.type == HQ_BUILDING)
+            && this.unitGroup.mapUnits[i].unit.type == HQ_BUILDING
+            && this.unitGroup.mapUnits[i].hp > 0.0)
                 return i;
         return -1;
     }

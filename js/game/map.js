@@ -262,9 +262,12 @@ class GameMap {
             if(mapUnit.unit.movementObstacles[i] == tileType)
                 return true;
 
-        //Other Player Units are Obstacles
+        //Other Player Units are Obstacles except for Ruins
         var plAndUnitInd = getIndexPair(tilePosition);
-        if(plAndUnitInd[0] != -1 && manager.index != plAndUnitInd[0]) return true;
+        if(plAndUnitInd[0] != -1
+        && manager.index != plAndUnitInd[0]
+        && getMUnitI(plAndUnitInd).unit.type != RUIN_BUILDING)
+            return true;
 
         return false;
     }
@@ -521,6 +524,8 @@ class GameMap {
             damage -= (damage / 100.0) * terrainTacticEffect[this.getTileTypeFromPosition(munit2.mapPosition)].defense;
             damage -= (damage / 100.0) * (munit2.unit.rank * RANK_DEFENSE_BONUS);
         }
+        if(munit2.unit.type == HQ_BUILDING) damage *= 0.5;
+        else if(munit2.unit.type == WAR_BUILDING) damage *= 0.75;
         damage += (damage / 100.0) * (((Math.random() - 0.5) * 2.0) * 5.0);
         return damage;
     }
@@ -793,6 +798,26 @@ class GameMap {
                 if(!getPlayer().powered) getPlayer().powerMeter += 0.02;
                 if(getPlayer().powerMeter > 1.0) getPlayer().powerMeter = 1.0;
             }
+        }
+
+        //Check Win/Lose Conditions
+        var total = manager.players.length;
+        var lastIndex = -1;
+        for(let i = 0; i < manager.players.length; i++) {
+            var HQi = manager.players[i].getHQUnitIndex();
+            if((HQi == -1 || manager.players[i].unitGroup.mapUnits[HQi].hp <= 0) && manager.players[i].control != -1) {
+                lose(manager.players[i].CO);
+                manager.players[i].control = -1;
+                total--;
+            } else if(manager.players[i].control == -1) {
+                total--;
+            } else if(manager.players[i].control != -1) {
+                lastIndex = i;
+            }
+        }
+        if(total <= 1) {
+            if(manager.players[lastIndex].control == 0) win(manager.players[lastIndex].CO, true);
+            else win(manager.players[lastIndex].CO, false);
         }
 
         //Select unit on click/touch
