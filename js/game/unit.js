@@ -21,6 +21,7 @@ const RANK_ATTACK_BONUS = 5;
 const RANK_DEFENSE_BONUS = 5;
 
 function getMechIndexFromType(type, teamNo, animDelayMax = 1200, animDelayMin = 600) {
+    if(animDelayMax == -1) return 100 + (4 * type) + teamNo;
     return (gameTime % animDelayMax < animDelayMin ? 20 : 0) + 100 + (4 * type) + teamNo;
 }
 
@@ -32,8 +33,7 @@ function getTeamIndex(index, teamNo) {
     return (gameTime % 1200 < 600 ? 20 : 0) + index + teamNo;
 }
 
-function hMirrorVec2(v2)
-{
+function hMirrorVec2(v2) {
     return vec2(gameWidth - v2.x, v2.y);
 }
 
@@ -179,7 +179,7 @@ class Unit {
             {
                 
                 renderer.globalAlpha = 0.8;
-                drawSheet(getMechIndexFromType(this.type, teamID) + 180, offset.add(this.position), scale);
+                drawSheet(getMechIndexFromType(this.type, teamID) + 80, offset.add(this.position), scale);
                 renderer.globalAlpha = 1.0;
             }
         }

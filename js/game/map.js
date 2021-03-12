@@ -241,6 +241,12 @@ class GameMap {
 
     drawUnitExtras()
     {
+        if(getPlayer().selectedIndex == -1) {
+            lose(getPlayer().CO);
+            getPlayer().control = -1;
+            manager.endTurn(true);
+        }
+
         if (getPlayer().getSelectedMapUnit().up == 0) {
             map.drawUnitMovement(cam, getPlayer().getSelectedMapUnit());
         }
@@ -467,14 +473,15 @@ class GameMap {
 
     //#region unit_attack
 
-    drawUnitAttack(offset, mapUnit) {
+    drawUnitAttack(offset, munit) {
         spritesRenderer.globalAlpha = 0.75 + ((Math.sin(gameTime/200.0) + 1.0) / 8.0);
         spritesRenderer.globalCompositeOperation = "darken";
         var sc = vec2((tileSize / 64) + gridBlackLinesFixFactor, (tileSize / 64) + gridBlackLinesFixFactor);
+        var attackable = false;
         var fire = false;
         var smoke = false;
-        var skipRange = mapUnit.unit.type == ARTILLERY_MECH ? 2 : 0;
-        var range = mapUnit.unit.type == ARTILLERY_MECH ? 4 : 1;
+        var skipRange = munit.unit.type == ARTILLERY_MECH ? 2 : 0;
+        var range = munit.unit.type == ARTILLERY_MECH ? 4 : 1;
         for (let y = -range; y <= range; y++) {
             for (let x = -range; x <= range; x++) {
 
@@ -483,17 +490,18 @@ class GameMap {
                     || (x == 0 && y == 0))
                     continue;
 
-                var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * tileSize) + ((mapUnit.mapPosition.x + x) * tileGap)),
-                    Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * tileSize) + ((mapUnit.mapPosition.y + y) * tileGap)));
+                var posi = vec2(Math.floor(offset.x + ((munit.mapPosition.x + x) * tileSize) + ((munit.mapPosition.x + x) * tileGap)),
+                    Math.floor(offset.y + ((munit.mapPosition.y + y) * tileSize) + ((munit.mapPosition.y + y) * tileGap)));
 
-                if(this.cursorTile.isEqual(mapUnit.mapPosition.add(vec2(x, y)))) {
+                if(this.cursorTile.isEqual(munit.mapPosition.add(vec2(x, y)))) {
+                    attackable = true;
                     drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
                         vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true, "#FF0000FF");
-                    if(mapUnit.unit.type != SUPPORT_MECH) {
-                        if(mapUnit.unit.type != RIFLE_MECH) {
-                            fire = this.getTileTypeFromPosition(mapUnit.mapPosition.add(vec2(x, y))) == FOREST_TILE;
+                    if(munit.unit.type != SUPPORT_MECH) {
+                        if(munit.unit.type != RIFLE_MECH) {
+                            fire = this.getTileTypeFromPosition(munit.mapPosition.add(vec2(x, y))) == FOREST_TILE;
                         }
-                        smoke = this.getTileTypeFromPosition(mapUnit.mapPosition.add(vec2(x, y))) == SAND_TILE;
+                        smoke = this.getTileTypeFromPosition(munit.mapPosition.add(vec2(x, y))) == SAND_TILE;
                     }
                 } else {
                     drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
@@ -503,8 +511,38 @@ class GameMap {
         }
         spritesRenderer.globalAlpha = 1.0;
         spritesRenderer.globalCompositeOperation = "source-over";
-        if (fire && gameTime % 600 < 300) drawSheet(fireSequence[0].index, tilePositionToPixelPosition(this.cursorTile).add(offset), sc);
-        if (smoke && gameTime % 600 < 300) drawSheet(smokeSequence[0].index, tilePositionToPixelPosition(this.cursorTile).add(offset), sc);
+
+        //Fire, Smoke, Push and Push-Damage Indicators
+        if(attackable && gameTime % 600 < 300) {
+            if (fire) drawSheet(fireSequence[0].index, tilePositionToPixelPosition(this.cursorTile).add(offset), sc);
+            else if (smoke) drawSheet(smokeSequence[0].index, tilePositionToPixelPosition(this.cursorTile).add(offset), sc);
+            if (munit.unit.type == ARTILLERY_MECH || munit.unit.type == TELEPORT_MECH) {
+                renderer.globalAlpha = gameTime % 600 < 150 ? 0.4 : 0.6;
+                var pos = [vec2(0, 1), vec2(1, 0), vec2(0, -1), vec2(-1, 0)];
+                for(let i = 0; i < 4; i++) {
+                    var opos = (munit.unit.type == ARTILLERY_MECH ? this.cursorTile : munit.mapPosition).add(pos[i]);
+                    var opospushed = opos.add(pos[i]);
+                    var oposplayer = getPlayerI(getIndexPair(opos));
+                    var oposunit = getMUnitI(getIndexPair(opos));
+                    var opospushedunit = getMUnitI(getIndexPair(opospushed));
+                    var opospushedtiletype = this.getTileTypeFromPosition(opospushed);
+                    if(oposunit != -1 && (!oposunit.unit.isBuilding || munit.unit.type == TELEPORT_MECH)) {
+                        if(opospushedunit == -1 && opospushedtiletype != MOUNTAIN_TILE) {
+                            drawSheet(getMechIndexFromType(oposunit.unit.type, oposplayer.unitGroup.teamID, -1),
+                                tilePositionToPixelPosition(opospushed.subtract(pos[i].multiply(toVec2(gameTime % 600 < 150 ? 0.5 : 0.0)))).add(offset), sc);
+                            if(munit.unit.type == TELEPORT_MECH) drawSheet(damageSequence[1].index, tilePositionToPixelPosition(opos).add(offset), sc);
+                        } else {
+                            drawSheet(getMechIndexFromType(oposunit.unit.type, oposplayer.unitGroup.teamID, -1),
+                                tilePositionToPixelPosition(opospushed.subtract(pos[i].multiply(toVec2(gameTime % 600 < 150 ? 0.75 : 0.5)))).add(offset), sc);
+                            drawSheet(damageSequence[1].index, tilePositionToPixelPosition(opos).add(offset), sc);
+                            if(opospushedunit != -1)
+                                drawSheet(damageSequence[1].index, tilePositionToPixelPosition(opospushed).add(offset), sc);
+                        }
+                    }
+                }
+                renderer.globalAlpha = 1.0;
+            }
+        }
     }
 
     battlescreenTransition(munit1, munit2) {

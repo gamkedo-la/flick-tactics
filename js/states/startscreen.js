@@ -118,6 +118,8 @@ function startscreenDraw(deltaTime) {
 }
 
 function startscreenUpdate(deltaTime) {
+    map = undefined;
+    manager = undefined;
     particles = [];
     if(startscreen[1].enabled)
         playBGM(STARTSCREEN);

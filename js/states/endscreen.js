@@ -6,6 +6,7 @@ var endscreenCO = -1;
 
 function lose(co) {
     dialogues.push(loseDialogues[(co * 4) + Math.floor(Math.random() * 4)]);
+    afterDialoguesEvent = function() {};
 }
 
 function win(co, playerWin) {
@@ -15,7 +16,7 @@ function win(co, playerWin) {
     afterDialoguesEvent = function() {
         ui.transitionToState = ENDSCREEN;
         gameplaySilence = false;
-        endscreen[0].text = COSPECIFICS[co].name + " WINS! " + (playerWin ? "You win!" : "AI win!");
+        endscreen[0].text = COSPECIFICS[co].name + " WINS! " + (playerWin ? "Player wins!" : "AI wins!");
     }
 }
 
@@ -55,6 +56,7 @@ function endscreenEvent(deltaTime) {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
+            dialogues = [];
             ui.transitionToState = STARTSCREEN;
             endscreen[1].button.resetOutput();
     }

@@ -225,7 +225,7 @@ function buildingPanelUpdate(buildingMUnit) {
             setBLabel(0, 0, "WIN: Destroy the Enemy HQ(s).");
             setBLabel(0, 1, "LOSE: Your HQ gets destroyed.");
             setBLabel(0, 2, "Protect your HQ building at all costs!");
-            setBButton(0, 0, "Restart Game");
+            setBButton(0, 0, "Surrender");
             setBButton(0, 1, "Need Help?");
             setBButton(0, 2, "End Turn");
 
@@ -360,6 +360,7 @@ function buildingPanelUpdate(buildingMUnit) {
 }
 
 function buildingPanelDraw() {
+    if(getPlayer().selectedIndex == -1) return;
     if(getPlayer().getSelectedMapUnit().unit.type == HQ_BUILDING && maxDisplayTilesPerRow == defaultTilesPerRow && buildingPanel.enabled)
     {
         var sc = pixelSize/3.0
@@ -382,9 +383,6 @@ function buildingPanelDraw() {
 }
 
 function buildingPanelEvent() {
-
-    if(gameTime % 100 < 25) return;
-
     if(isTouchInsideBPanel())
     {
         var buildingMUnit = getPlayer().getSelectedMapUnit();
@@ -395,12 +393,10 @@ function buildingPanelEvent() {
             helpMenu.enabled = !helpMenu.enabled;
             hqBuilding_helpBtn.button.resetOutput();
         }
-        var hqBuilding_restartBtn = getBButton(0, 0, HQ_BUILDING);
-        if (hqBuilding_restartBtn != 0 && hqBuilding_restartBtn.button.output == UIOUTPUT_SELECT) {
-
-            //TODO: RESTART MISSION/GAME
-
-            hqBuilding_restartBtn.button.resetOutput();
+        var hqBuilding_surrenderBtn = getBButton(0, 0, HQ_BUILDING);
+        if (hqBuilding_surrenderBtn != 0 && hqBuilding_surrenderBtn.button.output == UIOUTPUT_SELECT) {
+            getPlayer().unitGroup.mapUnits[getPlayer().getHQUnitIndex()].hp = 0;
+            hqBuilding_surrenderBtn.button.resetOutput();
         }
         var hqBuilding_endBtn = getBButton(0, 2, HQ_BUILDING);
         if (hqBuilding_endBtn != 0 && hqBuilding_endBtn.button.output == UIOUTPUT_SELECT) {

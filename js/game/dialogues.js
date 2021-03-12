@@ -152,11 +152,8 @@ function dialogueUpdate(deltaTime)
                     dialogueLine1.text = "";
                     dialogueLine2.text = "";
                     dialogueLine3.text = "";
-
                     dialogueSpeaker.enabled = dialogueLine1.enabled = dialogueLine2.enabled = false;
-
                     afterDialoguesEvent();
-
                     return false;
                 }
             }
