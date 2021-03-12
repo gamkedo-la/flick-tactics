@@ -233,10 +233,10 @@ class GameMap {
             vec2(tileSize, tileSize), true, "#FFFFFF44");
 
         //Tile Position Debug Draw
-        drawText(spritesRenderer, this.cursorTile.x.toString() + ", " + this.cursorTile.y.toString(), vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
-            Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))).add(toVec2(pixelSize)), "black");
-        drawText(spritesRenderer, this.cursorTile.x.toString() + ", " + this.cursorTile.y.toString(), vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
-            Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))), "white");
+        //drawText(spritesRenderer, this.cursorTile.x.toString() + ", " + this.cursorTile.y.toString(), vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
+        //    Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))).add(toVec2(pixelSize)), "black");
+        //drawText(spritesRenderer, this.cursorTile.x.toString() + ", " + this.cursorTile.y.toString(), vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
+        //    Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))), "white");
     }
 
     drawUnitExtras()
@@ -495,7 +495,7 @@ class GameMap {
 
                 if(this.cursorTile.isEqual(munit.mapPosition.add(vec2(x, y)))) {
                     attackable = true;
-                    drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
+                    drawRect(renderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
                         vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true, "#FF0000FF");
                     if(munit.unit.type != SUPPORT_MECH) {
                         if(munit.unit.type != RIFLE_MECH) {
@@ -512,8 +512,14 @@ class GameMap {
         spritesRenderer.globalAlpha = 1.0;
         spritesRenderer.globalCompositeOperation = "source-over";
 
-        //Fire, Smoke, Push and Push-Damage Indicators
+        //Damage, Fire, Smoke, Push and Push-DamageIndicators
         if(attackable && gameTime % 600 < 300) {
+
+            var attmunit = getMUnitI(getIndexPair(this.cursorTile));
+            if(attmunit != -1)
+                drawText(renderer, "~" + Math.floor(this.calculateDamage(munit, attmunit, 0)).toString(),
+                    offset.add(attmunit.unit.position), "yellow");
+
             if (fire) drawSheet(fireSequence[0].index, tilePositionToPixelPosition(this.cursorTile).add(offset), sc);
             else if (smoke) drawSheet(smokeSequence[0].index, tilePositionToPixelPosition(this.cursorTile).add(offset), sc);
             if (munit.unit.type == ARTILLERY_MECH || munit.unit.type == TELEPORT_MECH) {
@@ -554,7 +560,7 @@ class GameMap {
         passiveMUnit = munit2;
     }
 
-    calculateDamage(munit1, munit2) {
+    calculateDamage(munit1, munit2, randMult = 1.0) {
         var damage = (munit1.unit.attack[munit2.unit.isBuilding ? 5 : munit2.unit.type] * (munit1.hp / 10.0));
         damage += (damage / 100.0) * terrainTacticEffect[this.getTileTypeFromPosition(munit1.mapPosition)].attack;
         damage += (damage / 100.0) * (munit1.unit.rank * RANK_ATTACK_BONUS);
@@ -564,7 +570,7 @@ class GameMap {
         }
         if(munit2.unit.type == HQ_BUILDING) damage *= 0.5;
         else if(munit2.unit.type == WAR_BUILDING) damage *= 0.75;
-        damage += (damage / 100.0) * (((Math.random() - 0.5) * 2.0) * 5.0);
+        damage += ((damage / 100.0) * (((Math.random() - 0.5) * 2.0) * 5.0)) * randMult;
         return damage;
     }
 
