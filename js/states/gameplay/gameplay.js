@@ -118,24 +118,20 @@ function gameplayUIDisplayUpdate() {
 
         if(getPlayer().getSelectedMapUnit().unit.deployTime <= 0) {
             unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled =
-                (cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize);
+                (cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize
+                && getPlayer().getSelectedMapUnit().mapPathIndex <= -1);
 
             if (getPlayer().getSelectedMapUnit().up == 0
             || getPlayer().getSelectedMapUnit().left == 0
-            || getPlayer().getSelectedMapUnit().right == 0) {
+            || getPlayer().getSelectedMapUnit().right == 0)
                 leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled =
-                    unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
-            }
-            else if (controlBar[0].enabled) {
+                unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
+            else if (controlBar[0].enabled)
                 leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
-            }
         } else {
             unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
         }
-    }
-    else {
-        buildingPanelUpdate(getPlayer().getSelectedMapUnit());
-    }
+    } else buildingPanelUpdate(getPlayer().getSelectedMapUnit());
 
     if (unitUpBtn.button.output != UIOUTPUT_SELECT) unitUpBtn.button.output = getPlayer().getSelectedMapUnit().up == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
     if (unitLeftBtn.button.output != UIOUTPUT_SELECT) unitLeftBtn.button.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
@@ -169,8 +165,13 @@ function gameplayUpdate(deltaTime) {
 
         aiUpdate(deltaTime);
 
-        if (maxDisplayTilesPerRow == defaultTilesPerRow)
-            cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.25);
+        if (maxDisplayTilesPerRow == defaultTilesPerRow) {
+            if(getPlayer().focusMUnit(deltaTime, cam)) {
+                cam = lerpVec2(cam, getPlayer().focus[0].mUnit.getCameraPosition(), 0.4);
+            } else {
+                cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.25);
+            }
+        }
 
         gameplayUIDisplayUpdate();
 
@@ -183,6 +184,8 @@ function gameplayUpdate(deltaTime) {
         dialogueUpdate(deltaTime);
         buildingPanel.enabled = qStatsPanel.enabled = gameplayZoomBtn.enabled = false;
     }
+
+    if(getPlayer().focus.length > 0) buildingPanel.enabled = false;
 }
 
 function gameplayEvent(deltaTime) {

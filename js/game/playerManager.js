@@ -85,8 +85,10 @@ class PlayerManager {
 
                 //Money Increases (receives city building income)
                 if(mUnit.unit.isBuilding && typeof mUnit.unit.incomePerHp != "undefined") {
-                    new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), incomeSequence);
-                    this.getActivePlayer().money += (Math.ceil(mUnit.hp) * (mUnit.unit.incomePerHp + (mUnit.unit.incomePerHp * mUnit.unit.incomeRankMultiplier * mUnit.unit.rank))) * (mUnit.unit.boost == 1 ? 2 : 1);
+                    this.getActivePlayer().focus.push({ mUnit: mUnit, atFocus: function(player) {
+                        new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), incomeSequence);
+                        player.money += (Math.ceil(mUnit.hp) * (mUnit.unit.incomePerHp + (mUnit.unit.incomePerHp * mUnit.unit.incomeRankMultiplier * mUnit.unit.rank))) * (mUnit.unit.boost == 1 ? 2 : 1);
+                    }});
                 }
 
                 //Deploy Time Decreases
@@ -117,9 +119,11 @@ class PlayerManager {
                 //Teleport Mech won't receive Damage from Toxic Tile as they hover in air.
                 if((map.getTileTypeFromPosition(mUnit.mapPosition) == TOXIC_TILE && mUnit.unit.type != TELEPORT_MECH)
                 || isTileOnFire(mUnit.mapPosition)) {
-                    if(mUnit.unit.rank >= 3 || mUnit.unit.type == CANNON_MECH || mUnit.unit.type == SUPPORT_MECH) mUnit.hp -= 1.0;
-                    else mUnit.hp -= 2.0;
-                    if(mUnit.hp > 0.0) new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), damageSequence);
+                    this.getActivePlayer().focus.push({ mUnit: mUnit, atFocus: function(player) {
+                        if(mUnit.unit.rank >= 3 || mUnit.unit.type == CANNON_MECH || mUnit.unit.type == SUPPORT_MECH) mUnit.hp -= 1.0;
+                        else mUnit.hp -= 2.0;
+                        if(mUnit.hp > 0.0) new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), damageSequence);
+                    }});
                 }
             });
         }

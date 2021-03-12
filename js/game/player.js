@@ -46,6 +46,10 @@ class Player {
         this.actionPoints = 0;
         this.money = 0;
         this.deployDelay = true;
+
+        this.focus = []; //mUnit, atFocus
+        this.focusTimer = -1;
+        this.focusDelay = 400;
     }
 
     copy(player) {
@@ -98,6 +102,32 @@ class Player {
             toMapUnit(this.unitGroup.mapUnits[i]);
     }
 
+    focusMUnit( deltaTime, camPos ) {
+        if(this.focus.length > 0) {
+            if(this.focusTimer == -1) this.focusTimer = this.focusDelay;
+            if(this.focusTimer > 0) {
+                if(camPos.distance(this.focus[0].mUnit.getCameraPosition()) < 2.5 * pixelSize) {
+                    this.focus[0].atFocus(this);
+                    this.focus[0].atFocus = function(player) {};
+                }
+                this.focusTimer -= deltaTime;
+                if(this.focusTimer <= -1) this.focusTimer = 0;
+            } else {
+                this.focus.splice(0, 1);
+                if(this.focus.length <= 0) {
+                    this.focusTimer = -1;
+                    this.selectedIndex = this.getHQUnitIndex();
+                    return false;
+                } else {
+                    this.focusTimer = this.focusDelay;
+                }
+            }
+            return true;
+        } else
+            this.focus = [];
+        return false;
+    }
+
     getTotalNumberOfMechs(type = -1) {
         var no = 0;
         for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
@@ -132,7 +162,7 @@ class Player {
     }
 
     getCameraPosition() {
-        return this.unitGroup.mapUnits[this.selectedIndex].getCameraPosition();
+        return this.getSelectedMapUnit().getCameraPosition();
     }
 
     clearDisabledActions() {

@@ -360,7 +360,6 @@ function buildingPanelUpdate(buildingMUnit) {
 }
 
 function buildingPanelDraw() {
-    if(getPlayer().selectedIndex == -1) return;
     if(getPlayer().getSelectedMapUnit().unit.type == HQ_BUILDING && maxDisplayTilesPerRow == defaultTilesPerRow && buildingPanel.enabled)
     {
         var sc = pixelSize/3.0
