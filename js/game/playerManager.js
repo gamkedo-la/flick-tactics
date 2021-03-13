@@ -165,6 +165,7 @@ class PlayerManager {
 
     draw(offset, index) {
         if (typeof index == "undefined") {
+            this.getActivePlayer().getSelectedMapUnit().drawSelected(cam);
             for (let i = 0; i < this.players.length; i++) {
                 this.players[i].draw(offset);
             }
@@ -172,8 +173,7 @@ class PlayerManager {
     }
 
     drawInRect(pos, size, index) {
-        if (typeof index == "undefined")
-        {
+        if (typeof index == "undefined") {
             for (let i = 0; i < this.players.length; i++) {
                 this.players[i].drawInRect(pos, size);
             }

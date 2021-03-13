@@ -183,6 +183,7 @@ class Player {
     }
 
     drawInRect(pos, size) {
+        this.getSelectedMapUnit().drawSelected(cam);
         this.unitGroup.drawInRect(pos, size);
     }
 

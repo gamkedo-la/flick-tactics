@@ -471,21 +471,12 @@ function buildingPanelEvent() {
         for(let i = 0; i < mechToBuyBtn.length; i++) {
             var warBuilding_buyBtn = getBButton(mechToBuyBtn[i][0], mechToBuyBtn[i][1], WAR_BUILDING);
             if (warBuilding_buyBtn != 0 && warBuilding_buyBtn.button.output == UIOUTPUT_SELECT) {
-                var pos = buildingPanelPrevSelected.mapPosition;
-                var newMapUnit = null;
-                var offsets = [vec2(0, 1), vec2(1, 0), vec2(0, -1), vec2(-1, 0)];
-                for(let o = 0; o < offsets.length; o++) {
-                    if(manager.getPlayerAndUnitIndexOnTile(pos.add(offsets[o]))[0] == -1
-                    && map.getTileTypeFromPosition(pos.add(offsets[o])) != SEA_TILE
-                    && map.getTileTypeFromPosition(pos.add(offsets[o])) != MOUNTAIN_TILE) {
-                        removeTileParticles(pos.add(offsets[o]));
-                        new TileParticle(tilePositionToPixelPosition(pos.add(offsets[o])), teleportSequence);
-                        newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(offsets[o]));
-                        newMapUnit.hp = Math.ceil(buildingMUnit.hp);
-                        break;
-                    }
-                }
-                if(newMapUnit != null) {
+                if(buildingMUnit.unit.mechDeployOffset != -1) {
+                    var pos = buildingPanelPrevSelected.mapPosition;
+                    removeTileParticles(pos.add(buildingMUnit.unit.mechDeployOffset));
+                    new TileParticle(tilePositionToPixelPosition(pos.add(buildingMUnit.unit.mechDeployOffset)), teleportSequence);
+                    var newMapUnit = new MapUnit(mechToBuyBtn[i][2], pos.add(buildingMUnit.unit.mechDeployOffset));
+                    newMapUnit.hp = Math.ceil(buildingMUnit.hp);
                     getPlayer().money -= MECHCOST[mechToBuyBtn[i][2]];
 
                     //Deploy Delay Effect
@@ -501,8 +492,6 @@ function buildingPanelEvent() {
                     }
 
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
-                } else {
-                    //TODO NEGATIVE UI SOUND EFFECT
                 }
                 warBuilding_buyBtn.button.resetOutput();
             }

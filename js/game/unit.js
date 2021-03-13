@@ -137,6 +137,7 @@ class Unit {
                 this.boostCooldownDecreasePerRank = 1;
                 this.rankUpgradeCost = 25000;
                 this.rankUpgradeCostMultiplier = 2.0;
+                this.mechDeployOffset = vec2(0, 1);
                 this.mechDeployDelay = [
                     [1, 4, 4, 2, 2],
                     [1, 3, 3, 1, 1],
@@ -192,7 +193,6 @@ class Unit {
         if(this.rank > 0) {
             drawSheet(56 + ((this.rank - 1) * 20), offset.add(this.position), scale);
         }
-
         if(this.ammo != -1 && this.ammo <= 1) {
             if (gameTime % 600 < 300) drawSheet(36, offset.add(this.position), scale);
         }
@@ -250,19 +250,64 @@ class MapUnit {
             var pushedOverToMUnit = getMUnitI(getIndexPair(this.mapPosition.add(offset)));
             if(map.getTileTypeFromPosition(this.mapPosition.add(offset)) == MOUNTAIN_TILE) {
                 this.hp -= 2.0;
-                new TileParticle(tilePositionToPixelPosition(this.mapPosition), damageSequence);
+
+                //unpushed animation
+                var munit = this;
+                var v2 = vec2(this.mapPosition.x, this.mapPosition.y);
+                this.mapPosition = this.mapPosition.add(offset.multiply(toVec2(0.5)));
+                new TileParticle(tilePositionToPixelPosition(this.mapPosition), damageSequence, function() {
+                    munit.mapPosition = v2;
+                });
+
             } else if(pushedOverToMUnit != -1) {
                 var prevHp = pushedOverToMUnit.hp;
                 pushedOverToMUnit.hp -= this.hp / 10.0;
                 this.hp -= prevHp / 10.0;
                 if(pushedOverToMUnit.hp <= 0.0) pushedOverToMUnit.destroyTime = gameTime + 250;
-                new TileParticle(tilePositionToPixelPosition(this.mapPosition), damageSequence);
+
+                //unpushed animation
+                var munit = this;
+                var v2 = vec2(this.mapPosition.x, this.mapPosition.y);
+                this.mapPosition = this.mapPosition.add(offset.multiply(toVec2(0.5)));
+                new TileParticle(tilePositionToPixelPosition(this.mapPosition), damageSequence, function() {
+                    munit.mapPosition = v2;
+                });
+
                 new TileParticle(tilePositionToPixelPosition(pushedOverToMUnit.mapPosition), damageSequence);
             } else {
                 this.mapPosition = this.mapPosition.add(offset);
             }
         }
         if(this.hp <= 0.0) this.destroyTime = gameTime + 250;
+    }
+
+    drawSelected(offset) {
+        if(this.mapPathIndex <= -1)
+            drawRect(renderer, tilePositionToPixelPosition(this.mapPosition.subtract(toVec2(0.5))).add(toVec2(tileGap/2)).add(offset),
+                toVec2(tileSize), true, "#FFFFFF88", 0);
+
+        if(this.unit.type == WAR_BUILDING) {
+            var set = false;
+            var off = [vec2(0, 1), vec2(1, 0), vec2(0, -1), vec2(-1, 0)];
+            for(let i = 0; i < off.length; i++) {
+                if(getIndexPair(this.mapPosition.add(off[i]))[0] == -1
+                && map.getTileTypeFromPosition(this.mapPosition.add(off[i])) != SEA_TILE
+                && map.getTileTypeFromPosition(this.mapPosition.add(off[i])) != MOUNTAIN_TILE)
+                {
+                    this.unit.mechDeployOffset = off[i];
+                    set = true;
+                    break;
+                }
+            }
+            if(!set) {
+                this.unit.mechDeployOffset = -1;
+            } else {
+                renderer.globalAlpha = (gameTime % 600) / 600;
+                drawRect(renderer, tilePositionToPixelPosition(this.mapPosition.add(this.unit.mechDeployOffset).subtract(toVec2(0.5))).add(toVec2(tileGap/2)).add(offset),
+                    toVec2(tileSize), true, "#FFFF0088", 0);
+                renderer.globalAlpha = 1.0;
+            }
+        }
     }
 
     draw(teamID, offset) {
