@@ -58,7 +58,7 @@ function versusSetup() {
     versusBottomMiddleUI.push(fillerLabel);
 
     versusMoney = 0;
-    versusAP = 3;
+    versusAP = 5;
     versusMoneyBtn = new TextButton(tr(),
         new Label(tr(), "STARTING MONEY: " + versusMoney.toString() + "$",
             fontSize.toString() + "px " + uiContext.fontFamily),
@@ -70,7 +70,7 @@ function versusSetup() {
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
     versusBottomMiddleUI.push(versusDeployDelayBtn);
     versusAPBtn = new TextButton(tr(),
-        new Label(tr(), "AP PER TURN: 3",
+        new Label(tr(), "AP PER TURN: " + versusAP.toString(),
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#22228866", "#FFFFFFFF", "#002299FF"), "");
     versusBottomMiddleUI.push(versusAPBtn);
@@ -384,7 +384,7 @@ function versusEvent(deltaTime) {
                 case 10: versusAP = 15; break;
                 case 15: versusAP = 30; break;
                 case 30: versusAP = 3; break;
-                default: versusAP = 3;
+                default: versusAP = 5;
             }
             versusAPBtn.label.text = "AP PER TURN: " + versusAP.toString();
             versusManager.actionPointsPerTurn = versusAP;

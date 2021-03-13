@@ -68,6 +68,7 @@ function startscreenResize() {
 
 function drawWorldMapBG(tint = "#661111DD")
 {
+    drawRect(renderer, vec2(), vec2(gameWidth, gameHeight), true, "#4fa4ed");
     worldmapSprite.transform.position = moveToVec2(worldmapSprite.transform.position, worldmapAnimationPoints[worldmapPositionIndex].pos, 1.5);
     worldmapSprite.transform.scale = lerpVec2(worldmapSprite.transform.scale, toVec2(worldmapAnimationPoints[worldmapPositionIndex].sc), 0.005);
     if(worldmapSprite.transform.position.distance(worldmapAnimationPoints[worldmapPositionIndex].pos) < 10)

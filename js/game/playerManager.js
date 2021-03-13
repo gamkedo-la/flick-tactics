@@ -16,7 +16,7 @@ class PlayerManager {
 
         this.turnCount = 0;
         this.endTurnCounter = 0;
-        this.actionPointsPerTurn = 3;
+        this.actionPointsPerTurn = 5;
     }
 
     copy(manager) {

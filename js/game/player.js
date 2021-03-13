@@ -11,11 +11,11 @@ const GREEN_TEAM = 2;
 const BLACK_TEAM = 3;
 
 const COSPECIFICS = [
-    { name: "Guru",     powerName: "Extra Action",      powerDesc: "Receives 3 Action Points." },
-    { name: "Zareem",   powerName: "Rifle Boomer",      powerDesc: "All your buildings deploys a Rifle Mech." },
-    { name: "Taja",     powerName: "Distant Chaos",     powerDesc: "Increased Artillery Range and Fire Power." },
-    { name: "Hulu",     powerName: "Terror Infliction", powerDesc: "-1 to all Opponent Mechs HP." },
-    { name: "Jonah",    powerName: "Me My Mine",        powerDesc: "Strongest Opponent Mech(s) becomes his Mech(s)." }
+    { name: "Guru",     powerName: "Double Action",     powerDesc: "Doubles the Action Points." },
+    { name: "Zareem",   powerName: "Rifle Boomer",      powerDesc: "Increased Rifle Mech Movement. City Buildings deploys a Rifle Mech." },
+    { name: "Taja",     powerName: "Distant Chaos",     powerDesc: "Increased Artillery Mech Movement, Range and Fire Power." },
+    { name: "Hulu",     powerName: "Terror Infliction", powerDesc: "Opponents' Mechs HP will decrement at the start of their turn." },
+    { name: "Jonah",    powerName: "Me My Mine",        powerDesc: "Opponent Mech(s) becomes HIS Mech(s)." }
 ];
 
 class Player {
@@ -49,7 +49,7 @@ class Player {
 
         this.focus = []; //mUnit, atFocus
         this.focusTimer = -1;
-        this.focusDelay = 400;
+        this.focusDelay = 200;
     }
 
     copy(player) {
@@ -107,11 +107,11 @@ class Player {
             if(this.focusTimer == -1) this.focusTimer = this.focusDelay;
             if(this.focusTimer > 0) {
                 if(camPos.distance(this.focus[0].mUnit.getCameraPosition()) < 2.5 * pixelSize) {
-                    this.focus[0].atFocus(this);
-                    this.focus[0].atFocus = function(player) {};
+                    this.focus[0].atFocus(this, this.focus[0].mUnit);
+                    this.focus[0].atFocus = function(player, mUnit) {};
+                    this.focusTimer -= deltaTime;
+                    if(this.focusTimer <= -1) this.focusTimer = 0;
                 }
-                this.focusTimer -= deltaTime;
-                if(this.focusTimer <= -1) this.focusTimer = 0;
             } else {
                 this.focus.splice(0, 1);
                 if(this.focus.length <= 0) {

@@ -496,7 +496,7 @@ class GameMap {
                 if(this.cursorTile.isEqual(munit.mapPosition.add(vec2(x, y)))) {
                     attackable = true;
                     drawRect(renderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
-                        vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true, "#FF0000FF");
+                        vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true, munit.unit.type == SUPPORT_MECH ? "#00FF44FF" : "#FF0000FF");
                     if(munit.unit.type != SUPPORT_MECH) {
                         if(munit.unit.type != RIFLE_MECH) {
                             fire = this.getTileTypeFromPosition(munit.mapPosition.add(vec2(x, y))) == FOREST_TILE;
@@ -505,21 +505,15 @@ class GameMap {
                     }
                 } else {
                     drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)).divide(vec2(2, 2))),
-                        vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true, "#FF000088");
+                        vec2(tileSize - (8 * pixelSize), tileSize - (8 * pixelSize)), true, munit.unit.type == SUPPORT_MECH ? "#00BB66BB" : "#FF000088");
                 }
             }
         }
         spritesRenderer.globalAlpha = 1.0;
         spritesRenderer.globalCompositeOperation = "source-over";
 
-        //Damage, Fire, Smoke, Push and Push-DamageIndicators
+        //Fire, Smoke, Push, Push-Damage and Damage Indicators
         if(attackable && gameTime % 600 < 300) {
-
-            var attmunit = getMUnitI(getIndexPair(this.cursorTile));
-            if(attmunit != -1)
-                drawText(renderer, "~" + Math.floor(this.calculateDamage(munit, attmunit, 0)).toString(),
-                    offset.add(attmunit.unit.position), "yellow");
-
             if (fire) drawSheet(fireSequence[0].index, tilePositionToPixelPosition(this.cursorTile).add(offset), sc);
             else if (smoke) drawSheet(smokeSequence[0].index, tilePositionToPixelPosition(this.cursorTile).add(offset), sc);
             if (munit.unit.type == ARTILLERY_MECH || munit.unit.type == TELEPORT_MECH) {
@@ -547,6 +541,17 @@ class GameMap {
                     }
                 }
                 renderer.globalAlpha = 1.0;
+            }
+
+            var attmunit = getMUnitI(getIndexPair(this.cursorTile));
+            if(attmunit != -1) {
+                if(munit.unit.type == SUPPORT_MECH) {
+                    drawText(renderer, "~" + Math.floor((Math.ceil(munit.hp) / 10.0) * munit.unit.repair[attmunit.unit.isBuilding ? 5 : attmunit.unit.type]).toString(),
+                        offset.add(attmunit.unit.position), "white");
+                } else {
+                    drawText(renderer, "~" + Math.floor(this.calculateDamage(munit, attmunit, 0)).toString(),
+                        offset.add(attmunit.unit.position), "yellow");
+                }
             }
         }
     }
