@@ -165,7 +165,7 @@ class PlayerManager {
 
     draw(offset, index) {
         if (typeof index == "undefined") {
-            this.getActivePlayer().getSelectedMapUnit().drawSelected(cam);
+            if(ui.stateIndex == GAMEPLAY) this.getActivePlayer().getSelectedMapUnit().drawSelected(cam);
             for (let i = 0; i < this.players.length; i++) {
                 this.players[i].draw(offset);
             }

@@ -61,12 +61,10 @@ function gameplayUISetup() {
     controlBarUISetup(fontSize);
 
     leftUnitChangeBtn = new TextButton(tr(vec2(0, gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), "<<"),
-        new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
+        new Label(tr(), "<<"), new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
     gameplay.push(leftUnitChangeBtn);
     rightUnitChangeBtn = new TextButton(tr(vec2(gameWidth - (50 * pixelSize), gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), ">>"),
-        new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
+        new Label(tr(), ">>"), new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
     gameplay.push(rightUnitChangeBtn);
 
     quickStatsUISetup();
@@ -147,10 +145,11 @@ function gameplayUIDisplayUpdate() {
         else unitRightBtn.button.output = UIOUTPUT_DISABLED;
     }
     
-    if ((getPlayer().getSelectedMapUnit().unit.type == RIFLE_MECH
+    if (((getPlayer().getSelectedMapUnit().unit.type == RIFLE_MECH
     || getPlayer().getSelectedMapUnit().unit.type == ARTILLERY_MECH)
-    || getPlayer().getSelectedMapUnit().unit.boost < 0
     && getPlayer().getSelectedMapUnit().unit.smokeAmmo == 0)
+    || (getPlayer().getSelectedMapUnit().unit.type == CANNON_MECH
+    && getPlayer().getSelectedMapUnit().unit.boost < 0))
         unitLeftBtn.button.output = UIOUTPUT_DISABLED;
 }
 

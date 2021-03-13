@@ -235,14 +235,14 @@ function buildingPanelUpdate(buildingMUnit) {
             setBLabel(1, 2, COSPECIFICS[manager.players[buildingPanelCOSelection].CO].powerDesc);
 
             setBButton(1, 0, "Previous CO");
-
+            
             if(getPlayer().powerMeter >= 0.999) setBButton(1, 1, "Use Power!");
             else setBButton(1, 1, "not enough power", true);
 
             setBButton(1, 2, "Next CO");
 
-            setBLabel(2, 0, "CO Power: Rifle Boomer.");
-            setBLabel(2, 1, "All your buildings deploys a Rifle Mech.");
+            setBLabel(2, 0, "CO Power: " + COSPECIFICS[getPlayer().CO].powerName + ".");
+            setBLabel(2, 1, COSPECIFICS[getPlayer().CO].powerDesc);
 
             if(getPlayer().powerMeter >= 0.999) setBButton(2, 1, "Use Power!");
             else setBButton(2, 1, "not enough power", true);

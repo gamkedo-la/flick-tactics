@@ -20,39 +20,30 @@ function setQuickStatsForType(type, indexPair)
         case RIFLE_MECH:
             qStatsLabels[1].text = "Rifle Mech";
             break;
-
         case CANNON_MECH:
             qStatsLabels[1].text = "Cannon Mech";
             break;
-
         case ARTILLERY_MECH:
             qStatsLabels[1].text = "Artillery Mech";
             break;
-
         case SUPPORT_MECH:
             qStatsLabels[1].text = "Support Mech";
             break;
-
         case TELEPORT_MECH:
             qStatsLabels[1].text = "Teleport Mech";
             break;
-
         case HQ_BUILDING:
             qStatsLabels[1].text = "HQ Building";
             break;
-
         case CITY_BUILDING:
             qStatsLabels[1].text = "City Building";
             break;
-
         case WAR_BUILDING:
             qStatsLabels[1].text = "War Building";
             break;
-
         case RUIN_BUILDING:
             qStatsLabels[1].text = "Ruins";
             break;
-
         default:
             qStatsLabels[1].text = getMUnitI(indexPair).unit.type.toString();
     }
@@ -77,11 +68,15 @@ function quickStatsUIUpdate() {
     }
 
     setQuickStatsForType(mapUnit.unit.type);
-    qStatsLabels[5].text = "HP: " + mapUnit.hp.toString() + ", Rank: " + mapUnit.unit.rank.toString();
-    if(!mapUnit.unit.isBuilding) qStatsLabels[6].text = "Ammo: " + mapUnit.unit.ammo.toString();
-    else qStatsLabels[6].text = "";
-    if(mapUnit.unit.deployTime > 0) qStatsLabels[7].text = mapUnit.unit.deployTime + " Turns to Deploy!";
-    else qStatsLabels[7].text = "";
+    qStatsLabels[5].text = qStatsLabels[6].text = qStatsLabels[7].text = "";
+    lIndex = 5;
+    if(mapUnit.unit.deployTime > 0) qStatsLabels[lIndex++].text = mapUnit.unit.deployTime.toString() + " Turns to Deploy!";
+    else {
+        qStatsLabels[lIndex++].text = "HP: " + Math.ceil(mapUnit.hp).toString() + ", Rank: " + mapUnit.unit.rank.toString();
+        if(typeof mapUnit.unit.ammo != "undefined") qStatsLabels[lIndex++].text = "Ammo: " + (mapUnit.unit.ammo == -1 ? "Inf." : mapUnit.unit.ammo.toString());
+        if(typeof mapUnit.unit.boost != "undefined") { if(mapUnit.unit.boost < 0) qStatsLabels[lIndex++].text = (Math.abs(mapUnit.unit.boost)).toString() + " Turns to Cooldown Boost!";
+        else if(mapUnit.unit.boost == 0) qStatsLabels[lIndex++].text = "Boost Ready!"; else if(mapUnit.unit.boost >= 1) qStatsLabels[lIndex++].text = "BOOSTED!"; }
+    }
 
     qStatsPanel.enabled = (maxDisplayTilesPerRow == defaultTilesPerRow);
 }

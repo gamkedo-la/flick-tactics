@@ -60,7 +60,8 @@ class Unit {
                 this.movementReducers = [MOUNTAIN_TILE];
 
                 this.attack = [6.0, 2.0, 5.0, 4.0, 9.0, 2.0];
-                this.ammo = -1;
+                this.ammoCapacity = 12;
+                this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
                 this.smokeAmmoCapacity = 1;
                 this.smokeAmmo = this.smokeAmmoCapacity;
@@ -362,39 +363,43 @@ class MapUnit {
         } else {
             //Darken(multiply draw) the unit if they have moved or they can't move anymore.
             //OR Brighten(overlay draw) the unit if they are boosted!
-            var darken = this.up == -1 || (getPlayer().actionPoints <= 0 && !this.unit.isBuilding && getPlayer().checkMapUnit(this));
-            if(darken) {
-                renderer.globalAlpha = 1.0;
-                renderer.globalCompositeOperation = "multiply";
-            }
-            else if(gameTime % 600 < 300 && typeof this.unit.boost != "undefined" && this.unit.boost >= 1) {
-                renderer.globalAlpha = 1.0;
-                renderer.globalCompositeOperation = "overlay";
-            }
+            if(ui.stateIndex == GAMEPLAY) {
+                var darken = this.up == -1 || (getPlayer().actionPoints <= 0 && !this.unit.isBuilding && getPlayer().checkMapUnit(this));
+                if(darken) {
+                    renderer.globalAlpha = 1.0;
+                    renderer.globalCompositeOperation = "multiply";
+                }
+                else if(gameTime % 600 < 300 && typeof this.unit.boost != "undefined" && this.unit.boost >= 1) {
+                    renderer.globalAlpha = 1.0;
+                    renderer.globalCompositeOperation = "overlay";
+                }
 
-            this.unit.draw(teamID, offset, sc, this.flip);
-
-            if(getPlayer().powered && getPlayerI(getIndexPair(this.mapPosition)).powered) {
-                renderer.globalAlpha = ((Math.sin(gameTime/100.0) + 1.0) / 4.0);
-                renderer.globalCompositeOperation = "lighter";
                 this.unit.draw(teamID, offset, sc, this.flip);
-                renderer.globalAlpha = 1.0;
-                renderer.globalCompositeOperation = "source-over";
-            }
 
-            if(darken) {
-                renderer.globalAlpha = 1.0;
-                renderer.globalCompositeOperation = "source-over";
-            }
-            else if(gameTime % 600 < 300 && typeof this.unit.boost != "undefined" && this.unit.boost >= 1) {
-                renderer.globalAlpha = 1.0;
-                renderer.globalCompositeOperation = "source-over";
+                if(getPlayer().powered && getPlayerI(getIndexPair(this.mapPosition)).powered) {
+                    renderer.globalAlpha = ((Math.sin(gameTime/100.0) + 1.0) / 4.0);
+                    renderer.globalCompositeOperation = "lighter";
+                    this.unit.draw(teamID, offset, sc, this.flip);
+                    renderer.globalAlpha = 1.0;
+                    renderer.globalCompositeOperation = "source-over";
+                }
+
+                if(darken) {
+                    renderer.globalAlpha = 1.0;
+                    renderer.globalCompositeOperation = "source-over";
+                }
+                else if(gameTime % 600 < 300 && typeof this.unit.boost != "undefined" && this.unit.boost >= 1) {
+                    renderer.globalAlpha = 1.0;
+                    renderer.globalCompositeOperation = "source-over";
+                }
+            } else {
+                this.unit.draw(teamID, offset, sc, false);
             }
         }
         this.unit.drawIndicators(offset, sc);
 
         //Destroy Units if they are on sea (exception: teleport mech)
-        if(map.getTileTypeFromPosition(this.mapPosition) == SEA_TILE && this.hp > 0) {
+        if(ui.stateIndex == GAMEPLAY && map.getTileTypeFromPosition(this.mapPosition) == SEA_TILE && this.hp > 0) {
             if(this.unit.type == CANNON_MECH || this.unit.type == ARTILLERY_MECH
             || this.unit.type == RIFLE_MECH || this.unit.type == SUPPORT_MECH)
             {
