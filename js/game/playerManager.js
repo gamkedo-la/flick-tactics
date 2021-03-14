@@ -76,10 +76,12 @@ class PlayerManager {
         if(!destroyed) {
             this.getActivePlayer().clearDisabledActions();
 
-            this.getActivePlayer().powered = false;
-
             //Player AP replenishes
             this.getActivePlayer().actionPoints += this.actionPointsPerTurn;
+            if(this.getActivePlayer().CO == GURU && Math.random() < 0.5)
+                this.getActivePlayer().actionPoints++;
+
+            this.getActivePlayer().powered = false;
 
             this.getActivePlayer().applyToAllMapUnits( (mUnit) => {
 

@@ -250,7 +250,7 @@ class MapUnit {
         if(!this.unit.isBuilding) {
             var pushedOverToMUnit = getMUnitI(getIndexPair(this.mapPosition.add(offset)));
             if(map.getTileTypeFromPosition(this.mapPosition.add(offset)) == MOUNTAIN_TILE) {
-                this.hp -= 2.0;
+                this.hp -= 1.0;
 
                 //unpushed animation
                 var munit = this;
@@ -262,8 +262,8 @@ class MapUnit {
 
             } else if(pushedOverToMUnit != -1) {
                 var prevHp = pushedOverToMUnit.hp;
-                pushedOverToMUnit.hp -= this.hp / 10.0;
-                this.hp -= prevHp / 10.0;
+                pushedOverToMUnit.hp -= (this.hp / 10.0);
+                this.hp -= (prevHp / 10.0);
                 if(pushedOverToMUnit.hp <= 0.0) pushedOverToMUnit.destroyTime = gameTime + 250;
 
                 //unpushed animation
@@ -315,12 +315,10 @@ class MapUnit {
         if(this.actionPointsUsed >= 9 && this.unit.rank <= 0) {
             this.unit.rank = 1;
             new TileParticle(tilePositionToPixelPosition(this.mapPosition), rankUpSequence);
-        }
-        else if(this.actionPointsUsed >= 18 && this.unit.rank <= 1) {
+        } else if(this.actionPointsUsed >= 18 && this.unit.rank <= 1) {
             this.unit.rank = 2;
             new TileParticle(tilePositionToPixelPosition(this.mapPosition), rankUpSequence);
-        }
-        else if(this.actionPointsUsed >= 36 && this.unit.rank <= 2) {
+        } else if(this.actionPointsUsed >= 36 && this.unit.rank <= 2) {
             this.unit.rank = 3;
             new TileParticle(tilePositionToPixelPosition(this.mapPosition), rankUpSequence);
         }

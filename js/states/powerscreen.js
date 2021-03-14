@@ -79,12 +79,10 @@ function powerscreenUpdate(deltaTime) {
     else playBGM(BGM_GOODPOWER);
     if (powerscreenTimer > 0) {
         powerscreenTimer -= deltaTime;
-
         if (powerscreenTimer < powerscreenSwitcherTime) {
             powerscreenOpacity = lerp(powerscreenOpacity, 0.0, deltaTime / 120);
         }
-    }
-    else {
+    } else {
         powerscreenTimer = powerscreenDelay;
         powerscreenOpacity = 0.0;
         powerscreenRects.length = 0;
@@ -95,8 +93,16 @@ function powerscreenUpdate(deltaTime) {
 
             case ZAREEM:
                 for(let i = 0; i < getPlayer().unitGroup.mapUnits.length; i++) {
-                    if(getPlayer().unitGroup.mapUnits[i].unit.type == CITY_BUILDING) {
-                        var pos = getPlayer().unitGroup.mapUnits[i].mapPosition;
+                    var mu = getPlayer().unitGroup.mapUnits[i];
+                    if(mu.unit.type == RIFLE_MECH) {
+                        getPlayer().focus.push({ mUnit: mu, atFocus: function(player, munit) {
+                            if(munit.unit.rank < 3) {
+                                new TileParticle(tilePositionToPixelPosition(munit.mapPosition), rankUpSequence);
+                                munit.unit.rank++;
+                            }
+                        }});
+                    } else if(mu.unit.type == CITY_BUILDING) {
+                        var pos = mu.mapPosition;
                         var offsets = [vec2(0, 1), vec2(1, 0), vec2(0, -1), vec2(-1, 0)];
                         for(let o = 0; o < offsets.length; o++) {
                             var poff = pos.add(offsets[o]);
@@ -105,30 +111,41 @@ function powerscreenUpdate(deltaTime) {
                             && map.getTileTypeFromPosition(poff) != MOUNTAIN_TILE) {
                                 removeTileParticles(poff);
                                 newMapUnit = new MapUnit(RIFLE_MECH, poff);
-                                newMapUnit.hp = Math.ceil(getPlayer().unitGroup.mapUnits[i].hp);
+                                newMapUnit.hp = Math.ceil(mu.hp);
                                 getPlayer().unitGroup.mapUnits.push(newMapUnit);
-                                getPlayer().focus.push({ mUnit: newMapUnit, atFocus: function(player, mUnit) {
-                                    new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), teleportSequence);
+                                getPlayer().focus.push({ mUnit: newMapUnit, atFocus: function(player, munit) {
+                                    new TileParticle(tilePositionToPixelPosition(munit.mapPosition), teleportSequence);
                                 }});
                                 break;
                             }
                         }
                     }
-                }    
+                }
             break;
 
             case TAJA:
+                for(let i = 0; i < getPlayer().unitGroup.mapUnits.length; i++) {
+                    var mu = getPlayer().unitGroup.mapUnits[i];
+                    if(mu.unit.type == ARTILLERY_MECH) {
+                        getPlayer().focus.push({ mUnit: mu, atFocus: function(player, munit) {
+                            if(munit.unit.rank < 3) {
+                                new TileParticle(tilePositionToPixelPosition(munit.mapPosition), rankUpSequence);
+                                munit.unit.rank++;
+                            }
+                        }});
+                    }
+                }
             break;
 
             case HULU:
                 for(let i = 0; i < manager.players.length; i++) {
                     if(i != manager.index) {
                         for(let u = 0; u < manager.players[i].unitGroup.mapUnits.length; u++) {
-                            var munit = manager.players[i].unitGroup.mapUnits[u];
-                            if(munit.unit.type != RUIN_BUILDING) {
-                                manager.players[i].focus.push({ mUnit: manager.players[i].unitGroup.mapUnits[u], atFocus: function(player, _munit) {
-                                    _munit.hp -= 1.0;
-                                    if(Math.ceil(_munit.hp) > 0.0) new TileParticle(tilePositionToPixelPosition(_munit.mapPosition), damageSequence);
+                            var mu = manager.players[i].unitGroup.mapUnits[u];
+                            if(mu.unit.type != RUIN_BUILDING) {
+                                manager.players[i].focus.push({ mUnit: mu, atFocus: function(player, munit) {
+                                    munit.hp -= 1.0;
+                                    if(Math.ceil(munit.hp) > 0.0) new TileParticle(tilePositionToPixelPosition(munit.mapPosition), damageSequence);
                                 }});
                             }
                         }
@@ -181,7 +198,10 @@ function powerscreenUpdate(deltaTime) {
                         getPlayer().unitGroup.mapUnits.push(munit);
                         toConvert[0].hp = 0;
                         toConvert.splice(0, 1);
-                        getPlayer().focus.push({ mUnit: munit, atFocus: function(player, _munit) {}});
+                        getPlayer().focus.push({ mUnit: munit, atFocus: function(player, _munit) {
+                            _munit.unit.rank = 3;
+                            _munit.hp = 10;
+                        }});
                     }
                 }
             break;

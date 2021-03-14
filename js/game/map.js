@@ -303,7 +303,7 @@ class GameMap {
         var path = [];
         do {
             path = [mapUnit.mapPosition];
-            var totalMovement = limited ? mapUnit.unit.movement : 200;
+            var totalMovement = limited ? mapUnit.unit.movement + (getPlayer().CO == ZAREEM && mapUnit.unit.type == RIFLE_MECH && getPlayer().powered ? 1 : 0) : 200;
             do {
                 var adjacentTiles = [];
 
@@ -412,13 +412,12 @@ class GameMap {
     drawUnitMovement(offset, mapUnit) {
         spritesRenderer.globalAlpha = 0.25 + ((Math.sin(gameTime/200.0) + 1.0) / 4.0);
         spritesRenderer.globalCompositeOperation = "lighter";
-        for (let y = -mapUnit.unit.movement; y <= mapUnit.unit.movement; y++) {
-            for (let x = -mapUnit.unit.movement; x <= mapUnit.unit.movement; x++) {
-
+        var mv = mapUnit.unit.movement + (getPlayer().CO == ZAREEM && mapUnit.unit.type == RIFLE_MECH && getPlayer().powered ? 1 : 0);
+        for (let y = -mv; y <= mv; y++) {
+            for (let x = -mv; x <= mv; x++) {
                 if (this.canUnitReachTile(mapUnit, vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y))) {
                     var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * tileSize) + ((mapUnit.mapPosition.x + x) * tileGap)),
                         Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * tileSize) + ((mapUnit.mapPosition.y + y) * tileGap)));
-
                     drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (16 * pixelSize), tileSize - (16 * pixelSize)).divide(vec2(2, 2))),
                         vec2(tileSize - (16 * pixelSize), tileSize - (16 * pixelSize)), true, "#FFFFFF88");
                 }
@@ -481,7 +480,7 @@ class GameMap {
         var fire = false;
         var smoke = false;
         var skipRange = munit.unit.type == ARTILLERY_MECH ? 2 : 0;
-        var range = munit.unit.type == ARTILLERY_MECH ? 4 : 1;
+        var range = munit.unit.type == ARTILLERY_MECH ? 4 + (getPlayer().CO == TAJA && getPlayer().powered ? 1 : 0) : 1;
         for (let y = -range; y <= range; y++) {
             for (let x = -range; x <= range; x++) {
 
@@ -566,16 +565,56 @@ class GameMap {
     }
 
     calculateDamage(munit1, munit2, randMult = 1.0) {
+        //Damage Calculation Sequence
+        //First all ATT is added: Terrain -> Rank -> CO
+        //Then, all DEF is subtracted: Terrain -> Rank -> CO -> Building
+        //+-5% Random Factor at last
+
+        var pl1 = getPlayerI(getIndexPair(munit1.mapPosition));
+        var pl2 = getPlayerI(getIndexPair(munit2.mapPosition));
+
+        //Default Unit to Unit Damage
         var damage = (munit1.unit.attack[munit2.unit.isBuilding ? 5 : munit2.unit.type] * (munit1.hp / 10.0));
+
+        //ATT: Terrain Contribution
         damage += (damage / 100.0) * terrainTacticEffect[this.getTileTypeFromPosition(munit1.mapPosition)].attack;
+
+        //ATT: Rank Contribution
         damage += (damage / 100.0) * (munit1.unit.rank * RANK_ATTACK_BONUS);
+
+        //ATT: CO Contribution
+        switch(pl1.CO) {
+            case GURU: /* nothing */ break;
+            case ZAREEM: damage += (damage / 100.0) * (munit1.unit.type == RIFLE_MECH ? 10.0 : 0.0); break;
+            case TAJA: damage += (damage / 100.0) * (munit1.unit.type == ARTILLERY_MECH ? 10.0 + (pl1.powered ? 5.0 : 0.0) : 0.0); break;
+            case HULU: damage += (damage / 100.0) * 15.0; break;
+            case JONAH: damage += (damage / 100.0) * 10.0; break;
+        }
+
+        //DEF: Terrain Contribution
         if(!munit2.unit.isBuilding && munit2.unit.type != TELEPORT_MECH) {
             damage -= (damage / 100.0) * terrainTacticEffect[this.getTileTypeFromPosition(munit2.mapPosition)].defense;
-            damage -= (damage / 100.0) * (munit2.unit.rank * RANK_DEFENSE_BONUS);
         }
+
+        //DEF: Building Contribution
         if(munit2.unit.type == HQ_BUILDING) damage *= 0.5;
         else if(munit2.unit.type == WAR_BUILDING) damage *= 0.75;
+
+        //DEF: Rank Contribution
+        damage -= (damage / 100.0) * (munit2.unit.rank * RANK_DEFENSE_BONUS);
+
+        //DEF: CO Contribution
+        switch(pl2.CO) {
+            case GURU: damage += (damage / 100.0) * 5.0; break;
+            case ZAREEM: damage -= (damage / 100.0) * (munit2.unit.type == RIFLE_MECH ? 10.0 : 0.0); break;
+            case TAJA: /* nothing */ break;
+            case HULU: damage += (damage / 100.0) * 15.0; break; //-15% Defense
+            case JONAH: damage -= (damage / 100.0) * 10.0; break;
+        }
+
+        //5% Random Factor
         damage += ((damage / 100.0) * (((Math.random() - 0.5) * 2.0) * 5.0)) * randMult;
+
         return damage;
     }
 
@@ -664,7 +703,7 @@ class GameMap {
         if (isTouched) {
             isTouched = false;
             var skipRange = mapUnit.unit.type == ARTILLERY_MECH ? 2 : 0;
-            var range = mapUnit.unit.type == ARTILLERY_MECH ? 4 : 1;
+            var range = mapUnit.unit.type == ARTILLERY_MECH ? 4 + (getPlayer().CO == TAJA && getPlayer().powered ? 1 : 0) : 1;
             for (let y = -range; y <= range; y++) {
                 for (let x = -range; x <= range; x++) {
 
