@@ -14,7 +14,7 @@ const COSPECIFICS = [
     { name: "Guru",     powerName: "Double-Action",     powerDesc: "Doubles the Action Points." },
     { name: "Zareem",   powerName: "Rifle Boomer",      powerDesc: "Increased Rifle Mech's Rank and Movement. City Buildings deploys a Rifle Mech." },
     { name: "Taja",     powerName: "Distant Chaos",     powerDesc: "Increased Artillery Mech Rank, Range and Attack." },
-    { name: "Hulu",     powerName: "Terror Infliction", powerDesc: "Opponents' Mechs HP will decrement at the start of their turn." },
+    { name: "Hulu",     powerName: "Terror Infliction", powerDesc: "Opponents' Units HP will decrement at the start of their turn." },
     { name: "Jonah",    powerName: "Me My Mine",        powerDesc: "Opponent Mech(s) becomes HIS Mech(s)." }
 ];
 
