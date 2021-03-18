@@ -49,7 +49,7 @@ const powerDialogues = [
     },
     {
         speaker: TAJA,
-        text: "I'm going to destory you with overwhelming force!",
+        text: "I'm going to destroy you with overwhelming force!",
         face: FACE_HAPPY
     },
     {
