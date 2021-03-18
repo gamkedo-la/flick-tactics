@@ -111,29 +111,31 @@ function versusDraw(deltaTime) {
     //Dark CO bodies
     spritesRenderer.globalCompositeOperation = "overlay";
     for(let i = 0; i < 5; i++) {
+        var co = i == 0 ? ZAREEM : i == 1 ? TAJA : i == 2 ? GURU : i;
         var pl = versusManager.getPlayerOfTeamID(i == 4 ? 3 : i);
         if(pl != -1 && pl.getHQUnitIndex() != -1) {
-            bodyNFacesSheet.transform.position = vec2(COoffset + ((64 * pixelSize) * i), (gameHeight / 2) + (gameHeight / 4));
+            bodyNFacesSheet.transform.position = vec2(COoffset + ((64 * pixelSize) * co), (gameHeight / 2) + (gameHeight / 4));
             bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
-            bodyNFacesSheet.drawScIn(vec2(1024 * i), toVec2(1024));
+            bodyNFacesSheet.drawScIn(vec2(1024 * co), toVec2(1024));
         }
     }
     spritesRenderer.globalCompositeOperation = "source-over";
 
     //Highlighting Team's HQ upon selection
+    var co = versusTeamID == 0 ? ZAREEM : versusTeamID == 1 ? TAJA : versusTeamID == 2 ? GURU : versusTeamID;
     var pl = versusManager.getPlayerOfTeamID(versusTeamID);
     if(pl != -1 && pl.getHQUnitIndex() != -1) {
         drawCircle(renderer, pl.unitGroup.mapUnits[pl.getHQUnitIndex()].unit.position,
             16.0*pixelSize, false, "white", 4.0*pixelSize);
 
         //Selected CO body
-        bodyNFacesSheet.transform.position = vec2(COoffset + ((64 * pixelSize) * versusTeamID), (gameHeight / 2) + (gameHeight / 4));
+        bodyNFacesSheet.transform.position = vec2(COoffset + ((64 * pixelSize) * co), (gameHeight / 2) + (gameHeight / 4));
         bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
-        bodyNFacesSheet.drawScIn(vec2(1024 * versusTeamID), toVec2(1024));
-        if(versusTeamID == 3) { //Hulu and Jonah case
-            bodyNFacesSheet.transform.position = vec2(COoffset + ((64 * pixelSize) * (versusTeamID+1)), (gameHeight / 2) + (gameHeight / 4));
+        bodyNFacesSheet.drawScIn(vec2(1024 * co), toVec2(1024));
+        if(co == 3) { //Hulu and Jonah case
+            bodyNFacesSheet.transform.position = vec2(COoffset + ((64 * pixelSize) * (co+1)), (gameHeight / 2) + (gameHeight / 4));
             bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
-            bodyNFacesSheet.drawScIn(vec2(1024 * (versusTeamID+1)), toVec2(1024));
+            bodyNFacesSheet.drawScIn(vec2(1024 * (co+1)), toVec2(1024));
         }
     }
 }
