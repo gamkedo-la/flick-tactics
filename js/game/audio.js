@@ -108,16 +108,14 @@ function audioSetup()
 function playBGM(id)
 {
     if(id <= -1) {
-        for(let i = 0; i < BGM.length; i++)
-        {
-            if(i == id) continue;
+        for(let i = 0; i < BGM.length; i++) {
+            BGM[i].content.pause();
             BGM[i].state = false;
         }
     } else if(gameOptions.BGMEnabled) {
         BGM[id].content.play();
         BGM[id].state = true;
-        for(let i = 0; i < BGM.length; i++)
-        {
+        for(let i = 0; i < BGM.length; i++) {
             if(i == id) continue;
             BGM[i].state = false;
         }

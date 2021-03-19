@@ -5,7 +5,7 @@ function startscreenSetup() {
     var fontSize = 18.0 * pixelSize;
 
     titleSprite = new Sprite(tr(), new ImageObject("images/title.png"));
-    titleSprite.transform.scale = vec2((sizeFactor / 1.8) / titleSprite.imageObject.image.width, (sizeFactor / 4) / titleSprite.imageObject.image.height);
+    titleSprite.transform.scale = vec2((sizeFactor / 1.5) / titleSprite.imageObject.image.width, (sizeFactor / 3.2) / titleSprite.imageObject.image.height);
     titleSprite.transform.position = vec2(gameWidth / 2, gameHeight / 4);
 
     worldmapSprite = new Sprite(tr(), new ImageObject("images/worldMap.png"));
@@ -29,24 +29,35 @@ function startscreenSetup() {
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
     menuUI.push(playButton);*/
-    versusButton = new TextButton(tr(),
+    versusBtn = new TextButton(tr(),
         new Label(tr(), "PLAY",// VERSUS",
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
-    menuUI.push(versusButton);
-    editorButton = new TextButton(tr(),
+    menuUI.push(versusBtn);
+    editorBtn = new TextButton(tr(),
         new Label(tr(), "MAP EDITOR",
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
-    menuUI.push(editorButton);
-    aboutButton = new TextButton(tr(),
+    menuUI.push(editorBtn);
+    aboutBtn = new TextButton(tr(),
         new Label(tr(), "CREDITS",
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
-    menuUI.push(aboutButton);
+    menuUI.push(aboutBtn);
+    menuUI.push(new Label(tr()));
+    bgmBtn = new TextButton(tr(),
+        new Label(tr(), "BGM: " + (gameOptions.BGMEnabled ? "ON" : "OFF"),
+            fontSize.toString() + "px " + uiContext.fontFamily),
+        new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
+    menuUI.push(bgmBtn);
+    sfxBtn = new TextButton(tr(),
+        new Label(tr(), "SFX: " + (gameOptions.SFXEnabled ? "ON" : "OFF"),
+            fontSize.toString() + "px " + uiContext.fontFamily),
+        new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
+    menuUI.push(sfxBtn);
 
-    startscreen.push(new FlexGroup(tr(vec2((gameWidth / 2) - (gameWidth / 6), gameHeight / 2.25), vec2(gameWidth / 3, gameHeight / 2.25)),
-        new SubState(tr(), menuUI), false, vec2(0, sizeFactor * 0.025), vec2(1, 5), true));
+    startscreen.push(new FlexGroup(tr(vec2((gameWidth / 2) - (gameWidth / 6), gameHeight / 2.25), vec2(gameWidth / 3, gameHeight / 2)),
+        new SubState(tr(), menuUI), false, vec2(0, sizeFactor * 0.025), vec2(1, 7), true));
     startscreen[1].enabled = false;
 
     startscreenUnit = new Unit(RIFLE_MECH, vec2(gameWidth/2, gameHeight/1.75));
@@ -58,7 +69,7 @@ function startscreenResize() {
     titleSprite.transform.scale = vec2((sizeFactor / 1.8) / titleSprite.imageObject.image.width, (sizeFactor / 4) / titleSprite.imageObject.image.height);
     titleSprite.transform.position = vec2(gameWidth / 2, gameHeight / 4);
 
-    //playButton.label.font = aboutButton.label.font = fontSize.toString() + "px " + uiContext.fontFamily;
+    //playButton.label.font = aboutBtn.label.font = fontSize.toString() + "px " + uiContext.fontFamily;
 
     startscreen[1].transform.position = vec2((gameWidth / 2) - (gameWidth / 6), gameHeight / 2.25);
     startscreen[1].transform.scale = vec2(gameWidth / 3, gameHeight / 2.25);
@@ -143,57 +154,86 @@ function startscreenEvent(deltaTime) {
             playButton.button.resetOutput();
     }*/
 
-    switch (versusButton.button.output)
+    switch (versusBtn.button.output)
     {
         case UIOUTPUT_HOVER:
-            if(versusButton.button.hoverTrigger)
+            if(versusBtn.button.hoverTrigger)
             {
                 playSFX(SFX_BUTTON_HOVER);
-                versusButton.button.hoverTrigger = false;
+                versusBtn.button.hoverTrigger = false;
             }
             break;
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
             ui.transitionToState = VERSUS;
-            versusButton.button.resetOutput();
+            versusBtn.button.resetOutput();
     }
 
-    switch (editorButton.button.output)
+    switch (editorBtn.button.output)
     {
         case UIOUTPUT_HOVER:
-            if(editorButton.button.hoverTrigger)
+            if(editorBtn.button.hoverTrigger)
             {
                 playSFX(SFX_BUTTON_HOVER);
-                editorButton.button.hoverTrigger = false;
+                editorBtn.button.hoverTrigger = false;
             }
             break;
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
             ui.transitionToState = EDITOR;
-            editorButton.button.resetOutput();
+            editorBtn.button.resetOutput();
     }
 
-    switch (aboutButton.button.output)
+    switch (aboutBtn.button.output)
     {
         case UIOUTPUT_HOVER:
-            if(aboutButton.button.hoverTrigger)
+            if(aboutBtn.button.hoverTrigger)
             {
                 playSFX(SFX_BUTTON_HOVER);
-                aboutButton.button.hoverTrigger = false;
+                aboutBtn.button.hoverTrigger = false;
             }
             break;
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
             ui.transitionToState = ABOUT;
-            aboutButton.button.resetOutput();
+            aboutBtn.button.resetOutput();
     }
-    
-    // Skip to gameplay
-    if(isKeyPressed('`')) {
-        resetKeyPressed();
-        ui.transitionToState = GAMEPLAY;
+
+    switch (bgmBtn.button.output)
+    {
+        case UIOUTPUT_HOVER:
+            if(bgmBtn.button.hoverTrigger)
+            {
+                playSFX(SFX_BUTTON_HOVER);
+                bgmBtn.button.hoverTrigger = false;
+            }
+            break;
+
+        case UIOUTPUT_SELECT:
+            playSFX(SFX_BUTTON_CLICK);
+            gameOptions.BGMEnabled = !gameOptions.BGMEnabled;
+            if(!gameOptions.BGMEnabled) playBGM(-1);
+            bgmBtn.label.text = "BGM : " + (gameOptions.BGMEnabled ? "ON" : "OFF");
+            bgmBtn.button.resetOutput();
+    }
+
+    switch (sfxBtn.button.output)
+    {
+        case UIOUTPUT_HOVER:
+            if(sfxBtn.button.hoverTrigger)
+            {
+                playSFX(SFX_BUTTON_HOVER);
+                sfxBtn.button.hoverTrigger = false;
+            }
+            break;
+
+        case UIOUTPUT_SELECT:
+            playSFX(SFX_BUTTON_CLICK);
+            gameOptions.SFXEnabled = !gameOptions.SFXEnabled;
+            sfxBtn.label.text = "SFX : " + (gameOptions.SFXEnabled ? "ON" : "OFF");
+            sfxBtn.button.resetOutput();
     }
 }
