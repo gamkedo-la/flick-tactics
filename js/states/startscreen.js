@@ -216,7 +216,7 @@ function startscreenEvent(deltaTime) {
             playSFX(SFX_BUTTON_CLICK);
             gameOptions.BGMEnabled = !gameOptions.BGMEnabled;
             if(!gameOptions.BGMEnabled) playBGM(-1);
-            bgmBtn.label.text = "BGM : " + (gameOptions.BGMEnabled ? "ON" : "OFF");
+            bgmBtn.label.text = "BGM: " + (gameOptions.BGMEnabled ? "ON" : "OFF");
             bgmBtn.button.resetOutput();
     }
 
@@ -233,7 +233,7 @@ function startscreenEvent(deltaTime) {
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
             gameOptions.SFXEnabled = !gameOptions.SFXEnabled;
-            sfxBtn.label.text = "SFX : " + (gameOptions.SFXEnabled ? "ON" : "OFF");
+            sfxBtn.label.text = "SFX: " + (gameOptions.SFXEnabled ? "ON" : "OFF");
             sfxBtn.button.resetOutput();
     }
 }
