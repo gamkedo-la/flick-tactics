@@ -41,21 +41,21 @@ function versusSetup() {
     versus.push(new FlexGroup(tr(vec2((gameWidth / 2), 0.0), vec2(gameWidth / 2, ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x)))),
         new SubState(tr(), versusTopRightUI), false, vec2(0.001, 0.001), vec2(2, 3), true));
 
-    versusBottomMiddleUI = [];
+    versusBottomRightUI = [];
     versusTeamBtn = new TextButton(tr(),
         new Label(tr(), "SELECT TEAM",
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00000066", "#FFFFFFFF", "#002299FF"), "");
-    versusBottomMiddleUI.push(versusTeamBtn);
+    versusBottomRightUI.push(versusTeamBtn);
     versusUserAIToggleBtn = new TextButton(tr(),
         new Label(tr(), "NONE",
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00000066", "#FFFFFFFF", "#002299FF"), "");
-    versusBottomMiddleUI.push(versusUserAIToggleBtn);
+    versusBottomRightUI.push(versusUserAIToggleBtn);
 
     fillerLabel = new Label(tr());
-    versusBottomMiddleUI.push(fillerLabel);
-    versusBottomMiddleUI.push(fillerLabel);
+    versusBottomRightUI.push(fillerLabel);
+    versusBottomRightUI.push(fillerLabel);
 
     versusMoney = 0;
     versusAP = 5;
@@ -63,33 +63,54 @@ function versusSetup() {
         new Label(tr(), "STARTING MONEY: " + versusMoney.toString() + "$",
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
-    versusBottomMiddleUI.push(versusMoneyBtn);
+    versusBottomRightUI.push(versusMoneyBtn);
     versusDeployDelayBtn = new TextButton(tr(),
         new Label(tr(), "DEPLOY DELAY: ON",
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
-    versusBottomMiddleUI.push(versusDeployDelayBtn);
+    versusBottomRightUI.push(versusDeployDelayBtn);
     versusAPBtn = new TextButton(tr(),
         new Label(tr(), "AP PER TURN: " + versusAP.toString(),
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#22228866", "#FFFFFFFF", "#002299FF"), "");
-    versusBottomMiddleUI.push(versusAPBtn);
+    versusBottomRightUI.push(versusAPBtn);
 
-    versusBottomMiddleUI.push(fillerLabel);
+    versusBottomRightUI.push(fillerLabel);
 
     versusToMenuBtn = new TextButton(tr(),
         new Label(tr(), "BACK",
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
-    versusBottomMiddleUI.push(versusToMenuBtn);
+    versusBottomRightUI.push(versusToMenuBtn);
     versusPlayMapBtn = new TextButton(tr(),
         new Label(tr(), "PLAY",
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#662200FF"), "");
-    versusBottomMiddleUI.push(versusPlayMapBtn);
+    versusBottomRightUI.push(versusPlayMapBtn);
 
     versus.push(new FlexGroup(tr(vec2((gameWidth / 2), ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x))), vec2(gameWidth / 2, gameHeight - ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x)))),
-        new SubState(tr(), versusBottomMiddleUI), false, vec2(0.001, 0.001), vec2(2, 5), true));
+        new SubState(tr(), versusBottomRightUI), false, vec2(0.001, 0.001), vec2(2, 5), true));
+
+    versusBottomLeftUI = [];
+
+    versusBottomLeftUI.push(fillerLabel);
+    versusBottomLeftUI.push(fillerLabel);
+    versusBottomLeftUI.push(fillerLabel);
+    versusBottomLeftUI.push(fillerLabel);
+    versusBottomLeftUI.push(fillerLabel);
+    versusBottomLeftUI.push(fillerLabel);
+    versusBottomLeftUI.push(fillerLabel);
+    versusBottomLeftUI.push(fillerLabel);
+    versusCOName = new Label(tr(), "", fontSize.toString() + "px " + uiContext.fontFamily);
+    versusBottomLeftUI.push(versusCOName);
+    versusCOPower = new Label(tr(), "", Math.floor(fontSize/1.25).toString() + "px " + uiContext.fontFamily);
+    versusBottomLeftUI.push(versusCOPower);
+    versusCODesc = new Label(tr(), "", Math.floor(fontSize/1.5).toString() + "px " + uiContext.fontFamily);
+    versusBottomLeftUI.push(versusCODesc);
+    versusBottomLeftUI.push(fillerLabel);
+
+    versus.push(new FlexGroup(tr(vec2(0, ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x))), vec2(gameWidth / 2, gameHeight - ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x)))),
+        new SubState(tr(), versusBottomLeftUI), false, vec2(0.001, 0.001), vec2(1, 12), true));
 }
 
 function versusResize() {
@@ -106,15 +127,15 @@ function versusDraw(deltaTime) {
         versusManager.drawInRect(toVec2((gameWidth/4)/MAP_SIZE.x), toVec2(gameWidth/2));
     }
 
-    var COoffset = 80 * pixelSize;
+    var COoffset = 100 * pixelSize;
 
     //Dark CO bodies
     spritesRenderer.globalCompositeOperation = "overlay";
-    for(let i = 0; i < 5; i++) {
+    for(let i = 0; i < 4; i++) {
         var co = i == 0 ? ZAREEM : i == 1 ? TAJA : i == 2 ? GURU : i;
-        var pl = versusManager.getPlayerOfTeamID(i == 4 ? 3 : i);
+        var pl = versusManager.getPlayerOfTeamID(i);
         if(pl != -1 && pl.getHQUnitIndex() != -1) {
-            bodyNFacesSheet.transform.position = vec2(COoffset + ((64 * pixelSize) * co), (gameHeight / 2) + (gameHeight / 4));
+            bodyNFacesSheet.transform.position = vec2((COoffset/1.25) + (COoffset * co), (gameHeight / 2) + (gameHeight / 4));
             bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
             bodyNFacesSheet.drawScIn(vec2(1024 * co), toVec2(1024));
         }
@@ -129,14 +150,9 @@ function versusDraw(deltaTime) {
             16.0*pixelSize, false, "white", 4.0*pixelSize);
 
         //Selected CO body
-        bodyNFacesSheet.transform.position = vec2(COoffset + ((64 * pixelSize) * co), (gameHeight / 2) + (gameHeight / 4));
+        bodyNFacesSheet.transform.position = vec2((COoffset/1.25) + (COoffset * co), (gameHeight / 2) + (gameHeight / 4));
         bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
         bodyNFacesSheet.drawScIn(vec2(1024 * co), toVec2(1024));
-        if(co == 3) { //Hulu and Jonah case
-            bodyNFacesSheet.transform.position = vec2(COoffset + ((64 * pixelSize) * (co+1)), (gameHeight / 2) + (gameHeight / 4));
-            bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
-            bodyNFacesSheet.drawScIn(vec2(1024 * (co+1)), toVec2(1024));
-        }
     }
 }
 
@@ -237,7 +253,6 @@ function versusEvent(deltaTime) {
             break;
 
         case UIOUTPUT_SELECT:
-
             var limit = 10;
             do {
             versusTeamID++;
@@ -252,18 +267,30 @@ function versusEvent(deltaTime) {
                 case RED_TEAM:
                     versusTeamBtn.label.text = "RED";
                     versusTeamBtn.button.btnColor = versusTeamBtn.button.defColor = "#660000BB";
+                    versusCOName.text = COSPECIFICS[ZAREEM].name;
+                    versusCOPower.text = COSPECIFICS[ZAREEM].powerName;
+                    versusCODesc.text = COSPECIFICS[ZAREEM].powerDesc;
                     break;
                 case BLUE_TEAM:
                     versusTeamBtn.label.text = "BLUE";
                     versusTeamBtn.button.btnColor = versusTeamBtn.button.defColor = "#000066BB";
+                    versusCOName.text = COSPECIFICS[TAJA].name;
+                    versusCOPower.text = COSPECIFICS[TAJA].powerName;
+                    versusCODesc.text = COSPECIFICS[TAJA].powerDesc;
                     break;
                 case GREEN_TEAM:
                     versusTeamBtn.label.text = "GREEN";
                     versusTeamBtn.button.btnColor = versusTeamBtn.button.defColor = "#006600BB";
+                    versusCOName.text = COSPECIFICS[GURU].name;
+                    versusCOPower.text = COSPECIFICS[GURU].powerName;
+                    versusCODesc.text = COSPECIFICS[GURU].powerDesc;
                     break;
                 case BLACK_TEAM:
                     versusTeamBtn.label.text = "BLACK";
                     versusTeamBtn.button.btnColor = versusTeamBtn.button.defColor = "#000000BB";
+                    versusCOName.text = COSPECIFICS[HULU].name;
+                    versusCOPower.text = COSPECIFICS[HULU].powerName;
+                    versusCODesc.text = COSPECIFICS[HULU].powerDesc;
                     break;
             }
 

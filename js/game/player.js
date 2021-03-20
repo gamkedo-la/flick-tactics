@@ -34,7 +34,7 @@ class Player {
                 case RED_TEAM: this.CO = ZAREEM; break;
                 case BLUE_TEAM: this.CO = TAJA; break;
                 case GREEN_TEAM: this.CO = GURU; break;
-                case BLACK_TEAM: this.CO = Math.random() < 0.6 ? HULU : JONAH; break;
+                case BLACK_TEAM: this.CO = Math.random() <= 0.8 ? HULU : JONAH; break;
             }
         } else {
             this.CO = co;

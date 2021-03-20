@@ -231,7 +231,7 @@ function buildingPanelUpdate(buildingMUnit) {
 
             setBTab(1, "CO");
             setBLabel(1, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: " + COSPECIFICS[manager.players[buildingPanelCOSelection].CO].name + ".");
-            setBLabel(1, 1, "CO Power: " + COSPECIFICS[manager.players[buildingPanelCOSelection].CO].powerName + ".");
+            setBLabel(1, 1, "CO Power: " + COSPECIFICS[manager.players[buildingPanelCOSelection].CO].powerName + "." + (manager.index == buildingPanelCOSelection ? "" : (" Power Fill: " + Math.floor(manager.players[buildingPanelCOSelection].powerMeter * 100.0).toString() + "%")));
             setBLabel(1, 2, COSPECIFICS[manager.players[buildingPanelCOSelection].CO].powerDesc);
 
             setBButton(1, 0, "Previous CO");
@@ -405,8 +405,12 @@ function buildingPanelEvent() {
 
         var hqBuilding_prevCOBtn = getBButton(1, 0, HQ_BUILDING);
         if (hqBuilding_prevCOBtn != 0 && hqBuilding_prevCOBtn.button.output == UIOUTPUT_SELECT) {
-            buildingPanelCOSelection--;
-            if(buildingPanelCOSelection < 0) buildingPanelCOSelection = manager.players.length - 1;
+            var limit = 0;
+            do {
+                buildingPanelCOSelection--;
+                limit++;
+                if(buildingPanelCOSelection < 0) buildingPanelCOSelection = manager.players.length - 1;
+            } while(manager.players[buildingPanelCOSelection].control == -1 && limit < 10);
             hqBuilding_prevCOBtn.button.resetOutput();
         }
 
@@ -426,8 +430,12 @@ function buildingPanelEvent() {
 
         var hqBuilding_nextCOBtn = getBButton(1, 2, HQ_BUILDING);
         if (hqBuilding_nextCOBtn != 0 && hqBuilding_nextCOBtn.button.output == UIOUTPUT_SELECT) {
-            buildingPanelCOSelection++;
-            if(buildingPanelCOSelection >= manager.players.length) buildingPanelCOSelection = 0;
+            var limit = 0;
+            do {
+                buildingPanelCOSelection++;
+                limit++;
+                if(buildingPanelCOSelection >= manager.players.length) buildingPanelCOSelection = 0;
+            } while(manager.players[buildingPanelCOSelection].control == -1 && limit < 10);
             hqBuilding_nextCOBtn.button.resetOutput();
         }
 
