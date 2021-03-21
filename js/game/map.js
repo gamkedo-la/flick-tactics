@@ -629,6 +629,8 @@ class GameMap {
                     munit2.hp -= this.calculateDamage(munit1, munit2);
                     if(munit2.hp <= 0.0) munit2.hp = -0.01;
                     else new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
+                } else {
+                    playSFX(SFX_RIFLEATTACK);
                 }
                 //Rifle Mech cannot create Fire on the Forest Tile
                 /*if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
@@ -644,6 +646,8 @@ class GameMap {
                     munit2.hp -= this.calculateDamage(munit1, munit2);
                     if(munit2.hp <= 0.0) munit2.hp = -0.01;
                     else new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
+                } else {
+                    playSFX(SFX_CANNONATTACK);
                 }
                 if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
@@ -660,6 +664,8 @@ class GameMap {
                     munit2.hp -= this.calculateDamage(munit1, munit2);
                     if(munit2.hp <= 0.0) munit2.hp = -0.01;
                     else new TileParticle(tilePositionToPixelPosition(munit2.mapPosition), damageSequence);
+                } else {
+                    playSFX(SFX_ARTILLERYATTACK);
                 }
                 if(map.getTileTypeFromPosition(munit1.mapPosition.add(placement)) == FOREST_TILE && !isTileOnFire(munit1.mapPosition.add(placement))) {
                     new TileParticle(tilePositionToPixelPosition(munit1.mapPosition.add(placement)), fireSequence, fireSequenceEndFunction).forTurns(FOREST_FIRE_TURNS);
@@ -775,6 +781,7 @@ class GameMap {
 
             case CANNON_MECH:
                 if (munit1.unit.boost == 0) {
+                    playSFX(SFX_RANKUP);
                     munit1.unit.boost = 1;
                     munit1.unit.movement += munit1.unit.boostMovement;
                 }
@@ -793,8 +800,14 @@ class GameMap {
 
             case SUPPORT_MECH:
                 if (munit2 != -1 && !munit2.unit.isBuilding) {
-                    if(typeof munit2.unit.ammoCapacity != "undefined") munit2.unit.ammo = munit2.unit.ammoCapacity;
-                    if(typeof munit2.unit.smokeAmmoCapacity != "undefined") munit2.unit.smokeAmmo = munit2.unit.smokeAmmoCapacity;
+                    if(typeof munit2.unit.ammoCapacity != "undefined") {
+                        munit2.unit.ammo = munit2.unit.ammoCapacity;
+                        playSFX(SFX_REPAIR);
+                    }
+                    if(typeof munit2.unit.smokeAmmoCapacity != "undefined") {
+                        munit2.unit.smokeAmmo = munit2.unit.smokeAmmoCapacity;
+                        playSFX(SFX_REPAIR);
+                    }
                 }
                 break;
 
@@ -865,6 +878,7 @@ class GameMap {
         //Unit Action Event End Point
         if (getPlayer().getSelectedMapUnit().up == 0) { //Move
             if (this.eventUnitMovement(getPlayer().getSelectedMapUnit())) {
+                playSFX(SFX_SELECT);
                 getPlayer().getSelectedMapUnit().actionPointsUsed++;
                 getPlayer().actionPoints--;
                 if(!getPlayer().powered) getPlayer().powerMeter += 0.02;
@@ -873,6 +887,7 @@ class GameMap {
         }
         else if (getPlayer().getSelectedMapUnit().right == 0) { //Attack
             if (this.eventUnitAttack(getPlayer().getSelectedMapUnit())) {
+                playSFX(SFX_SELECT);
                 getPlayer().getSelectedMapUnit().actionPointsUsed++;
                 getPlayer().actionPoints--;
                 if(!getPlayer().powered) getPlayer().powerMeter += 0.02;
@@ -881,6 +896,7 @@ class GameMap {
         }
         else if (getPlayer().getSelectedMapUnit().left == 0) { //Special
             if (this.eventUnitSpecial(getPlayer().getSelectedMapUnit())) {
+                playSFX(SFX_SELECT);
                 getPlayer().getSelectedMapUnit().actionPointsUsed++;
                 getPlayer().actionPoints--;
                 if(!getPlayer().powered) getPlayer().powerMeter += 0.02;
@@ -914,6 +930,7 @@ class GameMap {
             if (indexPair[0] != -1
             && getPlayerI(indexPair).unitGroup.teamID == getPlayer().unitGroup.teamID
             && getMUnitI(indexPair).unit.type != RUIN_BUILDING) {
+                playSFX(SFX_SELECT);
                 getPlayer().selectedIndex = indexPair[1];
                 updateUnitActionButtons();
                 zoomLock = false;

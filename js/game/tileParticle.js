@@ -66,6 +66,7 @@ class TileParticle {
         this.currentIndex = 0;
         this.sequence = sequence;
         this.timer = 0;
+        this.sound = true;
         if(addToParticles) particles.push(this);
     }
 
@@ -80,6 +81,20 @@ class TileParticle {
 
     forTurns(turns) {
         this.turns = turns;
+    }
+
+    playSound() {
+        if(this.sound) {
+            if(this.sequence == unitDestroySequence) { Math.random() < 0.25 ? playSFX(SFX_BUILDINGDESTROY) : playSFX(SFX_MECHDESTROY); }
+            else if(this.sequence == damageSequence) { Math.random() < 0.25 ? playSFX(SFX_BUILDINGDAMAGE) : playSFX(SFX_MECHDAMAGE); }
+            else if(this.sequence == incomeSequence) { playSFX(SFX_COIN); }
+            else if(this.sequence == rankUpSequence) { playSFX(SFX_RANKUP); }
+            else if(this.sequence == teleportSequence) { playSFX(SFX_TELEPORT); }
+            else if(this.sequence == fireSequence) { playSFX(SFX_FIRE); }
+            else if(this.sequence == smokeSequence) { playSFX(SFX_SMOKE); }
+            else if(this.sequence == smokeSequence) { playSFX(SFX_REPAIR); }
+            this.sound = false;
+        }
     }
 
     draw(deltaTime, camPos, sc) {
@@ -105,6 +120,8 @@ class TileParticle {
             this.timer += deltaTime;
         }
 
+        this.playSound();
+
         if(typeof sc == "undefined")
             sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,
             (tileSize / 64) + gridBlackLinesFixFactor);
@@ -124,6 +141,8 @@ class TileParticle {
         } else {
             this.timer += deltaTime;
         }
+
+        this.playSound();
 
         if(typeof sc == "undefined")
             sc = vec2((tileSize / 64) + gridBlackLinesFixFactor,

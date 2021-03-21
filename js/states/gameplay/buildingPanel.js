@@ -450,6 +450,7 @@ function buildingPanelEvent() {
         var hqBuilding_bgmBtn = getBButton(4, 1, HQ_BUILDING);
         if(hqBuilding_bgmBtn != 0 && hqBuilding_bgmBtn.button.output == UIOUTPUT_SELECT) {
             gameOptions.BGMEnabled = !gameOptions.BGMEnabled;
+            if(!gameOptions.BGMEnabled) playBGM(-1);
             hqBuilding_bgmBtn.label.text = gameOptions.BGMEnabled ? "BGM: ON" : "BGM: OFF";
             hqBuilding_bgmBtn.button.resetOutput();
         }
@@ -464,9 +465,11 @@ function buildingPanelEvent() {
         // WAR BUILDING EVENTS
         var warBuilding_boostBtn = getBButton(0, 2, WAR_BUILDING);
         if(warBuilding_boostBtn != 0 && warBuilding_boostBtn.button.output == UIOUTPUT_SELECT) {
-            getPlayer().actionPoints--;
-            if(buildingMUnit.unit.boost >= 0)
+            if(buildingMUnit.unit.boost == 0) {
+                playSFX(SFX_RANKUP);
+                getPlayer().actionPoints--;
                 buildingMUnit.unit.boost = 1;
+            }
             warBuilding_boostBtn.button.resetOutput();
         }
 
@@ -517,9 +520,11 @@ function buildingPanelEvent() {
         // CITY BUILDING EVENTS
         var cityBuilding_boostBtn = getBButton(0, 2, CITY_BUILDING);
         if(cityBuilding_boostBtn != 0 && cityBuilding_boostBtn.button.output == UIOUTPUT_SELECT) {
-            getPlayer().actionPoints--;
-            if(buildingMUnit.unit.boost == 0)
+            if(buildingMUnit.unit.boost == 0) {
+                playSFX(SFX_RANKUP);
+                getPlayer().actionPoints--;
                 buildingMUnit.unit.boost = 1;
+            }
             cityBuilding_boostBtn.button.resetOutput();
         }
 

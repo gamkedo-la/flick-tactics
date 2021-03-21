@@ -17,6 +17,9 @@ var battlescreenPassiveUnitX = 0;
 var battlescreenTileSize = 1.4;
 var battlescreenTileOffset = 24;
 
+var battlescreenAttackSound = false;
+var battlescreenDamageSound = false;
+
 var muzzleIndex = 0;
 var recoilPositionOffset = 0;
 var rifleMuzzles = [13, 14, 15];
@@ -117,6 +120,10 @@ function battlescreenDraw(deltaTime) {
                     drawSheet(rifleMuzzles[muzzleIndex], activeMUnit.unit.position.add(vec2((200 * pixelSize) + muzzleSpace, (150 * pixelSize) + (100 * pixelSize * i))),
                         vec2(pixelSize, pixelSize));
                     recoilPositionOffset = lerp(recoilPositionOffset, 0.0, 0.75);
+                    if(!battlescreenAttackSound) {
+                        playSFX(SFX_RIFLEATTACK);
+                        battlescreenAttackSound = true;
+                    }
                 } else {
                     muzzleIndex = Math.floor(Math.random() * 3);
                     recoilPositionOffset = (4.0 * pixelSize) + (Math.random() * (4.0 * pixelSize));
@@ -130,6 +137,10 @@ function battlescreenDraw(deltaTime) {
                         recoilPositionOffset = lerp(recoilPositionOffset, 0.0, 0.25);
                     drawSheet(cannonMuzzles[Math.floor(muzzleIndex)], activeMUnit.unit.position.add(vec2((200 * pixelSize) + muzzleSpace, (150 * pixelSize) + (100 * pixelSize * i))),
                         vec2(pixelSize, pixelSize));
+                    if(!battlescreenAttackSound) {
+                        playSFX(SFX_CANNONATTACK);
+                        battlescreenAttackSound = true;
+                    }
                 }
             } else if (activeMUnit.unit.type == ARTILLERY_MECH) {
                 if(battlescreenTimer < battlescreenDelay/1.25 && battlescreenTimer > battlescreenSwitcherHighTime) {
@@ -140,6 +151,10 @@ function battlescreenDraw(deltaTime) {
                         recoilPositionOffset = lerp(recoilPositionOffset, 0.0, 0.25);
                     drawSheet(artilleryMuzzles[Math.floor(muzzleIndex)], activeMUnit.unit.position.add(vec2((200 * pixelSize) + (muzzleSpace/1.5), (150 * pixelSize) + (100 * pixelSize * i) - (muzzleSpace/1.5))),
                         vec2(pixelSize, pixelSize));
+                    if(!battlescreenAttackSound) {
+                        playSFX(SFX_ARTILLERYATTACK);
+                        battlescreenAttackSound = true;
+                    }
                 }
             }
         }
@@ -192,15 +207,26 @@ function battlescreenDraw(deltaTime) {
         drawSheet(map.getTileTypeFromPosition(passiveMUnit.mapPosition), vec2(gameWidth - (200 * pixelSize), (150 * pixelSize) + (100 * pixelSize * i) + (battlescreenTileOffset * pixelSize)),
             vec2(battlescreenTileSize * pixelSize, battlescreenTileSize * pixelSize));
 
-        if((prevHp >= 4 && passiveMUnit.hp < 4 && i == 2) || (prevHp >= 2 && passiveMUnit.hp < 2 && i == 1) || (prevHp > 0 && passiveMUnit.hp <= 0 && i == 0))
+        if((prevHp >= 4 && passiveMUnit.hp < 4 && i == 2) || (prevHp >= 2 && passiveMUnit.hp < 2 && i == 1) || (prevHp > 0 && passiveMUnit.hp <= 0 && i == 0)) {
             destroyParticles.push(new TileParticle(vec2(gameWidth - (200 * pixelSize), (150 * pixelSize) + (100 * pixelSize * i) + (battlescreenTileOffset * pixelSize)), unitDestroySequence, null, false));
+            if(!battlescreenDamageSound) {
+                if(passiveMUnit.hp <= 0) playSFX(passiveMUnit.unit.isBuilding ? SFX_BUILDINGDESTROY : SFX_MECHDESTROY);
+                else playSFX(passiveMUnit.unit.isBuilding ? SFX_BUILDINGDAMAGE : SFX_MECHDAMAGE);
+                battlescreenDamageSound = true;
+            }
+        }
     }
     for (let i = 0; i < 2; i++) {
         drawSheet(map.getTileTypeFromPosition(passiveMUnit.mapPosition), vec2(gameWidth - (300 * pixelSize), (200 * pixelSize) + (100 * pixelSize * i) + (battlescreenTileOffset * pixelSize)),
             vec2(battlescreenTileSize * pixelSize, battlescreenTileSize * pixelSize));
 
-        if((prevHp >= 8 && passiveMUnit.hp < 8 && i == 1) || (prevHp >= 6 && passiveMUnit.hp < 6 && i == 0))
+        if((prevHp >= 8 && passiveMUnit.hp < 8 && i == 1) || (prevHp >= 6 && passiveMUnit.hp < 6 && i == 0)) {
             destroyParticles.push(new TileParticle(vec2(gameWidth - (300 * pixelSize), (200 * pixelSize) + (100 * pixelSize * i) + (battlescreenTileOffset * pixelSize)), unitDestroySequence, null, false));
+            if(!battlescreenDamageSound) {
+                playSFX(passiveMUnit.unit.isBuilding ? SFX_BUILDINGDAMAGE : SFX_MECHDAMAGE);
+                battlescreenDamageSound = true;
+            }
+        }
     }
 
     var passiveTHp = passiveMUnit.hp;
@@ -243,6 +269,8 @@ function battlescreenUpdate(deltaTime) {
         battlescreenOpacity = 0.0;
         battlescreenActiveUnitX = -battlescreenStartUnitX * pixelSize;
         battlescreenPassiveUnitX = battlescreenStartUnitX * pixelSize;
+        battlescreenAttackSound = false;
+        battlescreenDamageSound = false;
         muzzleIndex = 0;
         recoilPositionOffset = 0;
         ui.stateIndex = GAMEPLAY;

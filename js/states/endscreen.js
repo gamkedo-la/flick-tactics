@@ -10,6 +10,8 @@ function lose(co) {
 }
 
 function win(co, playerWin) {
+    if(co != HULU && co != JONAH) playSFX(SFX_WIN);
+    else playSFX(SFX_LOSE);
     endscreenCO = co;
     gameplaySilence = true;
     dialogues.push(winDialogues[(co * 4) + Math.floor(Math.random() * 4)]);
@@ -35,7 +37,7 @@ function endscreenResize() {
 function endscreenDraw(deltaTime) {
     drawWorldMapBG(getTeamColor(endscreenCO) + "DD");
     bodyNFacesSheet.transform.position = vec2(gameWidth/2, gameHeight/2);
-    bodyNFacesSheet.transform.scale = toVec2(pixelSize/2)
+    bodyNFacesSheet.transform.scale = toVec2(pixelSize/2);
     bodyNFacesSheet.drawScIn(vec2(1024 * endscreenCO), toVec2(1024));
     drawRect(renderer, vec2(0, gameHeight - (gameHeight / 3)), vec2(gameWidth, gameHeight / 8), true, "#000000BB");
 }

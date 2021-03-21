@@ -796,6 +796,7 @@ class Tab extends UIObject {
 
                 if (this.touchId != -1 && this.prevTouchId == -1) {
                     this.select();
+                    playSFX(SFX_SELECT);
                     this.output = UIOUTPUT_SELECT;
                 }
 

@@ -204,6 +204,7 @@ function gameplayEvent(deltaTime) {
 
     //Gameplay UI Button Events
     if (leftUnitChangeBtn.button.output == UIOUTPUT_SELECT) {
+        playSFX(SFX_SELECT);
         var limit = 128;
         do { getPlayer().selectedIndex--; limit--;
         if (getPlayer().selectedIndex <= -1) getPlayer().selectedIndex = getPlayer().unitGroup.mapUnits.length - 1;
@@ -212,6 +213,7 @@ function gameplayEvent(deltaTime) {
         leftUnitChangeBtn.button.resetOutput();
     }
     else if (rightUnitChangeBtn.button.output == UIOUTPUT_SELECT) {
+        playSFX(SFX_SELECT);
         var limit = 128;
         do { getPlayer().selectedIndex++; limit--;
         if (getPlayer().selectedIndex >= getPlayer().unitGroup.mapUnits.length) getPlayer().selectedIndex = 0;
@@ -220,14 +222,17 @@ function gameplayEvent(deltaTime) {
         rightUnitChangeBtn.button.resetOutput();
     }
     else if (unitUpBtn.button.output == UIOUTPUT_SELECT) {
+        playSFX(SFX_SELECT);
         getPlayer().getSelectedMapUnit().up = 0;
         unitUpBtn.button.resetOutput();
     }
     else if (unitLeftBtn.button.output == UIOUTPUT_SELECT) {
+        playSFX(SFX_SELECT);
         getPlayer().getSelectedMapUnit().left = 0;
         unitLeftBtn.button.resetOutput();
     }
     else if (unitRightBtn.button.output == UIOUTPUT_SELECT) {
+        playSFX(SFX_SELECT);
         getPlayer().getSelectedMapUnit().right = 0;
         unitRightBtn.button.resetOutput();
     }

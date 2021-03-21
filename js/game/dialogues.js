@@ -132,6 +132,7 @@ function dialogueUpdate(deltaTime)
 
         if(isTouched)
         {
+            playSFX(SFX_PROCEED);
             if (characterIndex < dialogues[0].text.length)
             {
                 while(characterIndex < dialogues[0].text.length) dialogueProcess(false);

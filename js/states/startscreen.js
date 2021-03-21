@@ -86,7 +86,7 @@ function startscreenResize() {
     startscreen[1].updateCellSize();
 }
 
-function drawWorldMapBG(tint = "#661111DD")
+function drawWorldMapBG(tint = "#441111DD")
 {
     drawRect(renderer, vec2(), vec2(gameWidth, gameHeight), true, "#4fa4ed");
     worldmapSprite.transform.position = moveToVec2(worldmapSprite.transform.position, worldmapAnimationPoints[worldmapPositionIndex].pos, 1.5);
@@ -146,6 +146,7 @@ function startscreenDraw(deltaTime) {
             startscreenCOOpacity = spritesRenderer.globalAlpha = 1.0;
         }
         bodyNFacesSheet.transform.position = vec2(startscreenCOAltSide ? lerp(-gameWidth, gameWidth/5, ratio) : lerp(gameWidth*2, gameWidth - (gameWidth/5), ratio), gameHeight/2);
+        bodyNFacesSheet.transform.scale = toVec2(pixelSize/2);
         bodyNFacesSheet.drawScIn(vec2(1024 * startscreenCO), toVec2(1024));
         spritesRenderer.globalAlpha = 1.0;
 
@@ -157,6 +158,7 @@ function startscreenDraw(deltaTime) {
 }
 
 function startscreenUpdate(deltaTime) {
+    gameplaySilence = false;
     map = undefined;
     manager = undefined;
     particles = [];
