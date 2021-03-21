@@ -230,7 +230,7 @@ function versusEvent(deltaTime) {
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
             versusMapIndex++;
-            if(versusMapIndex >= 16) versusMapIndex = 0;
+            if(versusMapIndex >= TOTAL_DEFAULT_MAPS) versusMapIndex = 0;
             versusChangeMapBtn.label.text = "CHANGE MAP (" + (versusMapIndex + 1).toString() + ")";
             versusMapString = readFile("maps/map" + versusMapIndex.toString() + ".txt");
             versusMap = new GameMap(versusMapString);

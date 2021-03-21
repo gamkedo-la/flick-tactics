@@ -7,6 +7,8 @@ var editorTeamID = RED_TEAM;
 var editorOverviewLock = false;
 var editorMapIndex = -1;
 
+const TOTAL_DEFAULT_MAPS = 12;
+
 const EDIT_TERRAIN = 0;
 const EDIT_BUILDING = 1;
 const EDIT_MECH = 2;
@@ -198,7 +200,7 @@ function editorEvent(deltaTime) {
             var unit = editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]];
             unit.hp -= wheelScroll / 100.0;
             if(unit.hp <= 0.0) {
-                new TileParticle(editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]].unit.position, unitDestroySequence);
+                if(maxDisplayTilesPerRow != totalTilesInRow) new TileParticle(editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]].unit.position, unitDestroySequence);
                 editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
             }
             else if(unit.hp > 10.0) unit.hp = 10.0;
@@ -225,7 +227,7 @@ function editorEvent(deltaTime) {
 
             case EDIT_BUILDING:
                 if(playerAndUnitIndex[0] >= 0) {
-                    new TileParticle(editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]].unit.position, unitDestroySequence);
+                    if(maxDisplayTilesPerRow != totalTilesInRow) new TileParticle(editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]].unit.position, unitDestroySequence);
                     editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
                 }
                 if(editorSelectedIndex <= 3)
@@ -236,7 +238,7 @@ function editorEvent(deltaTime) {
 
             case EDIT_MECH:
                 if(playerAndUnitIndex[0] >= 0) {
-                    new TileParticle(editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]].unit.position, unitDestroySequence);
+                    if(maxDisplayTilesPerRow != totalTilesInRow) new TileParticle(editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits[playerAndUnitIndex[1]].unit.position, unitDestroySequence);
                     editorManager.players[playerAndUnitIndex[0]].unitGroup.mapUnits.splice(playerAndUnitIndex[1], 1);
                 }
                 if(editorSelectedIndex <= 4)
@@ -518,7 +520,7 @@ function editorEvent(deltaTime) {
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
             editorMapIndex++;
-            if(editorMapIndex >= 16) editorMapIndex = -1;
+            if(editorMapIndex >= TOTAL_DEFAULT_MAPS) editorMapIndex = -1;
             changeMapBtn.label.text = editorMapIndex <= -1 ? "EXT." : "MAP " + (editorMapIndex+1).toString();
             changeMapBtn.button.resetOutput();
     }
