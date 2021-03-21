@@ -843,7 +843,7 @@ class GameMap {
         if (isTouched) {
             isTouched = false;
             var skipRange = mapUnit.unit.type == TELEPORT_MECH ? 1 : 0;
-            var range = mapUnit.unit.type == TELEPORT_MECH ? (mapUnit.unit.ammo > (mapUnit.unit.ammoCapacity/2) ? 4 : 3) : 1;
+            var range = mapUnit.unit.type == TELEPORT_MECH ? (mapUnit.unit.ammo > Math.ceil(mapUnit.unit.ammoCapacity/2) ? 4 : 3) : 1;
             for (let y = -range; y <= range; y++) {
                 for (let x = -range; x <= range; x++) {
 

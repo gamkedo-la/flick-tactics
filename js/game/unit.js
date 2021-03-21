@@ -111,7 +111,7 @@ class Unit {
                 this.movementReducers = [];
 
                 this.attack = [5.0, 2.0, 3.0, 2.5, 7.5, 2.5];
-                this.ammoCapacity = 6;
+                this.ammoCapacity = 5;
                 this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
                 break;
