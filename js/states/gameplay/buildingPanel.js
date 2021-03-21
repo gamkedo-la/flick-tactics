@@ -389,7 +389,8 @@ function buildingPanelEvent() {
         //HQ BUILDING EVENTS
         var hqBuilding_helpBtn = getBButton(0, 1, HQ_BUILDING);
         if (hqBuilding_helpBtn != 0 && hqBuilding_helpBtn.button.output == UIOUTPUT_SELECT) {
-            helpMenu.enabled = !helpMenu.enabled;
+            helpFromGameplay = true;
+            ui.transitionToState = HELP;
             hqBuilding_helpBtn.button.resetOutput();
         }
         var hqBuilding_surrenderBtn = getBButton(0, 0, HQ_BUILDING);

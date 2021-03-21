@@ -11,6 +11,7 @@ function uiInit() {
     versusSetup();
     editorSetup();
     endscreenSetup();
+    helpSetup();
 
     uistates = [];
     uistates.push(new UIState(startscreen));
@@ -22,6 +23,7 @@ function uiInit() {
     uistates.push(new UIState(versus));
     uistates.push(new UIState(editor));
     uistates.push(new UIState(endscreen));
+    uistates.push(new UIState(help));
     ui = new UI(uistates, STARTSCREEN);
 }
 
@@ -40,6 +42,7 @@ function resizeGame() {
         case VERSUS: versusResize(); break;
         case EDITOR: editorResize(); break;
         case POWERSCREEN: endscreenResize(); break;
+        case HELP: helpResize(); break;
     }
 
     prevPixelSize = pixelSize;

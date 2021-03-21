@@ -1,5 +1,9 @@
 const STARTSCREEN = 0;
 var startscreen = [];
+var startscreenCO = 0;
+var startscreenCOOpacity = 1.0;
+var startscreenCOChange = false;
+var startscreenCOAltSide = false;
 
 function startscreenSetup() {
     var fontSize = 18.0 * pixelSize;
@@ -44,6 +48,11 @@ function startscreenSetup() {
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
     menuUI.push(aboutBtn);
+    helpBtn = new TextButton(tr(),
+        new Label(tr(), "HELP",
+            fontSize.toString() + "px " + uiContext.fontFamily),
+        new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
+    menuUI.push(helpBtn);
     menuUI.push(new Label(tr()));
     bgmBtn = new TextButton(tr(),
         new Label(tr(), "BGM: " + (gameOptions.BGMEnabled ? "ON" : "OFF"),
@@ -57,7 +66,7 @@ function startscreenSetup() {
     menuUI.push(sfxBtn);
 
     startscreen.push(new FlexGroup(tr(vec2((gameWidth / 2) - (gameWidth / 6), gameHeight / 2.25), vec2(gameWidth / 3, gameHeight / 2)),
-        new SubState(tr(), menuUI), false, vec2(0, sizeFactor * 0.025), vec2(1, 7), true));
+        new SubState(tr(), menuUI), false, vec2(0, sizeFactor * 0.025), vec2(1, 8), true));
     startscreen[1].enabled = false;
 
     startscreenUnit = new Unit(RIFLE_MECH, vec2(gameWidth/2, gameHeight/1.75));
@@ -82,8 +91,7 @@ function drawWorldMapBG(tint = "#661111DD")
     drawRect(renderer, vec2(), vec2(gameWidth, gameHeight), true, "#4fa4ed");
     worldmapSprite.transform.position = moveToVec2(worldmapSprite.transform.position, worldmapAnimationPoints[worldmapPositionIndex].pos, 1.5);
     worldmapSprite.transform.scale = lerpVec2(worldmapSprite.transform.scale, toVec2(worldmapAnimationPoints[worldmapPositionIndex].sc), 0.005);
-    if(worldmapSprite.transform.position.distance(worldmapAnimationPoints[worldmapPositionIndex].pos) < 10)
-    {
+    if(worldmapSprite.transform.position.distance(worldmapAnimationPoints[worldmapPositionIndex].pos) < 10) {
         worldmapPositionIndex++;
         if(worldmapPositionIndex >= worldmapAnimationPoints.length) worldmapPositionIndex = 0;
     }
@@ -117,14 +125,33 @@ function drawPerspectiveUnitsBG(unit1, unit2, unit3, team = RED_TEAM)
 }
 
 function startscreenDraw(deltaTime) {
-    if(startscreen[1].enabled)
-    {
+    if(startscreen[1].enabled) {
         drawWorldMapBG();
         drawPerspectiveUnitsBG(HQ_BUILDING, RIFLE_MECH, CANNON_MECH);
+        
+        var ratio = (gameTime % 4000) / 800;
+        if(ratio >= 3.0) {
+            startscreenCOOpacity = lerp(startscreenCOOpacity, 0.0, 0.1);
+            spritesRenderer.globalAlpha = startscreenCOOpacity;
+
+            if(startscreenCOOpacity <= 0.001 && !startscreenCOChange) {
+                startscreenCOChange = true;
+                startscreenCOAltSide = !startscreenCOAltSide;
+                startscreenCO++;
+                if(startscreenCO >= 4)
+                    startscreenCO = 0;
+            }
+        } else {
+            startscreenCOChange = false;
+            startscreenCOOpacity = spritesRenderer.globalAlpha = 1.0;
+        }
+        bodyNFacesSheet.transform.position = vec2(startscreenCOAltSide ? lerp(-gameWidth, gameWidth/5, ratio) : lerp(gameWidth*2, gameWidth - (gameWidth/5), ratio), gameHeight/2);
+        bodyNFacesSheet.drawScIn(vec2(1024 * startscreenCO), toVec2(1024));
+        spritesRenderer.globalAlpha = 1.0;
+
         titleSprite.drawSc();
     }
-    else
-    {
+    else {
         drawRect(renderer, vec2(), vec2(window.innerWidth, window.innerHeight), true, "black");
     }
 }
@@ -200,6 +227,22 @@ function startscreenEvent(deltaTime) {
             playSFX(SFX_BUTTON_CLICK);
             ui.transitionToState = ABOUT;
             aboutBtn.button.resetOutput();
+    }
+
+    switch (helpBtn.button.output)
+    {
+        case UIOUTPUT_HOVER:
+            if(helpBtn.button.hoverTrigger)
+            {
+                playSFX(SFX_BUTTON_HOVER);
+                helpBtn.button.hoverTrigger = false;
+            }
+            break;
+
+        case UIOUTPUT_SELECT:
+            playSFX(SFX_BUTTON_CLICK);
+            ui.transitionToState = HELP;
+            helpBtn.button.resetOutput();
     }
 
     switch (bgmBtn.button.output)

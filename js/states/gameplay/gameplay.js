@@ -75,9 +75,6 @@ function gameplayUISetup() {
 
     buildingPanelSetup();
     gameplay.push(buildingPanel);
-
-    helpMenuSetup();
-    gameplay.push(helpMenu);
 }
 
 function gameplaySetup() {

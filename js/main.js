@@ -19,6 +19,7 @@ function event(deltaTime) {
         case VERSUS: versusEvent(deltaTime); break;
         case EDITOR: editorEvent(deltaTime); break;
         case ENDSCREEN: endscreenEvent(deltaTime); break;
+        case HELP: helpEvent(deltaTime); break;
     }
 }
 
@@ -33,6 +34,7 @@ function update(deltaTime) {
         case VERSUS: versusUpdate(deltaTime); break;
         case EDITOR: editorUpdate(deltaTime); break;
         case ENDSCREEN: endscreenUpdate(deltaTime); break;
+        case HELP: helpUpdate(deltaTime); break;
     }
     audioUpdate();
     ui.update(deltaTime);
@@ -54,6 +56,7 @@ function draw(deltaTime) {
         case VERSUS: versusDraw(deltaTime); break;
         case EDITOR: editorDraw(deltaTime); break;
         case ENDSCREEN: endscreenDraw(deltaTime); break;
+        case HELP: helpDraw(deltaTime); break;
     }
     ui.draw();
     if(ui.stateIndex == GAMEPLAY) {

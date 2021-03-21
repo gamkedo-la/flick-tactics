@@ -39,8 +39,8 @@ function aboutSetup() {
     var fontStr = (12 * pixelSize).toString() + "px " + uiContext.fontFamily;
 
     labelGroup = [];
-    for(var i=0;i<creditsList.length;i++) {
-        labelGroup.push(new Label(tr(), creditsList[i], fontStr, i==0?"cyan":"white"));
+    for(var i = 0; i < creditsList.length; i++) {
+        labelGroup.push(new Label(tr(), creditsList[i], fontStr, i == 0 ? "cyan" : "white"));
     }
 
     about.push(new FlexGroup(tr(vec2(0, 20 * pixelSize), vec2(gameWidth, gameHeight / 2)),
