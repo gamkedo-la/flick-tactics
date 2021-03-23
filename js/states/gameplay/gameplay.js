@@ -51,7 +51,13 @@ function getActiveTeamColor() {
 //#endregion
 
 function gameplayReset() {
-    //Resetting building panel properties
+    continueBtn.enabled = false;
+    versusBtn.label.text = "PLAY";
+    gameplaySilence = false;
+    map = undefined;
+    manager = undefined;
+    particles = [];
+    particles = [];
     buildingPanelCOSelection = 0;
 }
 

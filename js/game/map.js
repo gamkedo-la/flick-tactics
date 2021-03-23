@@ -740,7 +740,7 @@ class GameMap {
         spritesRenderer.globalAlpha = 0.5 + ((Math.sin(gameTime/200.0) + 1.0) / 2.0);
         spritesRenderer.globalCompositeOperation = "darken";
         var skipRange = mapUnit.unit.type == TELEPORT_MECH ? 1 : 0;
-        var range = mapUnit.unit.type == TELEPORT_MECH ? (mapUnit.unit.ammo > (mapUnit.unit.ammoCapacity/2) ? 4 : 3) : 1;
+        var range = mapUnit.unit.type == TELEPORT_MECH ? (mapUnit.unit.ammo > Math.ceil(mapUnit.unit.ammoCapacity/2) ? 3 : 2) : 1;
         for (let y = -range; y <= range; y++) {
             for (let x = -range; x <= range; x++) {
 
@@ -843,7 +843,7 @@ class GameMap {
         if (isTouched) {
             isTouched = false;
             var skipRange = mapUnit.unit.type == TELEPORT_MECH ? 1 : 0;
-            var range = mapUnit.unit.type == TELEPORT_MECH ? (mapUnit.unit.ammo > Math.ceil(mapUnit.unit.ammoCapacity/2) ? 4 : 3) : 1;
+            var range = mapUnit.unit.type == TELEPORT_MECH ? (mapUnit.unit.ammo > Math.ceil(mapUnit.unit.ammoCapacity/2) ? 3 : 2) : 1;
             for (let y = -range; y <= range; y++) {
                 for (let x = -range; x <= range; x++) {
 

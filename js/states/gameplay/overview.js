@@ -54,15 +54,6 @@ function enableOverview() {
 }
 
 function overviewUIEvents() {
-    if (keysDown.indexOf('q') != -1) {
-        if (!isKeyPressed('q')) {
-            zoomLock = !zoomLock;
-            enableOverview();
-        }
-    }
-    else {
-        removeKeyPressed('q');
-    }
     if (gameplayZoomBtn.button.output == UIOUTPUT_SELECT) {
         zoomLock = !zoomLock;
     }
@@ -75,6 +66,15 @@ function overviewUIEvents() {
         maxDisplayTilesPerRow = defaultTilesPerRow;
         updateTileSizes();
     }
+    
+    if (keysDown.indexOf('q') != -1) {
+        if (isKeyPressed('q')) {
+            enableOverview();
+        }
+    } else {
+        removeKeyPressed('q');
+    }
+
     if (maxDisplayTilesPerRow == totalTilesInRow) {
         cam.x = tilePixels * pixelSize;
         cam.y = tilePixels * pixelSize;

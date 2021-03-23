@@ -71,10 +71,21 @@ class Player {
         this.deployDelay = player.deployDelay;
     }
 
-    nullify() {
+    nullify(blast = false) {
         this.selectedIndex = -1;
         this.control = -1;
-        for(let i = 0; i < this.unitGroup.mapUnits.length; i++) this.unitGroup.mapUnits[i].hp = 0.0;
+        for(let i = 0; i < this.unitGroup.mapUnits.length; i++) {
+            if(blast) {
+                this.unitGroup.mapUnits[i].hp = 0;
+            } else {
+                if(this.unitGroup.mapUnits[i].unit.isBuilding) {
+                    this.unitGroup.mapUnits[i].unit.type = RUIN_BUILDING;
+                } else {
+                    this.unitGroup.mapUnits.splice(i, 1);
+                    i--;
+                }
+            }
+        }
     }
 
     getSelectedMapUnit() {

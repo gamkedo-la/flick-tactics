@@ -6,7 +6,7 @@ var startscreenCOChange = false;
 var startscreenCOAltSide = false;
 
 function startscreenSetup() {
-    var fontSize = 18.0 * pixelSize;
+    var fontSize = 16.0 * pixelSize;
 
     titleSprite = new Sprite(tr(), new ImageObject("images/title.png"));
     titleSprite.transform.scale = vec2((sizeFactor / 1.5) / titleSprite.imageObject.image.width, (sizeFactor / 3.2) / titleSprite.imageObject.image.height);
@@ -33,6 +33,12 @@ function startscreenSetup() {
             fontSize.toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
     menuUI.push(playButton);*/
+    continueBtn = new TextButton(tr(),
+        new Label(tr(), "CONTINUE",// VERSUS",
+            fontSize.toString() + "px " + uiContext.fontFamily),
+        new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
+    menuUI.push(continueBtn);
+    continueBtn.enabled = false;
     versusBtn = new TextButton(tr(),
         new Label(tr(), "PLAY",// VERSUS",
             fontSize.toString() + "px " + uiContext.fontFamily),
@@ -65,8 +71,8 @@ function startscreenSetup() {
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
     menuUI.push(sfxBtn);
 
-    startscreen.push(new FlexGroup(tr(vec2((gameWidth / 2) - (gameWidth / 6), gameHeight / 2.25), vec2(gameWidth / 3, gameHeight / 2)),
-        new SubState(tr(), menuUI), false, vec2(0, sizeFactor * 0.025), vec2(1, 8), true));
+    startscreen.push(new FlexGroup(tr(vec2((gameWidth / 2) - (gameWidth / 8), gameHeight / 2.5), vec2(gameWidth / 4, gameHeight - (gameHeight / 2.5))),
+        new SubState(tr(), menuUI), false, vec2(0, sizeFactor * 0.025), vec2(1, 9), true));
     startscreen[1].enabled = false;
 
     startscreenUnit = new Unit(RIFLE_MECH, vec2(gameWidth/2, gameHeight/1.75));
@@ -158,10 +164,6 @@ function startscreenDraw(deltaTime) {
 }
 
 function startscreenUpdate(deltaTime) {
-    gameplaySilence = false;
-    map = undefined;
-    manager = undefined;
-    particles = [];
     if(startscreen[1].enabled)
         playBGM(STARTSCREEN);
 }
@@ -182,6 +184,22 @@ function startscreenEvent(deltaTime) {
             ui.transitionToState = WORLDMAP;
             playButton.button.resetOutput();
     }*/
+
+    switch (continueBtn.button.output)
+    {
+        case UIOUTPUT_HOVER:
+            if(versusBtn.button.hoverTrigger)
+            {
+                playSFX(SFX_BUTTON_HOVER);
+                continueBtn.button.hoverTrigger = false;
+            }
+            break;
+
+        case UIOUTPUT_SELECT:
+            playSFX(SFX_BUTTON_CLICK);
+            ui.transitionToState = GAMEPLAY;
+            continueBtn.button.resetOutput();
+    }
 
     switch (versusBtn.button.output)
     {

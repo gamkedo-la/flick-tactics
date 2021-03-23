@@ -31,6 +31,14 @@ class PlayerManager {
         this.endTurnCounter = manager.endTurnCounter;
     }
 
+    getTotalAlivePlayers() {
+        var count = 0;
+        for(let i = 0; i < this.players.length; i++)
+            if(this.players[i].control != -1 || this.players[i].selectedIndex != -1)
+                count++;
+        return count;
+    }
+
     getPlayerOfTeamID(teamID) {
         for(let i = 0; i < this.players.length; i++)
             if(this.players[i].unitGroup.teamID == teamID && this.players[i].selectedIndex != -1)
@@ -136,25 +144,22 @@ class PlayerManager {
             if(this.players[i].selectedIndex == -1) this.players[i].selectedIndex = 0;
         }
 
-        //Turn Count
-        this.endTurnCounter++;
-        if(this.endTurnCounter >= this.players.length) {
-            this.turnCount++;
-            this.endTurnCounter = 0;
+        //Next Player's Turn and also, skipping nullified players
+        var limit = 0;
+        do {
+            this.index++;
+            limit++;
+            if (this.index >= this.players.length) {
+                this.index = 0;
 
-            //Tile Particle Turn Process
-            decrementTileParticlesTurns();
-        }
+                //Increase Turn Counter when index goes through all players (i.e index > players.length)
+                this.turnCount++;
 
-        //Next Player's Turn!!!
-        this.index++;
-        if (this.index >= this.players.length) this.index = 0;
+                //Tile Particle Turn Process
+                decrementTileParticlesTurns();
+            }
+        } while ((this.players[this.index].selectedIndex == -1 || this.players[this.index].control == -1) && limit < 10)
         playSFX(SFX_ENDTURN);
-
-        //Skipping nullified players
-        while ((this.players[this.index].selectedIndex == -1 || this.players[this.index].control == -1)
-            && this.index < this.players.length) this.index++;
-        if (this.index >= this.players.length) this.index = 0;
 
         buildingPanelCOSelection = this.index;
 

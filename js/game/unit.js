@@ -135,15 +135,8 @@ class Unit {
                 this.isBuilding = true;
                 this.boost = 0;
                 this.boostCooldown = 5;
-                this.boostCooldownDecreasePerRank = 1;
-                this.rankUpgradeCost = 25000;
-                this.rankUpgradeCostMultiplier = 2.0;
                 this.mechDeployOffset = vec2(0, 1);
-                this.mechDeployDelay = [
-                    [1, 4, 4, 2, 2],
-                    [1, 3, 3, 1, 1],
-                    [0, 2, 2, 1, 0],
-                ];
+                this.mechDeployDelay = [1, 4, 4, 2, 2];
                 break;
 
             case RUIN_BUILDING:
@@ -214,6 +207,7 @@ class MapUnit {
         this.destroyTime = gameTime;
 
         this.flip = false;
+        this.unpushedAnim = false;
 
         this.actionPointsUsed = 0;
 
@@ -233,6 +227,7 @@ class MapUnit {
         this.destroyTime = gameTime;
 
         this.flip = mUnit.flip;
+        this.unpushedAnim = mUnit.unpushedAnim;
 
         this.clearDisabledActions();
     }
@@ -254,9 +249,11 @@ class MapUnit {
 
                 //unpushed animation
                 var munit = this;
-                var v2 = vec2(this.mapPosition.x, this.mapPosition.y);
-                this.mapPosition = this.mapPosition.add(offset.multiply(toVec2(0.5)));
-                new TileParticle(tilePositionToPixelPosition(this.mapPosition), damageSequence, function() {
+                var v2 = vec2(munit.mapPosition.x, munit.mapPosition.y);
+                munit.mapPosition = munit.mapPosition.add(offset.multiply(toVec2(0.5)));
+                munit.unpushedAnim = true;
+                new TileParticle(tilePositionToPixelPosition(munit.mapPosition), damageSequence, function() {
+                    munit.unpushedAnim = false;
                     munit.mapPosition = v2;
                 });
 
@@ -268,9 +265,11 @@ class MapUnit {
 
                 //unpushed animation
                 var munit = this;
-                var v2 = vec2(this.mapPosition.x, this.mapPosition.y);
-                this.mapPosition = this.mapPosition.add(offset.multiply(toVec2(0.5)));
-                new TileParticle(tilePositionToPixelPosition(this.mapPosition), damageSequence, function() {
+                var v2 = vec2(munit.mapPosition.x, munit.mapPosition.y);
+                munit.mapPosition = munit.mapPosition.add(offset.multiply(toVec2(0.5)));
+                munit.unpushedAnim = true;
+                new TileParticle(tilePositionToPixelPosition(munit.mapPosition), damageSequence, function() {
+                    munit.unpushedAnim = false;
                     munit.mapPosition = v2;
                 });
 
@@ -289,12 +288,16 @@ class MapUnit {
 
         if(this.unit.type == WAR_BUILDING) {
             var set = false;
-            var off = [vec2(0, 1), vec2(1, 0), vec2(0, -1), vec2(-1, 0)];
+            var off = [];
+            if(this.unit.mechDeployOffset == -1
+            || this.unit.mechDeployOffset.isEqual(vec2(0, 1))) off = [vec2(0, 1), vec2(1, 0), vec2(0, -1), vec2(-1, 0)];
+            else if(this.unit.mechDeployOffset.isEqual(vec2(1, 0))) off = [vec2(1, 0), vec2(0, -1), vec2(-1, 0), vec2(0, 1)];
+            else if(this.unit.mechDeployOffset.isEqual(vec2(0, -1))) off = [vec2(0, -1), vec2(-1, 0), vec2(0, 1), vec2(1, 0)];
+            else if(this.unit.mechDeployOffset.isEqual(vec2(-1, 0))) off = [vec2(-1, 0), vec2(0, 1), vec2(1, 0), vec2(0, -1)];
             for(let i = 0; i < off.length; i++) {
                 if(getIndexPair(this.mapPosition.add(off[i]))[0] == -1
                 && map.getTileTypeFromPosition(this.mapPosition.add(off[i])) != SEA_TILE
-                && map.getTileTypeFromPosition(this.mapPosition.add(off[i])) != MOUNTAIN_TILE)
-                {
+                && map.getTileTypeFromPosition(this.mapPosition.add(off[i])) != MOUNTAIN_TILE) {
                     this.unit.mechDeployOffset = off[i];
                     set = true;
                     break;
@@ -407,48 +410,50 @@ class MapUnit {
         }
 
         //Unit Status
-        if (this.hp > 0 && this.unit.type != RUIN_BUILDING) {
-            if (Math.ceil(this.hp) < 10 && ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
-                spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
-                drawText(spritesRenderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-29.6 * pixelSize, -14.6 * pixelSize))), "black");
-                drawText(spritesRenderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
-            }
-        } else if (this.hp <= 0 && ui.stateIndex != BATTLESCREEN && this.destroyTime < gameTime) {
-            if(this.unit.isBuilding) {
-                if(this.unit.type == HQ_BUILDING) {
-                    getPlayerI(getIndexPair(this.mapPosition)).nullify();
+        if(!this.unpushedAnim) {
+            if (this.hp > 0 && this.unit.type != RUIN_BUILDING) {
+                if (Math.ceil(this.hp) < 10 && ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
+                    spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
+                    drawText(spritesRenderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-29.6 * pixelSize, -14.6 * pixelSize))), "black");
+                    drawText(spritesRenderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
                 }
-                if(this.unit.type != RUIN_BUILDING) {
-                    new TileParticle(this.unit.position, unitDestroySequence);
-                    this.unit.type = RUIN_BUILDING;
-                    return;
-                } else if(this.unit.type == RUIN_BUILDING) return;
-            }
-
-            //Destroying/Removing a Unit
-            var indexPair = getIndexPair(this.mapPosition);
-            if(indexPair[0] != -1)
-            for(var i = 0; i < getPlayerI(indexPair).unitGroup.mapUnits.length; i++) { 
-                if (getMUnitI([indexPair[0], i]) === this) {            
-                    new TileParticle(this.unit.position, unitDestroySequence);
-
-                    //Game crash edge case: when active player destroys its own unit
-                    if(manager.index == indexPair[0]) {
-                        if(getPlayer().selectedIndex > i) getPlayer().selectedIndex--;
-                        else if(getPlayer().selectedIndex == i) getPlayer().selectedIndex = getPlayer().getHQUnitIndex();
-                        if(getPlayer().selectedIndex <= -1) {
-                            lose(getPlayer().CO);
-                            getPlayer().control = -1;
-                            getPlayer().selectedIndex = -1;
-                            manager.endTurn(true);
-                        }
+            } else if (this.hp <= 0 && ui.stateIndex != BATTLESCREEN && this.destroyTime < gameTime) {
+                if(this.unit.isBuilding) {
+                    if(this.unit.type == HQ_BUILDING) {
+                        getPlayerI(getIndexPair(this.mapPosition)).nullify();
                     }
+                    if(this.unit.type != RUIN_BUILDING) {
+                        new TileParticle(this.unit.position, unitDestroySequence);
+                        this.unit.type = RUIN_BUILDING;
+                        return;
+                    } else if(this.unit.type == RUIN_BUILDING) return;
+                }
 
-                    getPlayerI(indexPair).unitGroup.mapUnits.splice(i, 1);
+                //Destroying/Removing a Unit
+                var indexPair = getIndexPair(this.mapPosition);
+                if(indexPair[0] != -1)
+                for(var i = 0; i < getPlayerI(indexPair).unitGroup.mapUnits.length; i++) { 
+                    if (getMUnitI([indexPair[0], i]) === this) {            
+                        new TileParticle(this.unit.position, unitDestroySequence);
 
-                    if(!getPlayer().powered) getPlayerI(indexPair).powerMeter += 0.04;
-                    if(getPlayerI(indexPair).powerMeter > 1.0) getPlayerI(indexPair).powerMeter = 1.0;
-                }            
+                        //Game crash edge case: when active player destroys its own unit
+                        if(manager.index == indexPair[0]) {
+                            if(getPlayer().selectedIndex > i) getPlayer().selectedIndex--;
+                            else if(getPlayer().selectedIndex == i) getPlayer().selectedIndex = getPlayer().getHQUnitIndex();
+                            if(getPlayer().selectedIndex <= -1) {
+                                lose(getPlayer().CO);
+                                getPlayer().control = -1;
+                                getPlayer().selectedIndex = -1;
+                                manager.endTurn(true);
+                            }
+                        }
+
+                        getPlayerI(indexPair).unitGroup.mapUnits.splice(i, 1);
+
+                        if(!getPlayer().powered) getPlayerI(indexPair).powerMeter += 0.04;
+                        if(getPlayerI(indexPair).powerMeter > 1.0) getPlayerI(indexPair).powerMeter = 1.0;
+                    }            
+                }
             }
         }
     }

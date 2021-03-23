@@ -167,10 +167,13 @@ function versusUpdate(deltaTime) {
 }
 
 function versusPlay() {
+    gameplayReset();
+    
     map = new GameMap(versusMapString);
     manager = new PlayerManager(map);
 
     manager.actionPointsPerTurn = versusManager.actionPointsPerTurn;
+    var plIndexSet = false;
     for(let i = 0; i < versusManager.players.length; i++) versusManager.players[i].actionPoints = versusAP;
     for(let tid = 0; tid < 4; tid++) {
         var vpl = versusManager.getPlayerOfTeamID(tid);
@@ -180,6 +183,10 @@ function versusPlay() {
         pl.deployDelay = vpl.deployDelay;
         pl.actionPoints = vpl.actionPoints;
         if(pl.control == -1) pl.nullify();
+        else if(!plIndexSet) {
+            manager.index = tid;
+            plIndexSet = true;
+        }
     }
     ui.transitionToState = GAMEPLAY;
     maxDisplayTilesPerRow = defaultTilesPerRow;

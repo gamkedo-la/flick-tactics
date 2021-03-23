@@ -26,8 +26,14 @@ function controlBarUISetup(fontSize) {
         new Button(tr(), "#FFFFFFFF", "#000000FF", "#FFFFFF99"));
     controlBar.push(resetTurnBtn);
 
+
     controlBar.push(new Label(tr(), ""));
-    controlBar.push(new Label(tr(), ""));
+    //controlBar.push(new Label(tr(), ""));
+
+    controlMenuBtn = new TextButton(tr(),
+        new Label(tr(), "Menu", fontSize.toString() + "px " + uiContext.fontFamily, "black"),
+        new Button(tr(), "#FFFFFFFF", "#000000FF", "#FFFFFF99"));
+    controlBar.push(controlMenuBtn);
 
     gameplay.push(new FlexGroup(tr(vec2(0.01, 0.01), vec2(gameWidth, 25 * pixelSize)),
         new SubState(tr(), controlBar), false, vec2(10 * pixelSize, 0), vec2(9, 1), true));
@@ -36,6 +42,7 @@ function controlBarUISetup(fontSize) {
 function controlBarUIUpdate() {
     moneyLabel.text = getPlayer().money.toString() + "$";
     actionPointsLabel.text = "AP: " + getPlayer().actionPoints.toString();
+    turnLabel.text = "Turn " + manager.turnCount.toString();
 }
 
 function stepBackAction() {
@@ -83,6 +90,23 @@ function controlBarUIEvents() {
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
             if(!stepBackAction()) manager.restoreState();
+            resetTurnBtn.button.resetOutput();
+    }
+    switch (controlMenuBtn.button.output)
+    {
+        case UIOUTPUT_HOVER:
+            if(resetTurnBtn.button.hoverTrigger)
+            {
+                playSFX(SFX_BUTTON_HOVER);
+                resetTurnBtn.button.hoverTrigger = false;
+            }
+            break;
+
+        case UIOUTPUT_SELECT:
+            playSFX(SFX_BUTTON_CLICK);
+            versusBtn.label.text = "PLAY NEW";
+            continueBtn.enabled = true;
+            ui.transitionToState = STARTSCREEN;
             resetTurnBtn.button.resetOutput();
     }
 }
