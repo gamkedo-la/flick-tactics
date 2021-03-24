@@ -96,8 +96,9 @@ class PlayerManager {
                 //Money Increases (receives city building income)
                 if(mUnit.unit.isBuilding && typeof mUnit.unit.incomePerHp != "undefined") {
                     this.getActivePlayer().focus.push({ mUnit: mUnit, atFocus: function(player) {
-                        new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), incomeSequence);
-                        player.money += (Math.ceil(mUnit.hp) * (mUnit.unit.incomePerHp + (mUnit.unit.incomePerHp * mUnit.unit.incomeRankMultiplier * mUnit.unit.rank))) * (mUnit.unit.boost == 1 ? 2 : 1);
+                        var tp = new TileParticle(tilePositionToPixelPosition(mUnit.mapPosition), incomeSequence);
+                        tp.text = "+" + (Math.ceil(mUnit.hp) * mUnit.unit.incomePerHp).toString();
+                        player.money += Math.ceil(mUnit.hp) * mUnit.unit.incomePerHp;
                     }});
                 }
 

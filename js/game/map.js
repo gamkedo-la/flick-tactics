@@ -87,6 +87,9 @@ class GameMap {
         this.greenData = [];
         this.blackData = [];
 
+        defaultTilesPerRow = isMobile() ? 6 : 15;
+        maxDisplayTilesPerRow = defaultTilesPerRow;
+
         var tindexes = mapString.split('.');
         for (let y = 0; y < MAP_SIZE.y; y++) {
             for (let x = 0; x < MAP_SIZE.x; x++) {
@@ -223,10 +226,14 @@ class GameMap {
             }
         }
         //Getting Tile at which the mouse is hovering on (or about to click)
-        this.cursorTile = vec2((touchPos[0].x - offset.x - (tileSize / 2)) / (tileSize + tileGap),
-            (touchPos[0].y - offset.y - (tileSize / 2)) / (tileSize + tileGap));
-        this.cursorTile.x = Math.floor(this.cursorTile.x + 1);
-        this.cursorTile.y = Math.floor(this.cursorTile.y + 1);
+        if(!touchPos[0].isEqual(vec2())) {
+            this.cursorTile = vec2((touchPos[0].x - offset.x - (tileSize / 2)) / (tileSize + tileGap),
+                (touchPos[0].y - offset.y - (tileSize / 2)) / (tileSize + tileGap));
+            this.cursorTile.x = Math.floor(this.cursorTile.x + 1);
+            this.cursorTile.y = Math.floor(this.cursorTile.y + 1);
+        } else {
+            this.cursorTile.x = this.cursorTile.y = -999;
+        }
 
         drawRect(spritesRenderer, vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
             Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))),
@@ -418,8 +425,8 @@ class GameMap {
                 if (this.canUnitReachTile(mapUnit, vec2(mapUnit.mapPosition.x + x, mapUnit.mapPosition.y + y))) {
                     var posi = vec2(Math.floor(offset.x + ((mapUnit.mapPosition.x + x) * tileSize) + ((mapUnit.mapPosition.x + x) * tileGap)),
                         Math.floor(offset.y + ((mapUnit.mapPosition.y + y) * tileSize) + ((mapUnit.mapPosition.y + y) * tileGap)));
-                    drawRect(spritesRenderer, posi.subtract(vec2(tileSize - (16 * pixelSize), tileSize - (16 * pixelSize)).divide(vec2(2, 2))),
-                        vec2(tileSize - (16 * pixelSize), tileSize - (16 * pixelSize)), true, "#FFFFFF88");
+                    var absPos = posi.subtract(vec2(tileSize - (16 * pixelSize), tileSize - (16 * pixelSize)).divide(vec2(2, 2)));
+                    drawRect(spritesRenderer, absPos, vec2(tileSize - (16 * pixelSize), tileSize - (16 * pixelSize)), true, "#FFFFFF88");
                 }
             }
         }
@@ -601,7 +608,7 @@ class GameMap {
         else if(munit2.unit.type == WAR_BUILDING) damage *= 0.75;
 
         //DEF: Rank Contribution
-        damage -= (damage / 100.0) * (munit2.unit.rank * RANK_DEFENSE_BONUS);
+        if(!munit2.unit.isBuilding) damage -= (damage / 100.0) * (munit2.unit.rank * RANK_DEFENSE_BONUS);
 
         //DEF: CO Contribution
         switch(pl2.CO) {
@@ -707,7 +714,7 @@ class GameMap {
 
     eventUnitAttack(mapUnit) {
         if (isTouched) {
-            isTouched = false;
+            if(!isMobile()) isTouched = false;
             var skipRange = mapUnit.unit.type == ARTILLERY_MECH ? 2 : 0;
             var range = mapUnit.unit.type == ARTILLERY_MECH ? 4 + (getPlayer().CO == TAJA && getPlayer().powered ? 1 : 0) : 1;
             for (let y = -range; y <= range; y++) {
@@ -841,7 +848,7 @@ class GameMap {
         }
 
         if (isTouched) {
-            isTouched = false;
+            if(!isMobile()) isTouched = false;
             var skipRange = mapUnit.unit.type == TELEPORT_MECH ? 1 : 0;
             var range = mapUnit.unit.type == TELEPORT_MECH ? (mapUnit.unit.ammo > Math.ceil(mapUnit.unit.ammoCapacity/2) ? 3 : 2) : 1;
             for (let y = -range; y <= range; y++) {
@@ -929,7 +936,8 @@ class GameMap {
             var indexPair = getIndexPair(this.cursorTile);
             if (indexPair[0] != -1
             && getPlayerI(indexPair).unitGroup.teamID == getPlayer().unitGroup.teamID
-            && getMUnitI(indexPair).unit.type != RUIN_BUILDING) {
+            && getMUnitI(indexPair).unit.type != RUIN_BUILDING
+            && getMUnitI(indexPair).unit.type != CITY_BUILDING) {
                 playSFX(SFX_SELECT);
                 getPlayer().selectedIndex = indexPair[1];
                 updateUnitActionButtons();

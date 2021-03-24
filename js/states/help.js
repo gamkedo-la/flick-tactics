@@ -55,28 +55,36 @@ var helpList = [
 ];
 
 function helpSetup() {
-    var fontStr = (12 * pixelSize).toString() + "px " + uiContext.fontFamily;
+    var fontStr = ((isMobile() ? 14 : 12) * pixelSize).toString() + "px " + uiContext.fontFamily;
 
     helpLabelGroup = [];
     for(var i = 0; i < (helpList.length / 2); i++) {
         helpLabelGroup.push(new Label(tr(), helpList[i].text, fontStr, helpList[i].color, -1));
     }
 
-    help.push(new FlexGroup(tr(vec2(gameWidth/4, 20 * pixelSize), vec2(gameWidth/2, gameHeight - (80 * pixelSize))),
+    help.push(new FlexGroup( isMobile() ?
+        tr(vec2(0, 20 * pixelSize), vec2(gameWidth, gameHeight - (80 * pixelSize)))
+        : tr(vec2(gameWidth/4, 20 * pixelSize), vec2(gameWidth/2, gameHeight - (80 * pixelSize))),
         new SubState(tr(), helpLabelGroup), false, vec2(), vec2(1, (helpList.length/2)), true));
 
-    helpToStartButton = new TextButton(tr(vec2(gameWidth - (80 * pixelSize), gameHeight - (40 * pixelSize)), vec2(80 * pixelSize, 40 * pixelSize)),
+    var fontStr = ((isMobile() ? 24 : 12) * pixelSize).toString() + "px " + uiContext.fontFamily;
+
+    helpToStartButton = new TextButton( isMobile() ?
+        tr(vec2(gameWidth - (gameWidth/3), gameHeight - (60 * pixelSize)), vec2(gameWidth/3, 60 * pixelSize))
+        : tr(vec2(gameWidth - (80 * pixelSize), gameHeight - (40 * pixelSize)), vec2(80 * pixelSize, 40 * pixelSize)),
         new Label(tr(), "BACK", fontStr, "lightblue"),
         new Button(tr(), "#000066CC", "#FFFFFFFF", "#002299FF"));
     help.push(helpToStartButton);
-    helpMoreButton = new TextButton(tr(vec2(gameWidth - (200 * pixelSize), gameHeight - (40 * pixelSize)), vec2(80 * pixelSize, 40 * pixelSize)),
+    helpMoreButton = new TextButton( isMobile() ?
+        tr(vec2(0, gameHeight - (60 * pixelSize)), vec2(gameWidth/3, 60 * pixelSize))
+        : tr(vec2(gameWidth - (200 * pixelSize), gameHeight - (40 * pixelSize)), vec2(80 * pixelSize, 40 * pixelSize)),
         new Label(tr(), "1/2", fontStr, "lightblue"),
         new Button(tr(), "#000066CC", "#FFFFFFFF", "#002299FF"));
     help.push(helpMoreButton);
 }
 
 function helpResize() {
-    var fontStr = (12 * pixelSize).toString() + "px " + uiContext.fontFamily;
+    var fontStr = ((isMobile() ? 14 : 12) * pixelSize).toString() + "px " + uiContext.fontFamily;
 
     for (let i = 0; i < helpLabelGroup.length; i++) {
         helpLabelGroup[i].font = fontStr;

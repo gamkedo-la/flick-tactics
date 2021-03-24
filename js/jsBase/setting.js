@@ -59,3 +59,7 @@ function init() {
 
     inputSetup();
 }
+
+function isMobile() {
+    return gameHeight > gameWidth;
+}

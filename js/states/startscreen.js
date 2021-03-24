@@ -6,11 +6,17 @@ var startscreenCOChange = false;
 var startscreenCOAltSide = false;
 
 function startscreenSetup() {
-    var fontSize = 16.0 * pixelSize;
+    var fontSize = isMobile() ? 32.0 * pixelSize : 16.0 * pixelSize;
 
     titleSprite = new Sprite(tr(), new ImageObject("images/title.png"));
-    titleSprite.transform.scale = vec2((sizeFactor / 1.5) / titleSprite.imageObject.image.width, (sizeFactor / 3.2) / titleSprite.imageObject.image.height);
-    titleSprite.transform.position = vec2(gameWidth / 2, gameHeight / 4);
+
+    if(isMobile()) {
+        titleSprite.transform.scale = vec2(sizeFactor / titleSprite.imageObject.image.width, (sizeFactor / 2.4) / titleSprite.imageObject.image.height);
+        titleSprite.transform.position = vec2(gameWidth / 2, gameHeight / 6);
+    } else {
+        titleSprite.transform.scale = vec2((sizeFactor / 1.5) / titleSprite.imageObject.image.width, (sizeFactor / 3.6) / titleSprite.imageObject.image.height);
+        titleSprite.transform.position = vec2(gameWidth / 2, gameHeight / 4);
+    }
 
     worldmapSprite = new Sprite(tr(), new ImageObject("images/worldMap.png"));
     worldmapSprite.transform.scale = toVec2(pixelSize);
@@ -71,15 +77,19 @@ function startscreenSetup() {
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
     menuUI.push(sfxBtn);
 
-    startscreen.push(new FlexGroup(tr(vec2((gameWidth / 2) - (gameWidth / 8), gameHeight / 2.5), vec2(gameWidth / 4, gameHeight - (gameHeight / 2.5))),
-        new SubState(tr(), menuUI), false, vec2(0, sizeFactor * 0.025), vec2(1, 9), true));
+    if(isMobile())
+        startscreen.push(new FlexGroup(tr(vec2(0, gameHeight / 3.6), vec2(gameWidth, gameHeight - (gameHeight / 4))),
+            new SubState(tr(), menuUI), false, vec2(0, sizeFactor * 0.025), vec2(1, 9), true));
+    else
+        startscreen.push(new FlexGroup(tr(vec2((gameWidth / 2) - (gameWidth / 8), gameHeight / 2.5), vec2(gameWidth / 4, gameHeight - (gameHeight / 2.25))),
+            new SubState(tr(), menuUI), false, vec2(0, sizeFactor * 0.025), vec2(1, 9), true));
     startscreen[1].enabled = false;
 
     startscreenUnit = new Unit(RIFLE_MECH, vec2(gameWidth/2, gameHeight/1.75));
 }
 
 function startscreenResize() {
-    var fontSize = 18.0 * pixelSize;
+    var fontSize = isMobile() ? 32.0 * pixelSize : 16.0 * pixelSize;
 
     titleSprite.transform.scale = vec2((sizeFactor / 1.8) / titleSprite.imageObject.image.width, (sizeFactor / 4) / titleSprite.imageObject.image.height);
     titleSprite.transform.position = vec2(gameWidth / 2, gameHeight / 4);
@@ -133,28 +143,30 @@ function drawPerspectiveUnitsBG(unit1, unit2, unit3, team = RED_TEAM)
 function startscreenDraw(deltaTime) {
     if(startscreen[1].enabled) {
         drawWorldMapBG();
-        drawPerspectiveUnitsBG(HQ_BUILDING, RIFLE_MECH, CANNON_MECH);
         
-        var ratio = (gameTime % 4000) / 800;
-        if(ratio >= 3.0) {
-            startscreenCOOpacity = lerp(startscreenCOOpacity, 0.0, 0.1);
-            spritesRenderer.globalAlpha = startscreenCOOpacity;
+        if(!isMobile()) {
+            drawPerspectiveUnitsBG(HQ_BUILDING, RIFLE_MECH, CANNON_MECH);
+            var ratio = (gameTime % 4000) / 800;
+            if(ratio >= 3.0) {
+                startscreenCOOpacity = lerp(startscreenCOOpacity, 0.0, 0.1);
+                spritesRenderer.globalAlpha = startscreenCOOpacity;
 
-            if(startscreenCOOpacity <= 0.001 && !startscreenCOChange) {
-                startscreenCOChange = true;
-                startscreenCOAltSide = !startscreenCOAltSide;
-                startscreenCO++;
-                if(startscreenCO >= 4)
-                    startscreenCO = 0;
+                if(startscreenCOOpacity <= 0.001 && !startscreenCOChange) {
+                    startscreenCOChange = true;
+                    startscreenCOAltSide = !startscreenCOAltSide;
+                    startscreenCO++;
+                    if(startscreenCO >= 4)
+                        startscreenCO = 0;
+                }
+            } else {
+                startscreenCOChange = false;
+                startscreenCOOpacity = spritesRenderer.globalAlpha = 1.0;
             }
-        } else {
-            startscreenCOChange = false;
-            startscreenCOOpacity = spritesRenderer.globalAlpha = 1.0;
+            bodyNFacesSheet.transform.position = vec2(startscreenCOAltSide ? lerp(-gameWidth, gameWidth/5, ratio) : lerp(gameWidth*2, gameWidth - (gameWidth/5), ratio), gameHeight/2);
+            bodyNFacesSheet.transform.scale = toVec2(pixelSize/2);
+            bodyNFacesSheet.drawScIn(vec2(1024 * startscreenCO), toVec2(1024));
+            spritesRenderer.globalAlpha = 1.0;
         }
-        bodyNFacesSheet.transform.position = vec2(startscreenCOAltSide ? lerp(-gameWidth, gameWidth/5, ratio) : lerp(gameWidth*2, gameWidth - (gameWidth/5), ratio), gameHeight/2);
-        bodyNFacesSheet.transform.scale = toVec2(pixelSize/2);
-        bodyNFacesSheet.drawScIn(vec2(1024 * startscreenCO), toVec2(1024));
-        spritesRenderer.globalAlpha = 1.0;
 
         titleSprite.drawSc();
     }

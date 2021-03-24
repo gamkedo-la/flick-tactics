@@ -1,25 +1,23 @@
 
-function unitActionUISetup() {
-    unitUpBtn = new TextButton(tr(vec2((gameWidth / 2) - (25 * pixelSize), (gameHeight / 2) - (90 * pixelSize)),
-        vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), "", undefined, "white", 0),
-        new Button(tr(vec2(),
-            vec2(50 * pixelSize, 50 * pixelSize)),
-            "#000000BB", "#FFFFFFFF", "#000000DD", "#FF0000BB"));
+function unitActionUISetup(fontSize) {
+    var btnSize = isMobile() ? toVec2(80 * pixelSize) : toVec2(50 * pixelSize);
+    unitUpBtn = new TextButton(isMobile() ?
+    tr(vec2((gameWidth / 2) - (btnSize.x / 2), gameHeight - btnSize.y - gameBottomBarHeight), btnSize)
+    : tr(vec2((gameWidth / 2) - (btnSize.x / 2), (gameHeight / 2) - btnSize.y - (40 * pixelSize)), btnSize),
+        new Label(tr(), "", fontSize.toString() + "px " + uiContext.fontFamily, "white", 0),
+        new Button(tr(), "#000000BB", "#FFFFFFFF", "#000000DD", "#FF0000BB"));
     gameplay.push(unitUpBtn);
-    unitLeftBtn = new TextButton(tr(vec2((gameWidth / 2) - (90 * pixelSize), (gameHeight / 2) + (10 * pixelSize)),
-        vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), "", undefined, "white", 0),
-        new Button(tr(vec2(),
-            vec2(50 * pixelSize, 50 * pixelSize)),
-            "#000000BB", "#FFFFFFFF", "#000000DD", "#FF0000BB"));
+    unitLeftBtn = new TextButton(isMobile() ?
+    tr(vec2((gameWidth / 2) - (btnSize.x * 1.75), gameHeight - btnSize.y - gameBottomBarHeight), btnSize)
+    : tr(vec2((gameWidth / 2) - btnSize.x - (40 * pixelSize), (gameHeight / 2) + (10 * pixelSize)), btnSize),
+        new Label(tr(), "", fontSize.toString() + "px " + uiContext.fontFamily, "white", 0),
+        new Button(tr(), "#000000BB", "#FFFFFFFF", "#000000DD", "#FF0000BB"));
     gameplay.push(unitLeftBtn);
-    unitRightBtn = new TextButton(tr(vec2((gameWidth / 2) + (40 * pixelSize), (gameHeight / 2) + (10 * pixelSize)),
-        vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), "", undefined, "white", 0),
-        new Button(tr(vec2(),
-            vec2(50 * pixelSize, 50 * pixelSize)),
-            "#000000BB", "#FFFFFFFF", "#000000DD", "#FF0000BB"));
+    unitRightBtn = new TextButton(isMobile() ?
+    tr(vec2((gameWidth / 2) + (btnSize.x * 0.75), gameHeight - btnSize.y - gameBottomBarHeight), btnSize)
+    : tr(vec2((gameWidth / 2) + (40 * pixelSize), (gameHeight / 2) + (10 * pixelSize)), btnSize),
+        new Label(tr(), "", fontSize.toString() + "px " + uiContext.fontFamily, "white", 0),
+        new Button(tr(), "#000000BB", "#FFFFFFFF", "#000000DD", "#FF0000BB"));
     gameplay.push(unitRightBtn);
     unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
 }

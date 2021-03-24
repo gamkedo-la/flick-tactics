@@ -13,55 +13,56 @@ var buildingPanelCOSelection = 0;
 const MECHCOST = [2000, 8000, 12000, 5000, 5000];
 
 function buildingPanelSetup() {
-    panelX = 200 * pixelSize;
+    panelX = isMobile() ? 0 : 200 * pixelSize;
     panelH = gameBottomBarHeight;
     panelY = gameHeight - panelH;
     panelW = gameWidth - (panelX * 2);
     var tabGap = 4 * pixelSize;
-    var btnOffset = tabGap * 2;
     var btnGap = tabGap * 4;
 
+    var fontStr = ((isMobile() ? 18 : 12) * pixelSize).toString() + "px " + uiContext.fontFamily;
+
     buildingPanelTab1Objects = [];
-    buildingPanelTab1Objects.push(new Label(tr(), ""));
-    buildingPanelTab1Objects.push(new Label(tr(), ""));
-    buildingPanelTab1Objects.push(new Label(tr(), ""));
-    buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), ""),
+    buildingPanelTab1Objects.push(new Label(tr(), "", fontStr));
+    buildingPanelTab1Objects.push(new Label(tr(), "", fontStr));
+    buildingPanelTab1Objects.push(new Label(tr(), "", fontStr));
+    buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), "", fontStr),
         new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
-    buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), ""),
+    buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), "", fontStr),
         new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
-    buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), ""),
+    buildingPanelTab1Objects.push(new TextButton(tr(), new Label(tr(), "", fontStr),
         new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
 
     buildingPanelTab2Objects = [];
-    buildingPanelTab2Objects.push(new Label(tr(), ""));
-    buildingPanelTab2Objects.push(new Label(tr(), ""));
-    buildingPanelTab2Objects.push(new Label(tr(), ""));
-    buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), ""),
+    buildingPanelTab2Objects.push(new Label(tr(), "", fontStr));
+    buildingPanelTab2Objects.push(new Label(tr(), "", fontStr));
+    buildingPanelTab2Objects.push(new Label(tr(), "", fontStr));
+    buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), "", fontStr),
         new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
-    buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), ""),
+    buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), "", fontStr),
         new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
-    buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), ""),
+    buildingPanelTab2Objects.push(new TextButton(tr(), new Label(tr(), "", fontStr),
         new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
 
     buildingPanelTab3Objects = [];
-    buildingPanelTab3Objects.push(new Label(tr(), ""));
-    buildingPanelTab3Objects.push(new Label(tr(), ""));
-    buildingPanelTab3Objects.push(new Label(tr(), ""));
-    buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), ""),
+    buildingPanelTab3Objects.push(new Label(tr(), "", fontStr));
+    buildingPanelTab3Objects.push(new Label(tr(), "", fontStr));
+    buildingPanelTab3Objects.push(new Label(tr(), "", fontStr));
+    buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), "", fontStr),
         new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
-    buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), ""),
+    buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), "", fontStr),
         new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
-    buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), ""),
+    buildingPanelTab3Objects.push(new TextButton(tr(), new Label(tr(), "", fontStr),
         new Button(tr(), buildingPanelDefaultBtnColor, buildingPanelHoverBtnColor, buildingPanelHoverBtnColor, buildingPanelDisabledBtnColor)));
 
     buildingPanelTabs = [];
     buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW / 3) - tabGap, panelH / 4)), buildingPanelTab1Objects, undefined,
-        new TextButton(tr(), new Label(tr(), "OBJECTIVE")), true, buildingPanelHoverBtnColor, buildingPanelDefaultBtnColor));
+        new TextButton(tr(), new Label(tr(), "OBJECTIVE", fontStr)), true, buildingPanelHoverBtnColor, buildingPanelDefaultBtnColor));
     buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW / 3) - tabGap, panelH / 4)), buildingPanelTab2Objects, undefined,
-        new TextButton(tr(), new Label(tr(), "POWER")), false, buildingPanelHoverBtnColor, buildingPanelDefaultBtnColor));
+        new TextButton(tr(), new Label(tr(), "POWER", fontStr)), false, buildingPanelHoverBtnColor, buildingPanelDefaultBtnColor));
     buildingPanelTabs.push(new Tab(tr(vec2(), vec2((panelW / 3) - tabGap, panelH / 4)), buildingPanelTab3Objects,
         [buildingPanelTabs[0], buildingPanelTabs[1]],
-        new TextButton(tr(), new Label(tr(), "CO"), undefined), false, buildingPanelHoverBtnColor, buildingPanelDefaultBtnColor));
+        new TextButton(tr(), new Label(tr(), "CO", fontStr), undefined), false, buildingPanelHoverBtnColor, buildingPanelDefaultBtnColor));
 
     buildingPanelLabels = [];
     buildingPanelLabels.push(buildingPanelTab1Objects[0]);
@@ -161,7 +162,7 @@ function getBButton(tabIndex, index, type) {
 
 function buildingPanelUpdate(buildingMUnit) {
 
-    if(gameTime % 100 < 50) return;
+    if(gameTime % 250 < 50) return;
 
     if(buildingPanelPrevSelected == null
     || buildingPanelPrevSelected != buildingMUnit) {
@@ -197,7 +198,7 @@ function buildingPanelUpdate(buildingMUnit) {
             setBButton(2, 0, "Previous CO");
             
             if(getPlayer().powerMeter >= 0.999) setBButton(2, 1, "Use Power!");
-            else setBButton(2, 1, "not enough power", true);
+            else setBButton(2, 1, "insufficient power", true);
 
             setBButton(2, 2, "Next CO");
 
@@ -205,36 +206,7 @@ function buildingPanelUpdate(buildingMUnit) {
             setBLabel(1, 1, COSPECIFICS[getPlayer().CO].powerDesc);
 
             if(getPlayer().powerMeter >= 0.999) setBButton(1, 1, "Use Power!");
-            else setBButton(1, 1, "not enough power", true);
-        break;
-
-        case CITY_BUILDING:
-            setBTab(0, "CITY");
-            setBLabel(0, 0, "Generates Income with which new mechs are deployed via War Building.");
-            setBLabel(0, 1, "Cost is also a requirement for supply/repair. Income Generation per turn: " + (Math.ceil(buildingMUnit.hp) * (buildingMUnit.unit.incomePerHp + (buildingMUnit.unit.incomePerHp * buildingMUnit.unit.incomeRankMultiplier * buildingMUnit.unit.rank))).toString() + ".");
-
-            if(buildingMUnit.unit.boost == 0) {
-                setBLabel(0, 2, "Use BOOST to get 2 times the income for a turn (Uses 1 AP, " + (buildingMUnit.unit.boostCooldown - (buildingMUnit.unit.boostCooldownDecreasePerRank * buildingMUnit.unit.rank)) + " Cooldown Turns).");
-                if(getPlayer().actionPoints > 0) setBButton(0, 2, "Boost");
-                else setBButton(0, 2, "No AP", true);
-            } else if (buildingMUnit.unit.boost < 0) {
-                setBLabel(0, 2, "It will take " + (-buildingMUnit.unit.boost).toString() + " turn(s) before it can be boost can be used again.");
-            } else {
-                setBLabel(0, 2, "BOOSTED: You will receive twice the income for a turn!");
-            }
-
-            setBTab(2, "RANK");
-            if(buildingMUnit.unit.rank < 3) {
-                setBLabel(2, 0, "Current City Rank: " + buildingMUnit.unit.rank + ". Upgrade's Cost: " + (buildingMUnit.unit.rankUpgradeCost + (buildingMUnit.unit.rankUpgradeCost * buildingMUnit.unit.rankUpgradeCostMultiplier * buildingMUnit.unit.rank)).toString() + ".");
-                setBLabel(2, 1, "Income Generation per turn AFTER UPGRADE: " + (buildingMUnit.hp * (buildingMUnit.unit.incomePerHp + (buildingMUnit.unit.incomePerHp * buildingMUnit.unit.incomeRankMultiplier * (buildingMUnit.unit.rank + 1)))).toString() + ".");
-                setBLabel(2, 2, "Boost Cooldown Turns AFTER UPGRADE: " + (buildingMUnit.unit.boostCooldown - (buildingMUnit.unit.boostCooldownDecreasePerRank * (buildingMUnit.unit.rank + 1))) + ".");
-                
-                if(getPlayer().money >= buildingMUnit.unit.rankUpgradeCost + (buildingMUnit.unit.rankUpgradeCost * buildingMUnit.unit.rankUpgradeCostMultiplier * buildingMUnit.unit.rank))
-                    setBButton(2, 2, "Upgrade");
-                else
-                    setBButton(2, 2, "insufficient cash", true);
-                
-            } else setBLabel(2, 0, "Current City Rank: 3. MAX Rank!");
+            else setBButton(1, 1, "insufficient power", true);
         break;
 
         case WAR_BUILDING:
@@ -267,7 +239,7 @@ function buildingPanelUpdate(buildingMUnit) {
             else setBButton(2, 2, "insufficient cash", true);
         break;
 
-        case RUIN_BUILDING:
+        case CITY_BUILDING || RUIN_BUILDING:
             buildingPanel.enabled = false;
         break;
     }
@@ -332,12 +304,10 @@ function buildingPanelEvent() {
         var hqBuilding_powerBtn2 = getBButton(1, 1, HQ_BUILDING);
         if ((hqBuilding_powerBtn != 0 && hqBuilding_powerBtn.button.output == UIOUTPUT_SELECT)
         || (hqBuilding_powerBtn2 != 0 && hqBuilding_powerBtn2.button.output == UIOUTPUT_SELECT)) {
-
             if(getPlayer().powerMeter >= 0.999) {
                 activatePower();
                 getPlayer().powerMeter = 0.0;
             }
-
             hqBuilding_powerBtn.button.resetOutput();
             hqBuilding_powerBtn2.button.resetOutput();
         }
@@ -407,30 +377,11 @@ function buildingPanelEvent() {
                     //Deploy Delay Effect
                     if(getPlayer().deployDelay) newMapUnit.unit.deployTime
                         = buildingMUnit.unit.mechDeployDelay[mechToBuyBtn[i][2]];
-                    else newMapUnit.unit.rank = buildingMUnit.unit.rank;
-
-                    //Boosted Unit Build
-                    if(buildingMUnit.unit.boost == 1) {
-                        if(getPlayer().deployDelay) newMapUnit.unit.deployTime = 0;
-                        else newMapUnit.unit.rank = 3; //3 is max rank
-                        buildingMUnit.unit.boost = -buildingMUnit.unit.boostCooldown;
-                    }
 
                     getPlayer().unitGroup.mapUnits.push(newMapUnit);
                 }
                 warBuilding_buyBtn.button.resetOutput();
             }
-        }
-
-        // CITY BUILDING EVENTS
-        var cityBuilding_boostBtn = getBButton(0, 2, CITY_BUILDING);
-        if(cityBuilding_boostBtn != 0 && cityBuilding_boostBtn.button.output == UIOUTPUT_SELECT) {
-            if(buildingMUnit.unit.boost == 0) {
-                playSFX(SFX_RANKUP);
-                getPlayer().actionPoints--;
-                buildingMUnit.unit.boost = 1;
-            }
-            cityBuilding_boostBtn.button.resetOutput();
         }
     }
 

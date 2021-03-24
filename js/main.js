@@ -74,7 +74,7 @@ function frame() {
         draw(deltaTime);
         inputTimer -= deltaTime;
         gameTime += deltaTime;
-        if(ui.stateIndex != EDITOR) isTouched = false;
+        if(!isMobile() && ui.stateIndex != EDITOR) isTouched = false;
         isRightClick = false;
     }
     setTimeout(frame, 15);

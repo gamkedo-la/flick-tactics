@@ -121,6 +121,10 @@ class Player {
                     this.focus[0].atFocus(this, this.focus[0].mUnit);
                     this.focus[0].atFocus = function(player, mUnit) {};
                     this.focusTimer -= deltaTime;
+                    if(this.focus[0].mUnit.unit.type == CITY_BUILDING) {
+                        drawText(renderer, "+" + (Math.floor(this.focus[0].mUnit.hp) + this.focus[0].mUnit.incomePerHp).toString(), this.focus[0].mUnit.unit.position.add(camPos).subtract(toVec2(pixelSize)), "black");
+                        drawText(renderer, "+" + (Math.floor(this.focus[0].mUnit.hp) + this.focus[0].mUnit.incomePerHp).toString(), this.focus[0].mUnit.unit.position.add(camPos), "white");
+                    }
                     if(this.focusTimer <= -1) this.focusTimer = 0;
                 }
             } else {

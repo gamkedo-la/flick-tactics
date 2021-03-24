@@ -67,6 +67,7 @@ class TileParticle {
         this.sequence = sequence;
         this.timer = 0;
         this.sound = true;
+        this.text = "";
         if(addToParticles) particles.push(this);
     }
 
@@ -76,6 +77,8 @@ class TileParticle {
         this.currentIndex = tp.currentIndex;
         this.sequence = tp.sequence;
         this.timer = tp.timer;
+        this.sound = tp.sound;
+        this.text = tp.text;
         if(typeof tp.turns != "undefined") this.turns = tp.turns;
     }
 
@@ -127,6 +130,9 @@ class TileParticle {
             (tileSize / 64) + gridBlackLinesFixFactor);
         
         drawSheet(this.sequence[this.currentIndex].index, this.position.add(camPos), sc);
+        
+        drawText(spritesRenderer, this.text, this.position.add(camPos).add(vec2(pixelSize, -pixelSize)), "black");
+        drawText(spritesRenderer, this.text, this.position.add(camPos), "white");
     }
 
     drawIsolate(deltaTime, camPos, sc) {
@@ -149,6 +155,9 @@ class TileParticle {
             (tileSize / 64) + gridBlackLinesFixFactor);
         
         drawSheet(this.sequence[this.currentIndex].index, this.position.add(camPos), sc);
+
+        drawText(spritesRenderer, this.text, this.position.add(camPos).add(vec2(pixelSize, -pixelSize)), "black");
+        drawText(spritesRenderer, this.text, this.position.add(camPos), "white");
 
         return true;
     }

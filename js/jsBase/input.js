@@ -80,12 +80,14 @@ function onTouchEnd(ev) {
 }
 
 function onMouseDown(ev) {
+    touchPos[0] = vec2(ev.clientX, ev.clientY);
+
     if (inputTimer <= 0) {
         isTouched = true;
         inputTimer = inputDelay;
+    } else {
+        touchPos[0] = vec2();
     }
-
-    touchPos[0] = vec2(ev.clientX, ev.clientY);
 
     audioPlayOnInput();
 }
@@ -147,15 +149,18 @@ function inputSetup() {
     window.addEventListener("touchmove", onTouchMove);
     window.addEventListener("touchend", onTouchEnd);
 
-    window.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-    window.addEventListener("contextmenu", onRightClick, false);
+    if(!isMobile()) {
+        window.addEventListener("mousedown", onMouseDown);
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
 
-    window.addEventListener("wheel", onMouseWheelScroll);
-    window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("keypress", onKeyPress);
-    window.addEventListener("keyup", onKeyUp);
+        window.addEventListener("wheel", onMouseWheelScroll);
+        window.addEventListener("keydown", onKeyDown);
+        window.addEventListener("keypress", onKeyPress);
+        window.addEventListener("keyup", onKeyUp);
+    }
+
+    window.addEventListener("contextmenu", onRightClick, false);
 }
 
 function touched(transform) //or sprite

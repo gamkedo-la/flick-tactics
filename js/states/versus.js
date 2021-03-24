@@ -22,11 +22,13 @@ function versusSetup() {
     versusMap = new GameMap(versusMapString);
     versusManager = new PlayerManager(versusMap);
 
-    var fontSize = 18.0 * pixelSize;
+    var fontSize = ((isMobile() ? 28 : 18) * pixelSize);
 
     versusTopRightUI = [];
-    versusTopRightUI.push(new Label(tr()));
-    versusTopRightUI.push(new Label(tr()));
+    if(!isMobile()) {
+        versusTopRightUI.push(new Label(tr()));
+        versusTopRightUI.push(new Label(tr()));
+    }
     versusLoadMapBtn = new TextButton(tr(),
         new Label(tr(), "LOAD EXT. MAP",
     fontSize.toString() + "px " + uiContext.fontFamily),
@@ -38,8 +40,10 @@ function versusSetup() {
         new Button(tr(), "#00006666", "#FFFFFFFF", "#002299FF"), "");
     versusTopRightUI.push(versusChangeMapBtn);
 
-    versus.push(new FlexGroup(tr(vec2((gameWidth / 2), 0.0), vec2(gameWidth / 2, ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x)))),
-        new SubState(tr(), versusTopRightUI), false, vec2(0.001, 0.001), vec2(2, 3), true));
+    versus.push(new FlexGroup(isMobile() ?
+        tr(vec2(0.001, (gameWidth*(MAP_SIZE.y/MAP_SIZE.x)) + ((pixelSize / 4) * 1024)), vec2(gameWidth, ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x))))
+        : tr(vec2((gameWidth / 2), 0.001), vec2(gameWidth / 2, ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x)))),
+        new SubState(tr(), versusTopRightUI), false, vec2(0.001, 0.001), vec2(2, isMobile() ? 2 : 3), true));
 
     versusBottomRightUI = [];
     versusTeamBtn = new TextButton(tr(),
@@ -88,17 +92,21 @@ function versusSetup() {
         new Button(tr(), "#00006666", "#FFFFFFFF", "#662200FF"), "");
     versusBottomRightUI.push(versusPlayMapBtn);
 
-    versus.push(new FlexGroup(tr(vec2((gameWidth / 2), ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x))), vec2(gameWidth / 2, gameHeight - ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x)))),
+    versus.push(new FlexGroup(isMobile() ?
+        tr(vec2(0.001, ((gameWidth * 1.5) * (MAP_SIZE.y/MAP_SIZE.x)) + ((pixelSize / 4) * 1024)), vec2(gameWidth, gameHeight - ((gameWidth * 1.5) * (MAP_SIZE.y/MAP_SIZE.x)) - ((pixelSize / 4) * 1024)))
+        : tr(vec2((gameWidth / 2), ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x))), vec2(gameWidth / 2, gameHeight - ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x)))),
         new SubState(tr(), versusBottomRightUI), false, vec2(0.001, 0.001), vec2(2, 5), true));
 
     versusBottomLeftUI = [];
 
-    versusBottomLeftUI.push(fillerLabel);
-    versusBottomLeftUI.push(fillerLabel);
-    versusBottomLeftUI.push(fillerLabel);
-    versusBottomLeftUI.push(fillerLabel);
-    versusBottomLeftUI.push(fillerLabel);
-    versusBottomLeftUI.push(fillerLabel);
+    if(!isMobile()) {
+        versusBottomLeftUI.push(fillerLabel);
+        versusBottomLeftUI.push(fillerLabel);
+        versusBottomLeftUI.push(fillerLabel);
+        versusBottomLeftUI.push(fillerLabel);
+        versusBottomLeftUI.push(fillerLabel);
+        versusBottomLeftUI.push(fillerLabel);
+    }
     versusBottomLeftUI.push(fillerLabel);
     versusBottomLeftUI.push(fillerLabel);
     versusCOName = new Label(tr(), "", fontSize.toString() + "px " + uiContext.fontFamily);
@@ -109,8 +117,10 @@ function versusSetup() {
     versusBottomLeftUI.push(versusCODesc);
     versusBottomLeftUI.push(fillerLabel);
 
-    versus.push(new FlexGroup(tr(vec2(0, ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x))), vec2(gameWidth / 2, gameHeight - ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x)))),
-        new SubState(tr(), versusBottomLeftUI), false, vec2(0.001, 0.001), vec2(1, 12), true));
+    versus.push(new FlexGroup(isMobile() ?
+    tr(vec2(0.001, ((pixelSize / 4) * 512)), vec2(gameWidth, ((pixelSize / 4) * 512)))
+    : tr(vec2(0.001, ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x))), vec2(gameWidth / 2, gameHeight - ((gameWidth/2)*(MAP_SIZE.y/MAP_SIZE.x)))),
+        new SubState(tr(), versusBottomLeftUI), false, vec2(0.001, 0.001), vec2(1, isMobile() ? 6 : 12), true));
 }
 
 function versusResize() {
@@ -123,11 +133,17 @@ function versusDraw(deltaTime) {
 
     if(ui.transitionToState != GAMEPLAY)
     {
-        versusMap.drawInRect(toVec2((gameWidth/4)/MAP_SIZE.x), toVec2(gameWidth/2));
-        versusManager.drawInRect(toVec2((gameWidth/4)/MAP_SIZE.x), toVec2(gameWidth/2));
+        if(isMobile()) {
+            versusMap.drawInRect(toVec2((gameWidth/2)/MAP_SIZE.x).add(vec2(0, (pixelSize/4) * 1024)), toVec2(gameWidth));
+            versusManager.drawInRect(toVec2((gameWidth/2)/MAP_SIZE.x).add(vec2(0, (pixelSize/4) * 1024)), toVec2(gameWidth));
+        } else {
+            versusMap.drawInRect(toVec2((gameWidth/4)/MAP_SIZE.x), toVec2(gameWidth/2));
+            versusManager.drawInRect(toVec2((gameWidth/4)/MAP_SIZE.x), toVec2(gameWidth/2));
+        }
     }
 
-    var COoffset = 100 * pixelSize;
+    var COoffset = isMobile() ? (gameWidth / 4) : (gameWidth / 8);
+    var COheight = isMobile() ? ((pixelSize / 4) * 512) : gameHeight - ((pixelSize / 4) * 512);
 
     //Dark CO bodies
     spritesRenderer.globalCompositeOperation = "overlay";
@@ -135,7 +151,7 @@ function versusDraw(deltaTime) {
         var co = i == 0 ? ZAREEM : i == 1 ? TAJA : i == 2 ? GURU : i;
         var pl = versusManager.getPlayerOfTeamID(i);
         if(pl != -1 && pl.getHQUnitIndex() != -1) {
-            bodyNFacesSheet.transform.position = vec2((COoffset/1.25) + (COoffset * co), (gameHeight / 2) + (gameHeight / 4));
+            bodyNFacesSheet.transform.position = vec2((COoffset/2) + (COoffset * co), COheight);
             bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
             bodyNFacesSheet.drawScIn(vec2(1024 * co), toVec2(1024));
         }
@@ -150,7 +166,7 @@ function versusDraw(deltaTime) {
             16.0*pixelSize, false, "white", 4.0*pixelSize);
 
         //Selected CO body
-        bodyNFacesSheet.transform.position = vec2((COoffset/1.25) + (COoffset * co), (gameHeight / 2) + (gameHeight / 4));
+        bodyNFacesSheet.transform.position = vec2((COoffset/2) + (COoffset * co), COheight);
         bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
         bodyNFacesSheet.drawScIn(vec2(1024 * co), toVec2(1024));
     }
@@ -168,7 +184,7 @@ function versusUpdate(deltaTime) {
 
 function versusPlay() {
     gameplayReset();
-    
+
     map = new GameMap(versusMapString);
     manager = new PlayerManager(map);
 
@@ -418,8 +434,7 @@ function versusEvent(deltaTime) {
                 case 3: versusAP = 5; break;
                 case 5: versusAP = 10; break;
                 case 10: versusAP = 15; break;
-                case 15: versusAP = 30; break;
-                case 30: versusAP = 3; break;
+                case 15: versusAP = 3; break;
                 default: versusAP = 5;
             }
             versusAPBtn.label.text = "AP PER TURN: " + versusAP.toString();

@@ -1,8 +1,11 @@
 
 function controlBarUISetup(fontSize) {
     controlBar = [];
-    controlBar.push(new Label(tr(), ""));
-    controlBar.push(new Label(tr(), ""));
+
+    if(!isMobile()) {
+        controlBar.push(new Label(tr(), ""));
+        controlBar.push(new Label(tr(), ""));
+    }
 
     controlHomeBtn = new TextButton(tr(),
         new Label(tr(), "To Base", fontSize.toString() + "px " + uiContext.fontFamily, "black"),
@@ -26,22 +29,31 @@ function controlBarUISetup(fontSize) {
         new Button(tr(), "#FFFFFFFF", "#000000FF", "#FFFFFF99"));
     controlBar.push(resetTurnBtn);
 
-
-    controlBar.push(new Label(tr(), ""));
-    //controlBar.push(new Label(tr(), ""));
+    if(!isMobile())
+        controlBar.push(new Label(tr(), ""));
 
     controlMenuBtn = new TextButton(tr(),
         new Label(tr(), "Menu", fontSize.toString() + "px " + uiContext.fontFamily, "black"),
         new Button(tr(), "#FFFFFFFF", "#000000FF", "#FFFFFF99"));
     controlBar.push(controlMenuBtn);
 
-    gameplay.push(new FlexGroup(tr(vec2(0.01, 0.01), vec2(gameWidth, 25 * pixelSize)),
-        new SubState(tr(), controlBar), false, vec2(10 * pixelSize, 0), vec2(9, 1), true));
+    gameplay.push(new FlexGroup(isMobile() ?
+        tr(vec2(0.001, 0.001), vec2(gameWidth, 40 * pixelSize))
+        : tr(vec2(0.001, 0.001), vec2(gameWidth, 25 * pixelSize)),
+        new SubState(tr(), isMobile() ? [resetTurnBtn, controlHomeBtn, controlMenuBtn, moneyLabel, turnLabel, actionPointsLabel] : controlBar),
+        false, vec2(10 * pixelSize, 0), isMobile() ? vec2(3, 1) : vec2(9, 1), true));
 }
 
 function controlBarUIUpdate() {
     moneyLabel.text = getPlayer().money.toString() + "$";
     actionPointsLabel.text = "AP: " + getPlayer().actionPoints.toString();
+    if(getPlayer().actionPoints <= 2) {
+        actionPointsLabel.textColor = "#FFBBBB";
+        if(getPlayer().actionPoints > 0 && gameTime % (600 * getPlayer().actionPoints) < (300 * getPlayer().actionPoints))
+            actionPointsLabel.text = "";
+    } else {
+        actionPointsLabel.textColor = "white";
+    }
     turnLabel.text = "Turn " + manager.turnCount.toString();
 }
 

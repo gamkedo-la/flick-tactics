@@ -52,9 +52,9 @@ class Unit {
 
     setupUnitProperties() {
         this.isBuilding = false;
-        this.rank = 0;
         switch (this.type) {
             case RIFLE_MECH:
+                this.rank = 0;
                 this.movement = 3;
                 this.movementObstacles = [SEA_TILE];
                 this.movementReducers = [MOUNTAIN_TILE];
@@ -68,6 +68,7 @@ class Unit {
                 break;
 
             case CANNON_MECH:
+                this.rank = 0;
                 this.movement = 2;
                 this.boostMovement = 2;
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
@@ -83,6 +84,7 @@ class Unit {
                 break;
 
             case ARTILLERY_MECH:
+                this.rank = 0;
                 this.movement = 2;
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE, SAND_TILE];
@@ -96,6 +98,7 @@ class Unit {
                 break;
 
             case SUPPORT_MECH:
+                this.rank = 0;
                 this.movement = 5;
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
@@ -106,6 +109,7 @@ class Unit {
                 break;
 
             case TELEPORT_MECH:
+                this.rank = 0;
                 this.movement = 3;
                 this.movementObstacles = [MOUNTAIN_TILE];
                 this.movementReducers = [];
@@ -122,19 +126,11 @@ class Unit {
 
             case CITY_BUILDING:
                 this.isBuilding = true;
-                this.boost = 0;
-                this.boostCooldown = 5;
-                this.boostCooldownDecreasePerRank = 1;
                 this.incomePerHp = 100;
-                this.incomeRankMultiplier = 1.0;
-                this.rankUpgradeCost = 10000;
-                this.rankUpgradeCostMultiplier = 2.0;
                 break;
 
             case WAR_BUILDING:
                 this.isBuilding = true;
-                this.boost = 0;
-                this.boostCooldown = 5;
                 this.mechDeployOffset = vec2(0, 1);
                 this.mechDeployDelay = [1, 4, 4, 2, 2];
                 break;
@@ -334,7 +330,7 @@ class MapUnit {
         if(Math.abs(pixelPosition.x - this.unit.position.x) > 0.5) this.flip = pixelPosition.x < this.unit.position.x;
 
         if (maxDisplayTilesPerRow != defaultTilesPerRow) this.unit.position = pixelPosition;
-        else this.unit.position = lerpVec2(this.unit.position, pixelPosition, 0.3);
+        else this.unit.position = lerpVec2(this.unit.position, pixelPosition, 0.35);
 
         //Unit Movement
         if (this.mapPathIndex > -1) {
@@ -346,7 +342,7 @@ class MapUnit {
                     this.mapPathIndex = -1;
                 }
             } else {
-                this.mapPosition = lerpVec2(this.mapPosition, this.mapPath[this.mapPathIndex], 0.3);
+                this.mapPosition = lerpVec2(this.mapPosition, this.mapPath[this.mapPathIndex], 0.35);
             }
         }
         

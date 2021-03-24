@@ -62,20 +62,22 @@ function gameplayReset() {
 }
 
 function gameplayUISetup() {
-    var fontSize = 18.0 * pixelSize;
+    var fontSize = (isMobile() ? 26 : 16) * pixelSize;
 
     controlBarUISetup(fontSize);
 
-    leftUnitChangeBtn = new TextButton(tr(vec2(0, gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), "<<"), new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
+    var leftRightBtnSize = isMobile() ? 80 * pixelSize : 50 * pixelSize;
+    var ypos = isMobile() ? (gameHeight - leftRightBtnSize - gameBottomBarHeight) : (gameHeight / 2);
+    leftUnitChangeBtn = new TextButton(tr(vec2(0, ypos), toVec2(leftRightBtnSize)),
+        new Label(tr(), "<<", fontSize.toString() + "px " + uiContext.fontFamily), new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
     gameplay.push(leftUnitChangeBtn);
-    rightUnitChangeBtn = new TextButton(tr(vec2(gameWidth - (50 * pixelSize), gameHeight / 2), vec2(50 * pixelSize, 50 * pixelSize)),
-        new Label(tr(), ">>"), new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
+    rightUnitChangeBtn = new TextButton(tr(vec2(gameWidth - (leftRightBtnSize), ypos), toVec2(leftRightBtnSize)),
+        new Label(tr(), ">>", fontSize.toString() + "px " + uiContext.fontFamily), new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
     gameplay.push(rightUnitChangeBtn);
 
-    quickStatsUISetup();
+    quickStatsUISetup(fontSize);
 
-    unitActionUISetup();
+    unitActionUISetup(fontSize);
 
     overviewUISetup(fontSize);
 
@@ -84,7 +86,7 @@ function gameplayUISetup() {
 }
 
 function gameplaySetup() {
-    gameBottomBarHeight = 140 * pixelSize;
+    gameBottomBarHeight = isMobile() ? (gameHeight / 6) : 140 * pixelSize;
 
     for(let i = 0; i < 16; i++)
         maps.push(readFile("maps/map" + i.toString() + ".txt"));
@@ -111,6 +113,10 @@ function gameplayDraw(deltaTime) {
     map.drawUnitExtras();
     if(dialogues.length <= 0) overviewUIDraw(cam);
     else dialogueDraw();
+
+    //Control Bar Black BG
+    if(maxDisplayTilesPerRow == defaultTilesPerRow)
+        drawRect(renderer, vec2(), vec2(gameWidth, (isMobile() ? 80 : 25) * pixelSize), true, "#00000066");
 }
 
 function gameplayUIDisplayUpdate() {
@@ -164,15 +170,17 @@ function gameplayUpdate(deltaTime) {
     } else playBGM(BGM_GAMEPLAY);
 
     if(dialogues.length <= 0) {
-
         aiUpdate(deltaTime);
 
-        if (maxDisplayTilesPerRow == defaultTilesPerRow) {
+        if (maxDisplayTilesPerRow == defaultTilesPerRow && !camDetached) {
             if(getPlayer().focusMUnit(deltaTime, cam)) {
                 cam = lerpVec2(cam, getPlayer().focus[0].mUnit.getCameraPosition(), 0.4);
             } else {
                 cam = lerpVec2(cam, getPlayer().getCameraPosition(), 0.25);
             }
+        } else if(camDetached && isTouchMoved) {
+            cam = cam.add(relTouchPos[0]);
+            //isTouchMoved = false;
         }
 
         gameplayUIDisplayUpdate();
@@ -180,8 +188,12 @@ function gameplayUpdate(deltaTime) {
         controlBarUIUpdate();
         quickStatsUIUpdate();
 
-        gameplayZoomBtn.enabled = true;
-
+        if(isMobile() && getPlayer().getSelectedMapUnit().unit.isBuilding) {
+            qStatsPanel.enabled = gameplayZoomBtn.enabled = false;
+        } else {
+            gameplayZoomBtn.enabled = true;
+        }
+        
     } else {
         dialogueUpdate(deltaTime);
         buildingPanel.enabled = qStatsPanel.enabled = gameplayZoomBtn.enabled = false;
@@ -214,7 +226,8 @@ function gameplayEvent(deltaTime) {
         var limit = 128;
         do { getPlayer().selectedIndex--; limit--;
         if (getPlayer().selectedIndex <= -1) getPlayer().selectedIndex = getPlayer().unitGroup.mapUnits.length - 1;
-        } while (getPlayer().getSelectedMapUnit().unit.type == RUIN_BUILDING && limit > 0);
+        } while ((getPlayer().getSelectedMapUnit().unit.type == RUIN_BUILDING
+        || getPlayer().getSelectedMapUnit().unit.type == CITY_BUILDING) && limit > 0);
         updateUnitActionButtons();
         leftUnitChangeBtn.button.resetOutput();
     }
@@ -223,23 +236,27 @@ function gameplayEvent(deltaTime) {
         var limit = 128;
         do { getPlayer().selectedIndex++; limit--;
         if (getPlayer().selectedIndex >= getPlayer().unitGroup.mapUnits.length) getPlayer().selectedIndex = 0;
-        } while (getPlayer().getSelectedMapUnit().unit.type == RUIN_BUILDING && limit > 0);
+        } while ((getPlayer().getSelectedMapUnit().unit.type == RUIN_BUILDING
+        || getPlayer().getSelectedMapUnit().unit.type == CITY_BUILDING) && limit > 0);
         updateUnitActionButtons();
         rightUnitChangeBtn.button.resetOutput();
     }
     else if (unitUpBtn.button.output == UIOUTPUT_SELECT) {
         playSFX(SFX_SELECT);
         getPlayer().getSelectedMapUnit().up = 0;
+        if(isMobile()) camDetached = true;
         unitUpBtn.button.resetOutput();
     }
     else if (unitLeftBtn.button.output == UIOUTPUT_SELECT) {
         playSFX(SFX_SELECT);
         getPlayer().getSelectedMapUnit().left = 0;
+        if(isMobile()) camDetached = true;
         unitLeftBtn.button.resetOutput();
     }
     else if (unitRightBtn.button.output == UIOUTPUT_SELECT) {
         playSFX(SFX_SELECT);
         getPlayer().getSelectedMapUnit().right = 0;
+        if(isMobile()) camDetached = true;
         unitRightBtn.button.resetOutput();
     }
 

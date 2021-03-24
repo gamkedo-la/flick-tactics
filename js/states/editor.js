@@ -65,69 +65,97 @@ function editorSetup() {
     editorMap = new GameMap(editorMapData);
     editorManager = new PlayerManager(editorMap, 1);
 
-    leftMoveBtn = new TextButton(tr(vec2(0.01, ((gameHeight - (64 * pixelSize)) / 2) - (64 * pixelSize)), vec2(32 * pixelSize, 128 * pixelSize)),
-        new Label(tr(), "<"),
+    var fontStr = ((isMobile() ? 24 : 12) * pixelSize).toString() + "px " + uiContext.fontFamily;
+
+    leftMoveBtn = new TextButton( isMobile() ?
+        tr(vec2(0.01, ((gameHeight - (64 * pixelSize)) / 2) - (64 * pixelSize)), vec2(64 * pixelSize, 128 * pixelSize))
+        : tr(vec2(0.01, ((gameHeight - (64 * pixelSize)) / 2) - (64 * pixelSize)), vec2(32 * pixelSize, 128 * pixelSize)),
+        new Label(tr(), "<", fontStr),
         new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
     editor.push(leftMoveBtn);
-    rightMoveBtn = new TextButton(tr(vec2(gameWidth - (32 * pixelSize), ((gameHeight - (64 * pixelSize)) / 2) - (64 * pixelSize)), vec2(32 * pixelSize, 128 * pixelSize)),
-        new Label(tr(), ">"),
+    rightMoveBtn = new TextButton( isMobile() ?
+        tr(vec2(gameWidth - (64 * pixelSize), ((gameHeight - (64 * pixelSize)) / 2) - (64 * pixelSize)), vec2(64 * pixelSize, 128 * pixelSize))
+        : tr(vec2(gameWidth - (32 * pixelSize), ((gameHeight - (64 * pixelSize)) / 2) - (64 * pixelSize)), vec2(32 * pixelSize, 128 * pixelSize)),
+        new Label(tr(), ">", fontStr),
         new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
     editor.push(rightMoveBtn);
-    upMoveBtn = new TextButton(tr(vec2((gameWidth / 2) - (64 * pixelSize), 0.01), vec2(128 * pixelSize, 32 * pixelSize)),
-        new Label(tr(), "^"),
+    upMoveBtn = new TextButton( isMobile() ? 
+        tr(vec2((gameWidth / 2) - (64 * pixelSize), 0.01), vec2(128 * pixelSize, 64 * pixelSize))
+        : tr(vec2((gameWidth / 2) - (64 * pixelSize), 0.01), vec2(128 * pixelSize, 32 * pixelSize)),
+        new Label(tr(), "^", fontStr),
         new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
     editor.push(upMoveBtn);
-    downMoveBtn = new TextButton(tr(vec2((gameWidth / 2) - (64 * pixelSize), gameHeight - (96 * pixelSize)), vec2(128 * pixelSize, 32 * pixelSize)),
-        new Label(tr(), "v"),
+    downMoveBtn = new TextButton( isMobile() ?
+        tr(vec2((gameWidth / 2) - (64 * pixelSize), gameHeight - (216 * pixelSize)), vec2(128 * pixelSize, 64 * pixelSize))
+        : tr(vec2((gameWidth / 2) - (64 * pixelSize), gameHeight - (96 * pixelSize)), vec2(128 * pixelSize, 32 * pixelSize)),
+        new Label(tr(), "v", fontStr),
         new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
     editor.push(downMoveBtn);
 
     var editorBtnSize = toVec2(pixelSize - (pixelSize/8.0)).multiply(toVec2(64.0));
-    editorBtnSize.y /= 2.0;
+    if(isMobile())
+        editorBtnSize.y *= 1.25;
+    else
+        editorBtnSize.y /= 2.0;
 
     editorBtnGroup = [];
-    overviewMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "OVERVIEW", undefined, "black"),
+    overviewMapBtn = new TextButton(tr(vec2(), editorBtnSize),
+        new Label(tr(), "OVERVIEW", fontStr, "black"),
         new Button(tr(), "#FFFFFFBB", "#00000022", "#FFFFFF22"));
     editorBtnGroup.push(overviewMapBtn);
-    mapBuildingUnitToggleBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 1, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "TERRAIN", undefined, "black"),
+    overviewMapBtn.enabled = isMobile() ? false : true;
+    mapBuildingUnitToggleBtn = new TextButton(tr(vec2(), editorBtnSize),
+        new Label(tr(), "TERRAIN", fontStr, "black"),
         new Button(tr(), "#FFFF88BB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(mapBuildingUnitToggleBtn);
-    editorTeamBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "RED", undefined, "black"),
+    editorTeamBtn = new TextButton(tr(vec2(), editorBtnSize),
+        new Label(tr(), "RED", fontStr, "black"),
         new Button(tr(), "#FFBBBBBB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(editorTeamBtn);
-    resetMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "RESET POS", undefined, "black"),
+    resetMapBtn = new TextButton(tr(vec2(), editorBtnSize),
+        new Label(tr(), "RESET POS", fontStr, "black"),
         new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(resetMapBtn);
-    clearMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 2, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "CLEAR", undefined, "black"),
+    clearMapBtn = new TextButton(tr(vec2(), editorBtnSize),
+        new Label(tr(), "CLEAR", fontStr, "black"),
         new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(clearMapBtn);
-    editorToMenuBtn = new TextButton(tr(vec2(0.001, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "BACK", undefined, "black"),
+    editorToMenuBtn = new TextButton(tr(vec2(), editorBtnSize),
+        new Label(tr(), "BACK", fontStr, "black"),
         new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFBBBBFF"));
     editorBtnGroup.push(editorToMenuBtn);
-    saveMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 3, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "SAVE", undefined, "black"),
+    saveMapBtn = new TextButton(tr(vec2(), editorBtnSize),
+        new Label(tr(), "SAVE", fontStr, "black"),
         new Button(tr(), "#88FF88BB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(saveMapBtn);
-    editorLoadMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 4, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "LOAD", undefined, "black"),
+    editorLoadMapBtn = new TextButton(tr(vec2(), editorBtnSize),
+        new Label(tr(), "LOAD", fontStr, "black"),
         new Button(tr(), "#FF8888BB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(editorLoadMapBtn);
-    editorPlayMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 3, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), "PLAY", undefined, "black"),
+    editorPlayMapBtn = new TextButton(tr(vec2(), editorBtnSize),
+        new Label(tr(), "PLAY", fontStr, "black"),
         new Button(tr(), "#88FFFFBB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(editorPlayMapBtn);
-    changeMapBtn = new TextButton(tr(vec2((64.0 * pixelSize) * 4, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), editorBtnSize),
-        new Label(tr(), editorMapIndex <= -1 ? "EXT." : "MAP " + (editorMapIndex+1).toString(), undefined, "black"),
+    changeMapBtn = new TextButton(tr(vec2(), editorBtnSize),
+        new Label(tr(), editorMapIndex <= -1 ? "EXT." : "MAP " + (editorMapIndex+1).toString(), fontStr, "black"),
         new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
     editorBtnGroup.push(changeMapBtn);
+    if(isMobile()) {
+        changeTileBtn = new TextButton(tr(vec2(), editorBtnSize),
+        new Label(tr(), "", fontStr, "black"),
+        new Button(tr(), "#FFFFFFBB", "#000000FF", "#FFFFFFFF"));
+        editorBtnGroup.push(changeTileBtn);
+        changeTileBtn.visible = false;
 
-    editor.push(new FlexGroup(tr(vec2(0.001, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), vec2(gameWidth/2, editorBtnSize.y * 2)),
+        mobFullView = new TextButton(tr(vec2(gameWidth - editorBtnSize.x, gameHeight - (216 * pixelSize)), editorBtnSize),
+        new Label(tr(), "VIEW", fontStr, "white"),
+        new Button(tr(), "#00000066", "#FFFFFFFF", "#000000BB"));
+        editor.push(mobFullView);
+    }
+
+    editor.push(new FlexGroup( isMobile() ?
+        tr(vec2(0.01, gameHeight - ((160.0) * (pixelSize - (pixelSize/16.0)))), vec2(gameWidth, editorBtnSize.y * 2))
+        : tr(vec2(0.01, gameHeight - (64.0 * (pixelSize - (pixelSize/16.0)))), vec2(gameWidth/2, editorBtnSize.y * 2)),
         new SubState(tr(), editorBtnGroup), false, toVec2(pixelSize), vec2(5, 2), true));
 }
 
@@ -139,28 +167,51 @@ function editorDraw(deltaTime) {
     editorManager.draw(editorCam);
     drawTileParticles(deltaTime, editorCam);
 
-    if(maxDisplayTilesPerRow != totalTilesInRow || (editorOverviewLock && overviewMapBtn.label.text != "IMMERSED"))
-    {
-        drawRect(renderer, vec2(0, gameHeight - (64.0 * pixelSize)), vec2(gameWidth, 64.0 * pixelSize), true, "#000000BB");
-        for(let i = 0; i < 6 - (editMode == EDIT_BUILDING ? 2 : (editMode == EDIT_MECH ? 1 : 0)); i++)
-        {
-            if(editorSelectedIndex == -1 || editorSelectedIndex == i)
-                renderer.globalAlpha = 1.0;
-            else
-                renderer.globalAlpha = 0.4;
-
-            var index = i;
-            if(editMode == EDIT_BUILDING) index = getBuildingIndexFromType(i) + editorTeamID;
-            else if(editMode == EDIT_MECH) index = getMechIndexFromType(i, editorTeamID);
-            drawSheet(index, vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (32.0 * pixelSize)), toVec2(pixelSize - (pixelSize/8.0)));
-            
-            renderer.globalAlpha = 1.0;
-
-            renderer.font = (uiContext.fontSize * 2.0).toString() + "px " + uiContext.fontFamily;
-            drawText(renderer, (i+1).toString(), vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize) - pixelSize, gameHeight - (31.0 * pixelSize)), "black");
-            drawText(renderer, (i+1).toString(), vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (32.0 * pixelSize)), "white");
+    if(isMobile()) {
+        if(mobFullView.label.text == "FULL") {
+            drawRect(renderer, vec2(), vec2(gameWidth, gameHeight), true, "#000000BB");
+            editorMap.drawInRect(toVec2((gameWidth/2)/MAP_SIZE.x), toVec2(gameWidth));
+            editorManager.drawInRect(toVec2((gameWidth/2)/MAP_SIZE.x), toVec2(gameWidth));
+            for(let i = 0; i < editorBtnGroup.length; i++) editorBtnGroup[i].enabled = false;
+            upMoveBtn.enabled = downMoveBtn.enabled = leftMoveBtn.enabled = rightMoveBtn.enabled = false;
+        } else {
+            drawRect(renderer, vec2(gameWidth - (100.0 * pixelSize), gameHeight - (80.0 * pixelSize)), vec2(100.0 * pixelSize, 80.0 * pixelSize), true, "#000000BB");
+            if((editMode == EDIT_BUILDING && editorSelectedIndex > 3) || (editMode == EDIT_MECH && editorSelectedIndex > 4)) {
+                drawSheet(unitDestroySequence[2].index, vec2(gameWidth - (48.0 * pixelSize) - pixelSize, gameHeight - (48.0 * pixelSize)), toVec2(pixelSize));
+            } else {
+                var index = editorSelectedIndex;
+                if(editMode == EDIT_BUILDING) index = getBuildingIndexFromType(editorSelectedIndex) + editorTeamID;
+                else if(editMode == EDIT_MECH) index = getMechIndexFromType(editorSelectedIndex, editorTeamID);
+                drawSheet(index, vec2(gameWidth - (48.0 * pixelSize) - pixelSize, gameHeight - (48.0 * pixelSize)), toVec2(pixelSize));
+            }
+            for(let i = 0; i < editorBtnGroup.length; i++) editorBtnGroup[i].enabled = true;
+            overviewMapBtn.enabled = false;
+            upMoveBtn.enabled = downMoveBtn.enabled = leftMoveBtn.enabled = rightMoveBtn.enabled = true;
         }
-        if(editMode != EDIT_TERRAIN) drawText(renderer, "DEL", vec2(gameWidth - (32.0 * pixelSize) - (5 * 64.0 * pixelSize), gameHeight - (32.0 * pixelSize)), "white");
+    } else {
+        if(maxDisplayTilesPerRow != totalTilesInRow || (editorOverviewLock && overviewMapBtn.label.text != "IMMERSED"))
+        {
+            drawRect(renderer, vec2(0, gameHeight - (64.0 * pixelSize)), vec2(gameWidth, 64.0 * pixelSize), true, "#000000BB");
+            for(let i = 0; i < 6 - (editMode == EDIT_BUILDING ? 2 : (editMode == EDIT_MECH ? 1 : 0)); i++)
+            {
+                if(editorSelectedIndex == -1 || editorSelectedIndex == i)
+                    renderer.globalAlpha = 1.0;
+                else
+                    renderer.globalAlpha = 0.4;
+
+                var index = i;
+                if(editMode == EDIT_BUILDING) index = getBuildingIndexFromType(i) + editorTeamID;
+                else if(editMode == EDIT_MECH) index = getMechIndexFromType(i, editorTeamID);
+                drawSheet(index, vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (32.0 * pixelSize)), toVec2(pixelSize - (pixelSize/8.0)));
+                
+                renderer.globalAlpha = 1.0;
+
+                renderer.font = (uiContext.fontSize * 2.0).toString() + "px " + uiContext.fontFamily;
+                drawText(renderer, (i+1).toString(), vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize) - pixelSize, gameHeight - (31.0 * pixelSize)), "black");
+                drawText(renderer, (i+1).toString(), vec2(gameWidth - (32.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (32.0 * pixelSize)), "white");
+            }
+            if(editMode != EDIT_TERRAIN) drawText(renderer, "DEL", vec2(gameWidth - (32.0 * pixelSize) - (5 * 64.0 * pixelSize), gameHeight - (32.0 * pixelSize)), "white");
+        }
     }
 }
 
@@ -208,7 +259,7 @@ function editorEvent(deltaTime) {
     }
     wheelScroll = 0.0;
 
-    if(isRightClick) {
+    if(!isMobile() && isRightClick) {
         if(overviewMapBtn.label.text == "OVERVIEW") {
             overviewMapBtn.label.text = "LOCKED";
             editorOverviewLock = true;
@@ -249,13 +300,13 @@ function editorEvent(deltaTime) {
         }
     }
 
-    if(leftMoveBtn.button.output == UIOUTPUT_HOVER) {
+    if(leftMoveBtn.button.output == UIOUTPUT_HOVER || leftMoveBtn.button.output == UIOUTPUT_SELECT) {
         editorCam.x += editorCamMove * pixelSize * deltaTime;
-    } else if(rightMoveBtn.button.output == UIOUTPUT_HOVER) {
+    } else if(rightMoveBtn.button.output == UIOUTPUT_HOVER || rightMoveBtn.button.output == UIOUTPUT_SELECT) {
         editorCam.x -= editorCamMove * pixelSize * deltaTime;
-    } else if(upMoveBtn.button.output == UIOUTPUT_HOVER) {
+    } else if(upMoveBtn.button.output == UIOUTPUT_HOVER || upMoveBtn.button.output == UIOUTPUT_SELECT) {
         editorCam.y += editorCamMove * pixelSize * deltaTime;
-    } else if(downMoveBtn.button.output == UIOUTPUT_HOVER) {
+    } else if(downMoveBtn.button.output == UIOUTPUT_HOVER || downMoveBtn.button.output == UIOUTPUT_SELECT) {
         editorCam.y -= editorCamMove * pixelSize * deltaTime;
     }
 
@@ -375,15 +426,17 @@ function editorEvent(deltaTime) {
             if(editMode > EDIT_MECH) editMode = EDIT_TERRAIN;
 
             switch(editMode) {
-                case EDIT_TERRAIN:
-                    mapBuildingUnitToggleBtn.label.text = "TERRAIN";
-                    break;
-                case EDIT_BUILDING:
-                    mapBuildingUnitToggleBtn.label.text = "BUILDING";
-                    break;
-                case EDIT_MECH:
-                    mapBuildingUnitToggleBtn.label.text = "MECH";
-                    break;
+                case EDIT_TERRAIN: mapBuildingUnitToggleBtn.label.text = "TERRAIN"; break;
+                case EDIT_BUILDING: mapBuildingUnitToggleBtn.label.text = "BUILDING"; break;
+                case EDIT_MECH: mapBuildingUnitToggleBtn.label.text = "MECH"; break;
+            }
+
+            if(isMobile()) {
+                switch(editMode) {
+                    case EDIT_TERRAIN: if(editorSelectedIndex > 5) editorSelectedIndex = 0; break;
+                    case EDIT_BUILDING: if(editorSelectedIndex > 4) editorSelectedIndex = 0; break;
+                    case EDIT_MECH: if(editorSelectedIndex > 5) editorSelectedIndex = 0; break;
+                }
             }
 
             mapBuildingUnitToggleBtn.button.resetOutput();
@@ -537,5 +590,40 @@ function editorEvent(deltaTime) {
             particles = [];
             editorToVersus(editorMap.getMapString(editorManager));
             editorPlayMapBtn.button.resetOutput();
+    }
+
+    if(isMobile()) {
+        switch (changeTileBtn.button.output) {
+            case UIOUTPUT_HOVER:
+                if(changeTileBtn.button.hoverTrigger) {
+                    playSFX(SFX_BUTTON_HOVER);
+                    changeTileBtn.button.hoverTrigger = false;
+                }
+                break;
+    
+            case UIOUTPUT_SELECT:
+                playSFX(SFX_BUTTON_CLICK);
+                editorSelectedIndex++;
+                switch(editMode) {
+                    case EDIT_TERRAIN: if(editorSelectedIndex > 5) editorSelectedIndex = 0; break;
+                    case EDIT_BUILDING: if(editorSelectedIndex > 4) editorSelectedIndex = 0; break;
+                    case EDIT_MECH: if(editorSelectedIndex > 5) editorSelectedIndex = 0; break;
+                }
+                changeTileBtn.button.resetOutput();
+        }
+
+        switch (mobFullView.button.output) {
+            case UIOUTPUT_HOVER:
+                if(mobFullView.button.hoverTrigger) {
+                    playSFX(SFX_BUTTON_HOVER);
+                    mobFullView.button.hoverTrigger = false;
+                }
+                break;
+    
+            case UIOUTPUT_SELECT:
+                playSFX(SFX_BUTTON_CLICK);
+                mobFullView.label.text = mobFullView.label.text == "VIEW" ? "FULL" : "VIEW";
+                mobFullView.button.resetOutput();
+        }
     }
 }
