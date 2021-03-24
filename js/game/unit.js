@@ -307,6 +307,17 @@ class MapUnit {
                     toVec2(tileSize), true, "#FFFF0088", 0);
                 renderer.globalAlpha = 1.0;
             }
+
+            var off = [vec2(0, 1), vec2(1, 0), vec2(0, -1), vec2(-1, 0)];
+            for(let i = 0; i < off.length; i++) {
+                if((this.unit.mechDeployOffset == -1 || !off[i].isEqual(this.unit.mechDeployOffset))
+                && getIndexPair(this.mapPosition.add(off[i]))[0] == -1
+                && map.getTileTypeFromPosition(this.mapPosition.add(off[i])) != SEA_TILE
+                && map.getTileTypeFromPosition(this.mapPosition.add(off[i])) != MOUNTAIN_TILE) {
+                    drawRect(renderer, tilePositionToPixelPosition(this.mapPosition.add(off[i]).subtract(toVec2(0.5))).add(toVec2(tileGap/2)).add(offset).add(toVec2(tileSize/2)).subtract(toVec2(tileSize/8)),
+                    toVec2(tileSize/4), true, "#00000088", 0);
+                }
+            }
         }
     }
 
@@ -409,9 +420,9 @@ class MapUnit {
         if(!this.unpushedAnim) {
             if (this.hp > 0 && this.unit.type != RUIN_BUILDING) {
                 if (Math.ceil(this.hp) < 10 && ui.stateIndex != BATTLESCREEN && maxDisplayTilesPerRow == defaultTilesPerRow) {
-                    spritesRenderer.font = (24 * pixelSize).toString() + "px OrangeKid";
-                    drawText(spritesRenderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-29.6 * pixelSize, -14.6 * pixelSize))), "black");
-                    drawText(spritesRenderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
+                    renderer.font = ((isMobile() ? 32 : 24) * pixelSize).toString() + "px OrangeKid";
+                    drawText(renderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-29.6 * pixelSize, -14.6 * pixelSize))), "black");
+                    drawText(renderer, Math.ceil(this.hp).toString(), offset.add(this.unit.position.add(vec2(-28 * pixelSize, -16 * pixelSize))), "white");
                 }
             } else if (this.hp <= 0 && ui.stateIndex != BATTLESCREEN && this.destroyTime < gameTime) {
                 if(this.unit.isBuilding) {

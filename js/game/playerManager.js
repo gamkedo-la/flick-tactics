@@ -162,8 +162,6 @@ class PlayerManager {
         } while ((this.players[this.index].selectedIndex == -1 || this.players[this.index].control == -1) && limit < 10)
         playSFX(SFX_ENDTURN);
 
-        buildingPanelCOSelection = this.index;
-
         updateUnitActionButtons();
 
         //Saving Manager's State Before the Start of a new Turn

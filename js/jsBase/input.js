@@ -15,6 +15,7 @@ function resizeVec2(v) {
 
 var isTouched = false;
 var isTouchMoved = false;
+var untouch = false;
 var touchPos = [vec2(0, 0), vec2(0, 0), vec2(0, 0), vec2(0, 0), vec2(0, 0)];
 var relTouchPos = [vec2(0, 0), vec2(0, 0), vec2(0, 0), vec2(0, 0), vec2(0, 0)];
 var wheelScroll = 0;
@@ -42,7 +43,7 @@ function removeKeyPressed(key) {
 function resetKeyPressed() { keysPressed = []; }
 
 function onTouchStart(ev) {
-    if (inputTimer <= 0) {
+    if (inputTimer <= 0 && untouch) {
         isTouched = true;
         inputTimer = inputDelay;
     }
@@ -55,17 +56,16 @@ function onTouchStart(ev) {
 
 function onTouchMove(ev) {
     isTouchMoved = true;
-
     for (let i = 0; i < ev.touches.length; i++) {
         if (isTouched && (touchPos[i].x != 0.0 && touchPos[i].y != 0.0))
             relTouchPos[i] = vec2(ev.touches[i].clientX, ev.touches[i].clientY).subtract(touchPos[i]);
-
         touchPos[i] = vec2(ev.touches[i].clientX, ev.touches[i].clientY);
     }
+    isTouched = false;
 }
 
 function onTouchEnd(ev) {
-    ev.preventDefault();
+    //ev.preventDefault();
     for (let i = 0; i < 5; i++) {
         if (i >= ev.touches.length) {
             touchPos[i] = vec2(0, 0);
@@ -73,8 +73,11 @@ function onTouchEnd(ev) {
         }
     }
 
-    if (ev.touches.length <= 0)
+    if (ev.touches.length <= 0) {
         isTouched = false;
+        isTouchMoved = false;
+        untouch = true;
+    }
 
     userInteracted = true;
 }

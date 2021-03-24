@@ -58,14 +58,11 @@ function gameplayReset() {
     manager = undefined;
     particles = [];
     particles = [];
-    buildingPanelCOSelection = 0;
 }
 
 function gameplayUISetup() {
     var fontSize = (isMobile() ? 26 : 16) * pixelSize;
-
     controlBarUISetup(fontSize);
-
     var leftRightBtnSize = isMobile() ? 80 * pixelSize : 50 * pixelSize;
     var ypos = isMobile() ? (gameHeight - leftRightBtnSize - gameBottomBarHeight) : (gameHeight / 2);
     leftUnitChangeBtn = new TextButton(tr(vec2(0, ypos), toVec2(leftRightBtnSize)),
@@ -74,15 +71,10 @@ function gameplayUISetup() {
     rightUnitChangeBtn = new TextButton(tr(vec2(gameWidth - (leftRightBtnSize), ypos), toVec2(leftRightBtnSize)),
         new Label(tr(), ">>", fontSize.toString() + "px " + uiContext.fontFamily), new Button(tr(), "#00000088", "#FFFFFFFF", "#000000DD"));
     gameplay.push(rightUnitChangeBtn);
-
     quickStatsUISetup(fontSize);
-
     unitActionUISetup(fontSize);
-
     overviewUISetup(fontSize);
-
     buildingPanelSetup();
-    gameplay.push(buildingPanel);
 }
 
 function gameplaySetup() {
@@ -121,8 +113,6 @@ function gameplayDraw(deltaTime) {
 
 function gameplayUIDisplayUpdate() {
     if (!getPlayer().getSelectedMapUnit().unit.isBuilding || getPlayer().control == 1) {
-        buildingPanel.enabled = false;
-
         if(getPlayer().getSelectedMapUnit().unit.deployTime <= 0) {
             unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled =
                 (cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize
@@ -138,15 +128,22 @@ function gameplayUIDisplayUpdate() {
         } else {
             unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
         }
-    } else buildingPanelUpdate(getPlayer().getSelectedMapUnit());
+    } else
+        buildingPanelUpdate(getPlayer().getSelectedMapUnit());
 
     if (unitUpBtn.button.output != UIOUTPUT_SELECT) unitUpBtn.button.output = getPlayer().getSelectedMapUnit().up == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
     if (unitLeftBtn.button.output != UIOUTPUT_SELECT) unitLeftBtn.button.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
     if (unitRightBtn.button.output != UIOUTPUT_SELECT) unitRightBtn.button.output = getPlayer().getSelectedMapUnit().right == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
     
-    if (getPlayer().actionPoints <= 0)
+    if (getPlayer().actionPoints <= 0
+    && getPlayer().getSelectedMapUnit().unit.type != HQ_BUILDING)
         unitUpBtn.button.output = unitLeftBtn.button.output
         = unitRightBtn.button.output = UIOUTPUT_DISABLED;
+
+    if (getPlayer().getSelectedMapUnit().unit.type == HQ_BUILDING
+    && getPlayer().powerMeter < 0.999) {
+        unitUpBtn.button.output = UIOUTPUT_DISABLED;
+    }
     
     if (getPlayer().getSelectedMapUnit().unit.ammo == 0
     || isTileOnSmoke(getPlayer().getSelectedMapUnit().mapPosition)) {
@@ -163,11 +160,15 @@ function gameplayUIDisplayUpdate() {
 }
 
 function gameplayUpdate(deltaTime) {
-    if(gameplaySilence) playBGM(-1);
+    if(gameplaySilence)
+        playBGM(-1);
     else if(getPlayer().powered) {
-        if(getPlayer().CO == HULU || getPlayer().CO == JONAH) playBGM(BGM_BADPOWER);
-        else playBGM(BGM_GOODPOWER);
-    } else playBGM(BGM_GAMEPLAY);
+        if(getPlayer().CO == HULU || getPlayer().CO == JONAH)
+            playBGM(BGM_BADPOWER);
+        else
+            playBGM(BGM_GOODPOWER);
+    } else
+        playBGM(BGM_GAMEPLAY);
 
     if(dialogues.length <= 0) {
         aiUpdate(deltaTime);
@@ -180,7 +181,6 @@ function gameplayUpdate(deltaTime) {
             }
         } else if(camDetached && isTouchMoved) {
             cam = cam.add(relTouchPos[0]);
-            //isTouchMoved = false;
         }
 
         gameplayUIDisplayUpdate();
@@ -188,7 +188,7 @@ function gameplayUpdate(deltaTime) {
         controlBarUIUpdate();
         quickStatsUIUpdate();
 
-        if(isMobile() && getPlayer().getSelectedMapUnit().unit.isBuilding) {
+        if(isMobile() && getPlayer().getSelectedMapUnit().unit.type == WAR_BUILDING) {
             qStatsPanel.enabled = gameplayZoomBtn.enabled = false;
         } else {
             gameplayZoomBtn.enabled = true;
@@ -196,14 +196,11 @@ function gameplayUpdate(deltaTime) {
         
     } else {
         dialogueUpdate(deltaTime);
-        buildingPanel.enabled = qStatsPanel.enabled = gameplayZoomBtn.enabled = false;
+        qStatsPanel.enabled = gameplayZoomBtn.enabled = false;
     }
-
-    if(getPlayer().focus.length > 0) buildingPanel.enabled = false;
 }
 
 function gameplayEvent(deltaTime) {
-
     if(dialogues.length > 0) return;
 
     controlBarUIEvents();
@@ -243,20 +240,36 @@ function gameplayEvent(deltaTime) {
     }
     else if (unitUpBtn.button.output == UIOUTPUT_SELECT) {
         playSFX(SFX_SELECT);
-        getPlayer().getSelectedMapUnit().up = 0;
-        if(isMobile()) camDetached = true;
+        if(getPlayer().getSelectedMapUnit().unit.type == HQ_BUILDING) {
+            if(getPlayer().powerMeter >= 0.999) {
+                activatePower();
+                getPlayer().powerMeter = 0.0;
+            }
+        } else {
+            getPlayer().getSelectedMapUnit().up = 0;
+            if(isMobile()) camDetached = true;
+        }
         unitUpBtn.button.resetOutput();
     }
     else if (unitLeftBtn.button.output == UIOUTPUT_SELECT) {
         playSFX(SFX_SELECT);
-        getPlayer().getSelectedMapUnit().left = 0;
-        if(isMobile()) camDetached = true;
+        if(getPlayer().getSelectedMapUnit().unit.type == HQ_BUILDING) {
+            unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
+            getPlayer().getSelectedMapUnit().hp = 0;
+        } else {
+            getPlayer().getSelectedMapUnit().left = 0;
+            if(isMobile()) camDetached = true;
+        }
         unitLeftBtn.button.resetOutput();
     }
     else if (unitRightBtn.button.output == UIOUTPUT_SELECT) {
         playSFX(SFX_SELECT);
-        getPlayer().getSelectedMapUnit().right = 0;
-        if(isMobile()) camDetached = true;
+        if(getPlayer().getSelectedMapUnit().unit.type == HQ_BUILDING) {
+            manager.endTurn();
+        } else {
+            getPlayer().getSelectedMapUnit().right = 0;
+            if(isMobile()) camDetached = true;
+        }
         unitRightBtn.button.resetOutput();
     }
 

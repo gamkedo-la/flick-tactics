@@ -131,8 +131,9 @@ class TileParticle {
         
         drawSheet(this.sequence[this.currentIndex].index, this.position.add(camPos), sc);
         
-        drawText(spritesRenderer, this.text, this.position.add(camPos).add(vec2(pixelSize, -pixelSize)), "black");
-        drawText(spritesRenderer, this.text, this.position.add(camPos), "white");
+        renderer.font = ((isMobile() ? 32 : 24) * pixelSize).toString() + "px OrangeKid";
+        drawText(renderer, this.text, this.position.add(camPos).add(vec2(pixelSize, -pixelSize)), "black");
+        drawText(renderer, this.text, this.position.add(camPos), "white");
     }
 
     drawIsolate(deltaTime, camPos, sc) {

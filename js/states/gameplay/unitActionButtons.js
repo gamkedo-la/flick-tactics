@@ -23,7 +23,7 @@ function unitActionUISetup(fontSize) {
 }
 
 function updateUnitActionButtons() {
-    switch (getPlayer().unitGroup.mapUnits[getPlayer().selectedIndex].unit.type) {
+    switch (getPlayer().getSelectedMapUnit().unit.type) {
         case RIFLE_MECH:
             unitUpBtn.label.text = "MOVE";
             unitLeftBtn.label.text = "SMOKE";
@@ -52,6 +52,12 @@ function updateUnitActionButtons() {
             unitUpBtn.label.text = "MOVE";
             unitLeftBtn.label.text = "TELEPORT";
             unitRightBtn.label.text = "BOOM!";
+            break;
+
+        case HQ_BUILDING:
+            unitUpBtn.label.text = "POWER";
+            unitLeftBtn.label.text = "YIELD";
+            unitRightBtn.label.text = "END";
             break;
     }
 }

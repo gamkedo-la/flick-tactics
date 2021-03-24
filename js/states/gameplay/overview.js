@@ -47,14 +47,17 @@ function overviewUIDraw(offset) {
             }
         } else {
             gameplayZoomBtn.label.text = "Q";
+            gameplayZoomBtn.label.textColor = "white";
         }
-        gameplayZoomBtn.label.textColor = "white";
-        if(zoomLock) renderer.globalAlpha = 0.6;
-        drawSheet(18, vec2(32 * zoomBtnSize, gameHeight - (96 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
-        drawSheet(19, vec2(96 * zoomBtnSize, gameHeight - (96 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
-        drawSheet(38, vec2(32 * zoomBtnSize, gameHeight - (32 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
-        drawSheet(39, vec2(96 * zoomBtnSize, gameHeight - (32 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
-        renderer.globalAlpha = 1.0;
+        
+        if(gameplayZoomBtn.enabled) {
+            if(zoomLock) renderer.globalAlpha = 0.6;
+            drawSheet(18, vec2(32 * zoomBtnSize, gameHeight - (96 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+            drawSheet(19, vec2(96 * zoomBtnSize, gameHeight - (96 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+            drawSheet(38, vec2(32 * zoomBtnSize, gameHeight - (32 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+            drawSheet(39, vec2(96 * zoomBtnSize, gameHeight - (32 * zoomBtnSize)), vec2(zoomBtnSize, zoomBtnSize));
+            renderer.globalAlpha = 1.0;
+        }
     }
 
     var oPos = vec2(offset.x, offset.y).subtract(vec2(tileSize / 2, tileSize / 2));

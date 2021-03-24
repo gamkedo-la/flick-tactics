@@ -40,14 +40,14 @@ var currentMapIndex = 0;
 
 function drawSheet(index, pos, sc, tileSize) {
     if (typeof tileSize == "undefined") tileSize = vec2(64, 64);
-    var cols = Math.floor((gameSheet.imageObject.image.width - 20) / tileSize.x);
 
-    gameSheet.transform.position = pos;
-    gameSheet.transform.scale = sc;
-
-    var row = index % cols;
-    var col = Math.floor(index / cols);
-    gameSheet.drawScIn(vec2((row*68), (col*68)), tileSize);
+    if(pos.x > -tileSize.x * sc.x && pos.y > -tileSize.y * sc.y &&
+    pos.x < window.innerWidth + (tileSize.x * sc.x) && pos.y < window.innerHeight + (tileSize.y * sc.y)) {
+        var cols = Math.floor((gameSheet.imageObject.image.width - 20) / tileSize.x);
+        gameSheet.transform.position = pos;
+        gameSheet.transform.scale = sc;
+        gameSheet.drawScIn(vec2(((index % cols) * 68), (Math.floor(index / cols) * 68)), tileSize);
+    }
 }
 
 function updateTileSizes() {
@@ -214,6 +214,7 @@ class GameMap {
                     if (gameTime % 2000 < 1000)
                         index += 20;
                 }
+
                 drawSheet(index, pos, sc);
 
                 if(maxDisplayTilesPerRow == totalTilesInRow && gameTime % 1200 < 600) {
@@ -932,7 +933,7 @@ class GameMap {
         }
 
         //Select unit on click/touch
-        if (isTouched && !isTouchInsideBPanel()) {
+        if (isTouched && (getPlayer().getSelectedMapUnit().unit.type != WAR_BUILDING || touchPos[0].y < panelY)) {
             var indexPair = getIndexPair(this.cursorTile);
             if (indexPair[0] != -1
             && getPlayerI(indexPair).unitGroup.teamID == getPlayer().unitGroup.teamID

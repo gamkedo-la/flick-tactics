@@ -8,7 +8,7 @@ function controlBarUISetup(fontSize) {
     }
 
     controlHomeBtn = new TextButton(tr(),
-        new Label(tr(), "To Base", fontSize.toString() + "px " + uiContext.fontFamily, "black"),
+        new Label(tr(), "Base", fontSize.toString() + "px " + uiContext.fontFamily, "black"),
         new Button(tr(), "#FFFFFFFF", "#000000FF", "#FFFFFF99"));
     controlBar.push(controlHomeBtn);
 
@@ -33,8 +33,8 @@ function controlBarUISetup(fontSize) {
         controlBar.push(new Label(tr(), ""));
 
     controlMenuBtn = new TextButton(tr(),
-        new Label(tr(), "Menu", fontSize.toString() + "px " + uiContext.fontFamily, "black"),
-        new Button(tr(), "#FFFFFFFF", "#000000FF", "#FFFFFF99"));
+        new Label(tr(), "Menu", fontSize.toString() + "px " + uiContext.fontFamily, "white"),
+        new Button(tr(), "#002299FF", "#FFFFFFFF", "#0044BBFF"));
     controlBar.push(controlMenuBtn);
 
     gameplay.push(new FlexGroup(isMobile() ?
@@ -82,11 +82,10 @@ function controlBarUIEvents() {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
-
             var hqIndex = getPlayer().getHQUnitIndex();
             if(hqIndex > -1) getPlayer().selectedIndex = hqIndex;
             else manager.endTurn();
-
+            updateUnitActionButtons();
             controlHomeBtn.button.resetOutput();
     }
     switch (resetTurnBtn.button.output)

@@ -61,7 +61,7 @@ function versusSetup() {
     versusBottomRightUI.push(fillerLabel);
     versusBottomRightUI.push(fillerLabel);
 
-    versusMoney = 0;
+    versusMoney = 5000;
     versusAP = 5;
     versusMoneyBtn = new TextButton(tr(),
         new Label(tr(), "STARTING MONEY: " + versusMoney.toString() + "$",
@@ -195,7 +195,7 @@ function versusPlay() {
         var vpl = versusManager.getPlayerOfTeamID(tid);
         var pl = manager.getPlayerOfTeamID(tid);
         pl.control = vpl.control;
-        pl.money = vpl.money;
+        pl.money = versusMoney;//vpl.money;
         pl.deployDelay = vpl.deployDelay;
         pl.actionPoints = vpl.actionPoints;
         if(pl.control == -1) pl.nullify();
@@ -388,9 +388,8 @@ function versusEvent(deltaTime) {
                 case 5000: versusMoney = 10000; break;
                 case 10000: versusMoney = 25000; break;
                 case 25000: versusMoney = 50000; break;
-                case 50000: versusMoney = 100000; break;
-                case 100000: versusMoney = 0; break;
-                default: versusMoney = 0;
+                case 50000: versusMoney = 0; break;
+                default: versusMoney = 5000;
             }
             versusMoneyBtn.label.text = "STARTING MONEY: " + versusMoney.toString() + "$";
             for(let i = 0; i < versusManager.players.length; i++) versusManager.players[i].money = versusMoney;
@@ -433,8 +432,7 @@ function versusEvent(deltaTime) {
             switch(versusAP) {
                 case 3: versusAP = 5; break;
                 case 5: versusAP = 10; break;
-                case 10: versusAP = 15; break;
-                case 15: versusAP = 3; break;
+                case 10: versusAP = 3; break;
                 default: versusAP = 5;
             }
             versusAPBtn.label.text = "AP PER TURN: " + versusAP.toString();

@@ -59,7 +59,7 @@ function draw(deltaTime) {
         case HELP: helpDraw(deltaTime); break;
     }
     ui.draw();
-    if(ui.stateIndex == GAMEPLAY) {
+    if(ui.stateIndex == GAMEPLAY && ui.transitionToState == -1) {
         quickStatsUIDraw();
         buildingPanelDraw();
     }
