@@ -35,25 +35,27 @@ var afterDialoguesEvent = function() {};
 
 function dialogueSetup(uiArray1, uiArray2)
 {
-    var baseYPosition = gameHeight/1.4;
-    dialogueFontSize = 0.032 * gameWidth;
+    dialogueYPosition = isMobile() ? (gameHeight - (128.0 * pixelSize)) : (gameHeight/1.4);
+    dialogueFontSize = (isMobile() ? 0.05 : 0.032) * gameWidth;
 
-    dialogueFaceSize = 256.0 * (pixelSize/2.0);
-    soldierFaceSprite = new Sprite(tr(vec2((gameWidth/12) + (38.0 * pixelSize), baseYPosition + (64.0 * pixelSize)), toVec2(pixelSize/2.0)), new ImageObject("images/soldierFace.png"));
+    dialogueFaceScale = pixelSize/2.0;
+    dialogueFaceSize = 256.0 * dialogueFaceScale;
+    soldierFaceSprite = new Sprite(tr(vec2(isMobile() ? (64.0 * pixelSize) : ((gameWidth/12) + (38.0 * pixelSize)), dialogueYPosition + (64.0 * pixelSize)),
+        toVec2(dialogueFaceScale)), new ImageObject("images/soldierFace.png"));
 
     /*for(let i = 0; i < no_campaign.length; i++)
         dialogues.push(no_campaign[i]);*/
 
-    dialogueSpeaker = new Label(tr(vec2(gameWidth/12, baseYPosition),
+    dialogueSpeaker = new Label(tr(vec2((isMobile() ? (128.0 * pixelSize) : (gameWidth/12)), dialogueYPosition - (isMobile() ? ((dialogueFontSize * 2.0) - (8.0 * pixelSize)) : 0.0)),
         vec2(gameWidth - (gameWidth/6), gameHeight/9)),
         "", dialogueFontSize + "px " + uiContext.fontFamily, dialogueCO[GURU].color, -1);
-    dialogueLine1 = new Label(tr(vec2(gameWidth/12, baseYPosition + (dialogueFontSize * 1.0)),
+    dialogueLine1 = new Label(tr(vec2((isMobile() ? (128.0 * pixelSize) : (gameWidth/12)), dialogueYPosition + (dialogueFontSize * 1.0) - (isMobile() ? ((dialogueFontSize * 2.0) - (8.0 * pixelSize)) : 0.0)),
         vec2(gameWidth - (gameWidth/6), gameHeight/9)), "",
         dialogueFontSize + "px " + uiContext.fontFamily, "#ffffff", -1);
-    dialogueLine2 = new Label(tr(vec2(gameWidth/12, baseYPosition + (dialogueFontSize * 2.0)),
+    dialogueLine2 = new Label(tr(vec2((isMobile() ? (128.0 * pixelSize) : (gameWidth/12)), dialogueYPosition + (dialogueFontSize * 2.0) - (isMobile() ? ((dialogueFontSize * 2.0) - (8.0 * pixelSize)) : 0.0)),
         vec2(gameWidth - (gameWidth/6), gameHeight/9)), "",
         dialogueFontSize + "px " + uiContext.fontFamily, "#ffffff", -1);
-    dialogueLine3 = new Label(tr(vec2(gameWidth/12, baseYPosition + (dialogueFontSize * 3.0)),
+    dialogueLine3 = new Label(tr(vec2((isMobile() ? (128.0 * pixelSize) : (gameWidth/12)), dialogueYPosition + (dialogueFontSize * 3.0) - (isMobile() ? ((dialogueFontSize * 2.0) - (8.0 * pixelSize)) : 0.0)),
         vec2(gameWidth - (gameWidth/6), gameHeight/9)), "",
         dialogueFontSize + "px " + uiContext.fontFamily, "#ffffff", -1);
 
@@ -128,10 +130,12 @@ function dialogueUpdate(deltaTime)
 
         //when displaying face
         dialogueOffsetWhenDisplayingFace = dialogueFaceSize/2;
-        dialogueSpeaker.transform.position.x = dialogueLine1.transform.position.x = dialogueLine2.transform.position.x = dialogueLine3.transform.position.x = (gameWidth/12) + dialogueFaceSize;
+        dialogueSpeaker.transform.position.x = dialogueLine1.transform.position.x = dialogueLine2.transform.position.x = dialogueLine3.transform.position.x = isMobile() ? ((8 * pixelSize) + dialogueFaceSize) : ((gameWidth/12) + dialogueFaceSize);
 
-        if(isTouched)
+        if(isTouched && (!isMobile() || untouch))
         {
+            untouch = false;
+            
             playSFX(SFX_PROCEED);
             if (characterIndex < dialogues[0].text.length)
             {
@@ -174,14 +178,14 @@ function dialogueUpdate(deltaTime)
 function dialogueDraw()
 {
     if(dialogues.length > 0 && ui.transitionToState == -1) {
-        drawRect(renderer, vec2(gameWidth/16, gameHeight/1.4), vec2(gameWidth - (gameWidth/8), gameHeight/4), true, "#323353", 32);
+        drawRect(renderer, vec2(gameWidth/16, dialogueYPosition), isMobile() ? vec2(gameWidth, 128.0 * pixelSize) : vec2(gameWidth - (gameWidth/8), (gameHeight/4)), true, "#323353", 32);
 
         drawRect(renderer, soldierFaceSprite.transform.position.subtract(toVec2(dialogueFaceSize/2.0)), toVec2(dialogueFaceSize), true, "#441111");
         if(dialogues[0].speaker <= -1) {
             soldierFaceSprite.drawSc();
         } else {
             bodyNFacesSheet.transform.position = soldierFaceSprite.transform.position;
-            bodyNFacesSheet.transform.scale = toVec2(pixelSize/2.0);
+            bodyNFacesSheet.transform.scale = toVec2(dialogueFaceScale);
             bodyNFacesSheet.drawScIn(facePositions[dialogues[0].face].add(vec2(1024 * dialogues[0].speaker)), toVec2(256));
         }
     }

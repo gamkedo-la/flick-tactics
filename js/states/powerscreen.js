@@ -35,8 +35,14 @@ function activatePower() {
 function powerscreenSetup() {
     powerscreenTimer = powerscreenDelay;
     powerscreenFontSize = 72.0 * pixelSize;
-    powerscreen.push(new Label(tr(vec2((gameWidth / 2) + (powerscreenFontSize / 16.0), (gameHeight * 1.25) + (powerscreenFontSize / 16.0)), vec2(gameWidth/2, gameHeight)), "POWER!", powerscreenFontSize.toString() + "px " + uiContext.fontFamily, "black"));
-    powerscreen.push(new Label(tr(vec2(gameWidth / 2, gameHeight * 1.25), vec2(gameWidth / 2, gameHeight)), "POWER!", powerscreenFontSize.toString() + "px " + uiContext.fontFamily));
+    powerscreen.push(new Label(tr(
+        isMobile() ? vec2() : vec2((gameWidth / 2) + (powerscreenFontSize / 16.0), (gameHeight * 1.25) + (powerscreenFontSize / 16.0)),
+        isMobile() ? vec2(gameWidth, gameHeight) : vec2(gameWidth/2, gameHeight)),
+        "POWER!", powerscreenFontSize.toString() + "px " + uiContext.fontFamily, "black"));
+    powerscreen.push(new Label(tr(
+        isMobile() ? vec2() : vec2(gameWidth / 2, gameHeight * 1.25),
+        isMobile() ? vec2(gameWidth, gameHeight) : vec2(gameWidth / 2, gameHeight)),
+        "POWER!", powerscreenFontSize.toString() + "px " + uiContext.fontFamily));
 }
 
 function powerscreenResize() {
@@ -51,7 +57,7 @@ function powerscreenDraw(deltaTime) {
     }
 
     //Power Name Label Lerp
-    powerscreen[1].transform.position = lerpVec2(vec2(-gameWidth), vec2(gameWidth / 2), powerscreenOpacity);
+    powerscreen[1].transform.position = lerpVec2(vec2(-gameWidth), isMobile() ? vec2() : vec2(gameWidth / 2), powerscreenOpacity);
     powerscreen[0].transform.position = powerscreen[1].transform.position.add(toVec2(powerscreenFontSize / 10.0));
 
     //Black BG
@@ -70,7 +76,8 @@ function powerscreenDraw(deltaTime) {
     spritesRenderer.globalAlpha = 1.0;
 
     //CO Body
-    bodyNFacesSheet.transform.position = vec2(lerp(-gameWidth, gameWidth/4, powerscreenOpacity), gameHeight/2);
+    bodyNFacesSheet.transform.position = isMobile() ? vec2(lerp(-gameWidth, gameWidth/2, powerscreenOpacity), gameHeight/2) : vec2(lerp(-gameWidth, gameWidth/4, powerscreenOpacity), gameHeight/2);
+    bodyNFacesSheet.transform.scale = isMobile() ? toVec2(gameHeight / gameWidth) : toVec2(pixelSize/2);
     bodyNFacesSheet.drawScIn(vec2(1024 * getPlayer().CO), toVec2(1024));
 }
 
@@ -155,6 +162,7 @@ function powerscreenUpdate(deltaTime) {
 
             case JONAH:
                 for(let i = 0; i < manager.players.length; i++) {
+                    if(i == manager.index) continue;
                     var conversion = 0;
                     if(manager.players[i].getTotalNumberOfMechs() <= 2) continue;
                     else if(manager.players[i].getTotalNumberOfMechs() <= 5) conversion = 1;
@@ -177,32 +185,37 @@ function powerscreenUpdate(deltaTime) {
                             preferencePair.push(pair);
                         }
                     }
-                    highestPrefPair = {index: 0, pref: 0}; secondHighestPrefPair = {index: 0, pref: 0}; thirdHighestPrefPair = {index: 0, pref: 0};
+                    console.log(preferencePair.length);
+                    var highInd = -1; var highPref = -1; var secondHighInd = -1; var thirdHighInd = -1;
                     for(let pi = 0; pi < preferencePair.length; pi++) {
-                        if(preferencePair[pi].pref > highestPrefPair.pref) {
-                            thirdHighestPrefPair.index = secondHighestPrefPair.index;
-                            thirdHighestPrefPair.pref = secondHighestPrefPair.pref;
-                            secondHighestPrefPair.index = highestPrefPair.index;
-                            secondHighestPrefPair.pref = highestPrefPair.pref;
-                            highestPrefPair.index = preferencePair[pi].index;
-                            highestPrefPair.pref = preferencePair[pi].pref;
+                        if(preferencePair[pi].pref >= highPref) {
+                            thirdHighInd = secondHighInd;
+                            secondHighInd = highInd;
+                            highInd = preferencePair[pi].index;
+                            highPref = preferencePair[pi].pref;
                         }
                     }
                     toConvert = [];
-                    if(conversion >= 1) toConvert.push(manager.players[i].unitGroup.mapUnits[highestPrefPair.index]);
-                    if(conversion >= 2) toConvert.push(manager.players[i].unitGroup.mapUnits[secondHighestPrefPair.index]);
-                    if(conversion >= 3) toConvert.push(manager.players[i].unitGroup.mapUnits[thirdHighestPrefPair.index]);
-                    while(toConvert.length > 0) {
-                        var munit = new MapUnit(0, vec2());
-                        munit.copy(toConvert[0]);
-                        getPlayer().unitGroup.mapUnits.push(munit);
-                        toConvert[0].hp = 0;
-                        toConvert.splice(0, 1);
-                        getPlayer().focus.push({ mUnit: munit, atFocus: function(player, _munit) {
-                            _munit.unit.rank = 3;
-                            _munit.hp = 10;
-                        }});
+                    if(conversion >= 1) toConvert.push(manager.players[i].unitGroup.mapUnits[highInd]);
+                    if(conversion >= 2) toConvert.push(manager.players[i].unitGroup.mapUnits[secondHighInd]);
+                    if(conversion >= 3) toConvert.push(manager.players[i].unitGroup.mapUnits[thirdHighInd]);
+                    console.log(toConvert.length);
+                    for(let c = 0; c < toConvert.length; c++) {
+                        if(!toConvert[c].unit.isBuilding) {
+                            var munit = new MapUnit(0, vec2());
+                            munit.copy(toConvert[c]);
+                            getPlayer().unitGroup.mapUnits.push(munit);
+                            getPlayer().focus.push({ mUnit: munit, atFocus: function(player, _munit) {
+                                _munit.unit.rank = 3;
+                                _munit.hp = 10;
+                            }});
+                        }
                     }
+                    while(toConvert.length > 0) {
+                        if(!toConvert[0].unit.isBuilding) toConvert[0].hp = 0;
+                        toConvert.splice(0, 1);
+                    }
+                    toConvert = [];
                 }
             break;
         }

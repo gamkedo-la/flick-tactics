@@ -18,16 +18,18 @@ function win(co, playerWin) {
     afterDialoguesEvent = function() {
         ui.transitionToState = ENDSCREEN;
         gameplaySilence = false;
-        endscreen[0].text = COSPECIFICS[co].name + " WINS! " + (playerWin ? "Player wins!" : "AI wins!");
+        endscreen[0].text = COSPECIFICS[co].name + " WINS!";// " + (playerWin ? "Player wins!" : "AI wins!");
     }
 }
 
 function endscreenSetup() {
-    endscreenFontSize = 72.0 * pixelSize;
+    endscreenFontSize = isMobile() ? (48.0 * pixelSize) : (72.0 * pixelSize);
     endscreen.push(new Label(tr(vec2(0, gameHeight - (gameHeight / 3)), vec2(gameWidth, gameHeight / 8)),
         "WINS!", endscreenFontSize.toString() + "px " + uiContext.fontFamily));
-    endscreen.push(new TextButton(tr(vec2((gameWidth / 2) - (gameWidth / 8), gameHeight - (gameHeight / 6)), vec2(gameWidth / 4, gameWidth / 16)),
-        new Label(tr(), "Back to Menu", (endscreenFontSize/4.0).toString() + "px " + uiContext.fontFamily),
+    endscreen.push(new TextButton(tr(
+        isMobile() ? vec2(0, gameHeight - (72.0 * pixelSize)) : vec2((gameWidth / 2) - (gameWidth / 8), gameHeight - (gameHeight / 6)),
+        isMobile() ? vec2(gameWidth, (72.0 * pixelSize)) : vec2(gameWidth / 4, gameWidth / 16)),
+        new Label(tr(), "Back to Menu", (isMobile() ? (endscreenFontSize/1.6) : (endscreenFontSize/4.0)).toString() + "px " + uiContext.fontFamily),
         new Button(tr(), "#000066BB", "#FFFFFFFF", "#002299FF"), ""));
 }
 
@@ -37,7 +39,7 @@ function endscreenResize() {
 function endscreenDraw(deltaTime) {
     drawWorldMapBG(getTeamColor(endscreenCO) + "DD");
     bodyNFacesSheet.transform.position = vec2(gameWidth/2, gameHeight/2);
-    bodyNFacesSheet.transform.scale = toVec2(pixelSize/2);
+    bodyNFacesSheet.transform.scale = isMobile() ? toVec2(gameHeight / gameWidth) : toVec2(pixelSize/2);
     bodyNFacesSheet.drawScIn(vec2(1024 * endscreenCO), toVec2(1024));
     drawRect(renderer, vec2(0, gameHeight - (gameHeight / 3)), vec2(gameWidth, gameHeight / 8), true, "#000000BB");
 }

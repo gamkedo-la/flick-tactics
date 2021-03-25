@@ -5,17 +5,13 @@ function screenSizeCalculation() {
     sizeFactor = 0;
 
     //No Aspect Ratio Setting (Default is 1:1 [Square])
-    /*if(gameHeight < gameWidth)
-    {
+    /*if(gameHeight < gameWidth) {
         sizeFactor = gameHeight;
         gameWidth = gameHeight;
-    }
-    else
-    {
+    } else {
         sizeFactor = gameWidth;
         gameHeight = gameWidth;
     }*/
-
     sizeFactor = gameHeight < gameWidth ? gameHeight : gameWidth;
 
     //Game screen is divided into 500 arbitrary pixels by default
@@ -38,25 +34,16 @@ function init() {
     renderer = canvas.getContext("2d");
     platform = getPlatform();
     spritesRenderer = renderer;
-
     screenSizeCalculation();
-
-    //prevPixelSize, prevGameWidth and prevGameHeight are used for
-    //resizing sizes (or positions) of dynamic game objects/sprites
+    //prevPixelSize, prevGameWidth and prevGameHeight are used for resizing sizes (or positions) of dynamic game objects/sprites
     prevPixelSize = pixelSize;
     prevGameWidth = gameWidth;
     prevGameHeight = gameHeight;
-
-    gameOptions = {
-        SFXEnabled: true,
-        BGMEnabled: true,
-    }
-
-    uiInit();
-
+    gameOptions = { SFXEnabled: true, BGMEnabled: true }
+    titleSprite = new Sprite(tr(), new ImageObject("images/title.png"));
     gameSheet = new Sprite(tr(), new ImageObject("images/sheet.png"));
     bodyNFacesSheet = new Sprite(tr(), new ImageObject("images/bodyNFacesSheet.png"));
-
+    uiInit();
     inputSetup();
 }
 

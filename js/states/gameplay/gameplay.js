@@ -196,7 +196,8 @@ function gameplayUpdate(deltaTime) {
         
     } else {
         dialogueUpdate(deltaTime);
-        qStatsPanel.enabled = gameplayZoomBtn.enabled = false;
+        qStatsPanel.enabled = gameplayZoomBtn.enabled = 
+        unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
     }
 }
 

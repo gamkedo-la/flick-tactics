@@ -1,5 +1,5 @@
 const VOLUME_TRANSITION_FACTOR = 0.025;
-const BGM_MAX_VOLUME = 0.75;
+const BGM_MAX_VOLUME = 0.6;
 
 const BGM_MENU = 0;
 const BGM_WORLDMAP = 1;

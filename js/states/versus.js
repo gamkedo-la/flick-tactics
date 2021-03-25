@@ -207,6 +207,7 @@ function versusPlay() {
     ui.transitionToState = GAMEPLAY;
     maxDisplayTilesPerRow = defaultTilesPerRow;
     updateTileSizes();
+    updateUnitActionButtons();
 
     manager.saveState();
 }

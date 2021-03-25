@@ -95,6 +95,7 @@ function buildingPanelEvent() {
                 && getIndexPair(opos)[0] == -1
                 && map.getTileTypeFromPosition(opos) != SEA_TILE
                 && map.getTileTypeFromPosition(opos) != MOUNTAIN_TILE) {
+                    playSFX(SFX_SELECT);
                     buildingMUnit.unit.mechDeployOffset = off[i];
                 }
             }
@@ -103,7 +104,7 @@ function buildingPanelEvent() {
                 if(buildingMUnit.unit.mechDeployOffset != -1) {
                     var uiPos = vec2(panelX + ((panelW / 2) / 5) + (i * (panelW / 5)), panelY + (panelH / 2)).subtract(toVec2(32 * pixelSize));
                     var uiSc = toVec2(64 * pixelSize);
-                    if(touchPos[0].x >= uiPos.x && touchPos[0].y >= uiPos.y && touchPos[0].x < uiPos.x + uiSc.x && touchPos[0].y < uiPos.y + uiSc.y) {
+                    if(getPlayer().money >= MECHCOST[i] && touchPos[0].x >= uiPos.x && touchPos[0].y >= uiPos.y && touchPos[0].x < uiPos.x + uiSc.x && touchPos[0].y < uiPos.y + uiSc.y) {
                         var pos = buildingMUnit.mapPosition;
                         removeTileParticles(pos.add(buildingMUnit.unit.mechDeployOffset));
                         new TileParticle(tilePositionToPixelPosition(pos.add(buildingMUnit.unit.mechDeployOffset)), teleportSequence);

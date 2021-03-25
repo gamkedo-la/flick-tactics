@@ -6,9 +6,7 @@ var startscreenCOChange = false;
 var startscreenCOAltSide = false;
 
 function startscreenSetup() {
-    var fontSize = isMobile() ? 32.0 * pixelSize : 16.0 * pixelSize;
-
-    titleSprite = new Sprite(tr(), new ImageObject("images/title.png"));
+    var fontSize = isMobile() ? 40.0 * pixelSize : 16.0 * pixelSize;
 
     if(isMobile()) {
         titleSprite.transform.scale = vec2(sizeFactor / titleSprite.imageObject.image.width, (sizeFactor / 2.4) / titleSprite.imageObject.image.height);

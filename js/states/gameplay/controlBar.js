@@ -100,7 +100,10 @@ function controlBarUIEvents() {
 
         case UIOUTPUT_SELECT:
             playSFX(SFX_BUTTON_CLICK);
-            if(!stepBackAction()) manager.restoreState();
+            if(!stepBackAction()) {
+                manager.restoreState();
+                updateUnitActionButtons();
+            }
             resetTurnBtn.button.resetOutput();
     }
     switch (controlMenuBtn.button.output)

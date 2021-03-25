@@ -1,4 +1,14 @@
 
+// = AI Priority List
+// - Attack Opponent Buildings
+// - Attack or Move to Opponent Units that is closest to YOUR Buildings
+// - Attack Reachable Units
+// - Retreat Units with Less HP
+// - Repair/Supply Units
+// - Move closer to Opponent Buildings
+
+// = Building Priority -> HQ > War > City
+
 var aiTaskTimer = 0;
 var aiDelayPerTask = 500;
 
