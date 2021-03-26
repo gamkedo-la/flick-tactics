@@ -19,6 +19,7 @@ var untouch = false;
 var touchPos = [vec2(0, 0), vec2(0, 0), vec2(0, 0), vec2(0, 0), vec2(0, 0)];
 var relTouchPos = [vec2(0, 0), vec2(0, 0), vec2(0, 0), vec2(0, 0), vec2(0, 0)];
 var wheelScroll = 0;
+var lastMouseBtn = 0; //0 - left, 1 - middle, 2 - right
 
 var keysDown = [];
 var keysPressed = [];
@@ -87,6 +88,7 @@ function onMouseDown(ev) {
 
     if (inputTimer <= 0) {
         isTouched = true;
+        lastMouseBtn = ev.button;
         inputTimer = inputDelay;
     } else {
         touchPos[0] = vec2();

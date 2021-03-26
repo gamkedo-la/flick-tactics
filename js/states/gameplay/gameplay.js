@@ -201,42 +201,40 @@ function gameplayUpdate(deltaTime) {
     }
 }
 
+function changeSelectedUnit(val) {
+    playSFX(SFX_SELECT);
+    stepBackAction();
+    var limit = 128;
+    do { getPlayer().selectedIndex += val; limit--;
+    if (getPlayer().selectedIndex <= -1) getPlayer().selectedIndex = getPlayer().unitGroup.mapUnits.length - 1;
+    else if (getPlayer().selectedIndex >= getPlayer().unitGroup.mapUnits.length) getPlayer().selectedIndex = 0;
+    } while ((getPlayer().getSelectedMapUnit().unit.type == RUIN_BUILDING
+    || getPlayer().getSelectedMapUnit().unit.type == CITY_BUILDING) && limit > 0);
+    updateUnitActionButtons();
+}
+
 function gameplayEvent(deltaTime) {
     if(dialogues.length > 0) return;
-
-    controlBarUIEvents();
-    overviewUIEvents();
 
     if(isRightClick) {
         if(!stepBackAction()
         && getPlayer().selectedIndex != getPlayer().getHQUnitIndex()
-        && getPlayer().getHQUnitIndex() != -1)
+        && getPlayer().getHQUnitIndex() != -1) {
             getPlayer().selectedIndex = getPlayer().getHQUnitIndex();
+            updateUnitActionButtons();
+        }
     }
-    if(getPlayer().getSelectedMapUnit().up == 0 || getPlayer().getSelectedMapUnit().left == 0 || getPlayer().getSelectedMapUnit().right == 0)
-        resetTurnBtn.label.text = "Cancel";
-    else
-        resetTurnBtn.label.text = "Reset";
+
+    controlBarUIEvents();
+    overviewUIEvents();
 
     //Gameplay UI Button Events
     if (leftUnitChangeBtn.button.output == UIOUTPUT_SELECT) {
-        playSFX(SFX_SELECT);
-        var limit = 128;
-        do { getPlayer().selectedIndex--; limit--;
-        if (getPlayer().selectedIndex <= -1) getPlayer().selectedIndex = getPlayer().unitGroup.mapUnits.length - 1;
-        } while ((getPlayer().getSelectedMapUnit().unit.type == RUIN_BUILDING
-        || getPlayer().getSelectedMapUnit().unit.type == CITY_BUILDING) && limit > 0);
-        updateUnitActionButtons();
+        changeSelectedUnit(-1);
         leftUnitChangeBtn.button.resetOutput();
     }
     else if (rightUnitChangeBtn.button.output == UIOUTPUT_SELECT) {
-        playSFX(SFX_SELECT);
-        var limit = 128;
-        do { getPlayer().selectedIndex++; limit--;
-        if (getPlayer().selectedIndex >= getPlayer().unitGroup.mapUnits.length) getPlayer().selectedIndex = 0;
-        } while ((getPlayer().getSelectedMapUnit().unit.type == RUIN_BUILDING
-        || getPlayer().getSelectedMapUnit().unit.type == CITY_BUILDING) && limit > 0);
-        updateUnitActionButtons();
+        changeSelectedUnit(1);
         rightUnitChangeBtn.button.resetOutput();
     }
     else if (unitUpBtn.button.output == UIOUTPUT_SELECT) {
@@ -249,6 +247,7 @@ function gameplayEvent(deltaTime) {
         } else {
             getPlayer().getSelectedMapUnit().up = 0;
             if(isMobile()) camDetached = true;
+            resetTurnBtn.label.text = "Cancel";
         }
         unitUpBtn.button.resetOutput();
     }
@@ -260,6 +259,7 @@ function gameplayEvent(deltaTime) {
         } else {
             getPlayer().getSelectedMapUnit().left = 0;
             if(isMobile()) camDetached = true;
+            resetTurnBtn.label.text = "Cancel";
         }
         unitLeftBtn.button.resetOutput();
     }
@@ -270,10 +270,11 @@ function gameplayEvent(deltaTime) {
         } else {
             getPlayer().getSelectedMapUnit().right = 0;
             if(isMobile()) camDetached = true;
+            resetTurnBtn.label.text = "Cancel";
         }
         unitRightBtn.button.resetOutput();
     }
 
-    map.event();
+    if(lastMouseBtn != 2) map.event();
     buildingPanelEvent();
 }

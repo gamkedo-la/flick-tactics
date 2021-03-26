@@ -69,6 +69,13 @@ class Player {
         this.actionPoints = player.actionPoints;
         this.money = player.money;
         this.deployDelay = player.deployDelay;
+
+        for(let i = 0; i < player.focus.length; i++) {
+            var f = { mUnit: player.focus[i].mUnit, atFocus: player.focus[i].atFocus };
+            this.focus.push(f);
+        }
+        this.focusTimer = player.focusTimer;
+        this.focusDelay = player.focusDelay;
     }
 
     nullify(blast = false) {

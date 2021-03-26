@@ -18,14 +18,7 @@ function buildingPanelUpdate(buildingMUnit) {
                 cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize
                 && getPlayer().getSelectedMapUnit().hp > 0;
     }
-    /*setBTab(0, "OBJECTIVE");
-    setBLabel(0, 0, "WIN: Destroy the Enemy HQ(s).");
-    setBLabel(0, 1, "LOSE: Your HQ gets destroyed.");
-    setBLabel(0, 2, "Protect your HQ building at all costs!");
-    setBButton(0, 0, "Surrender");
-    setBButton(0, 1, "Need Help?");
-    setBButton(0, 2, "End Turn");
-
+    /*
     setBTab(2, "CO");
     setBLabel(2, 0, (manager.index == buildingPanelCOSelection ? "(YOU) " : "") + "Player CO: " + COSPECIFICS[manager.players[buildingPanelCOSelection].CO].name + ".");
     setBLabel(2, 1, "CO Power: " + COSPECIFICS[manager.players[buildingPanelCOSelection].CO].powerName + "." + (manager.index == buildingPanelCOSelection ? "" : (" Power Fill: " + Math.floor(manager.players[buildingPanelCOSelection].powerMeter * 100.0).toString() + "%")));
@@ -40,9 +33,7 @@ function buildingPanelUpdate(buildingMUnit) {
 
     setBLabel(1, 0, "CO Power: " + COSPECIFICS[getPlayer().CO].powerName + ".");
     setBLabel(1, 1, COSPECIFICS[getPlayer().CO].powerDesc);
-
-    if(getPlayer().powerMeter >= 0.999) setBButton(1, 1, "Use Power!");
-    else setBButton(1, 1, "insufficient power", true);*/
+    */
 }
 
 function buildingPanelDraw() {

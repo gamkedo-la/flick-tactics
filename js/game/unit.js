@@ -59,7 +59,7 @@ class Unit {
                 this.movementObstacles = [SEA_TILE];
                 this.movementReducers = [MOUNTAIN_TILE];
 
-                this.attack = [6.0, 2.0, 5.0, 4.0, 9.0, 2.0];
+                this.attack = [6.0, 2.0, 5.0, 4.0, 9.0, 1.0];
                 this.ammoCapacity = 12;
                 this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
@@ -74,7 +74,7 @@ class Unit {
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
 
-                this.attack = [10.0, 5.0, 12.0, 7.0, 14.0, 7.0];
+                this.attack = [10.0, 5.0, 12.0, 7.0, 14.0, 6.0];
                 this.ammoCapacity = 3;
                 this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
@@ -89,7 +89,7 @@ class Unit {
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE, SAND_TILE];
 
-                this.attack = [12.0, 8.0, 16.0, 8.0, 7.5, 8.0];
+                this.attack = [12.0, 8.0, 16.0, 8.0, 7.5, 4.0];
                 this.ammoCapacity = 3;
                 this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
@@ -103,7 +103,7 @@ class Unit {
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE];
 
-                this.repair = [2.5, 1.0, 1.0, 2.0, 4.0, 2.0];
+                this.repair = [4.0, 1.0, 2.0, 2.0, 6.0, 1.0];
                 this.ammo = -1;
                 this.deployTime = 0;
                 break;
@@ -114,7 +114,7 @@ class Unit {
                 this.movementObstacles = [MOUNTAIN_TILE];
                 this.movementReducers = [];
 
-                this.attack = [5.0, 2.0, 3.0, 2.5, 7.5, 2.5];
+                this.attack = [5.0, 2.0, 3.0, 2.5, 7.5, 2.0];
                 this.ammoCapacity = 5;
                 this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
@@ -457,7 +457,7 @@ class MapUnit {
 
                         getPlayerI(indexPair).unitGroup.mapUnits.splice(i, 1);
 
-                        if(!getPlayer().powered) getPlayerI(indexPair).powerMeter += 0.04;
+                        if(!getPlayer().powered) getPlayerI(indexPair).powerMeter += 0.01;
                         if(getPlayerI(indexPair).powerMeter > 1.0) getPlayerI(indexPair).powerMeter = 1.0;
                     }            
                 }

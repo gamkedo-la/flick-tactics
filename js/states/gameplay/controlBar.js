@@ -58,23 +58,24 @@ function controlBarUIUpdate() {
 }
 
 function stepBackAction() {
-    if(getPlayer().getSelectedMapUnit().up == 0)
+    if(getPlayer().getSelectedMapUnit().up == 0) {
         getPlayer().getSelectedMapUnit().up = 1;
-    else if(getPlayer().getSelectedMapUnit().left == 0)
+        resetTurnBtn.label.text = "Reset";
+    } else if(getPlayer().getSelectedMapUnit().left == 0) {
         getPlayer().getSelectedMapUnit().left = 1;
-    else if(getPlayer().getSelectedMapUnit().right == 0)
+        resetTurnBtn.label.text = "Reset";
+    } else if(getPlayer().getSelectedMapUnit().right == 0) {
         getPlayer().getSelectedMapUnit().right = 1;
-    else
+        resetTurnBtn.label.text = "Reset";
+    } else
         return false;
     return true;
 }
 
 function controlBarUIEvents() {
-    switch (controlHomeBtn.button.output)
-    {
+    switch (controlHomeBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(controlHomeBtn.button.hoverTrigger)
-            {
+            if(controlHomeBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 controlHomeBtn.button.hoverTrigger = false;
             }
@@ -88,11 +89,9 @@ function controlBarUIEvents() {
             updateUnitActionButtons();
             controlHomeBtn.button.resetOutput();
     }
-    switch (resetTurnBtn.button.output)
-    {
+    switch (resetTurnBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(resetTurnBtn.button.hoverTrigger)
-            {
+            if(resetTurnBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 resetTurnBtn.button.hoverTrigger = false;
             }
@@ -106,11 +105,9 @@ function controlBarUIEvents() {
             }
             resetTurnBtn.button.resetOutput();
     }
-    switch (controlMenuBtn.button.output)
-    {
+    switch (controlMenuBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(resetTurnBtn.button.hoverTrigger)
-            {
+            if(resetTurnBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 resetTurnBtn.button.hoverTrigger = false;
             }

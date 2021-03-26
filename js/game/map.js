@@ -247,8 +247,7 @@ class GameMap {
         //    Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))), "white");
     }
 
-    drawUnitExtras()
-    {
+    drawUnitExtras() {
         if(getPlayer().selectedIndex == -1) {
             lose(getPlayer().CO);
             getPlayer().control = -1;
@@ -623,6 +622,22 @@ class GameMap {
         //5% Random Factor
         damage += ((damage / 100.0) * (((Math.random() - 0.5) * 2.0) * 5.0)) * randMult;
 
+        //Increase Power Meter upon receiving damage
+        if(!pl2.powered) {
+            switch(munit2.unit.type) {
+                case RIFLE_MECH: pl2.powerMeter += 0.02 * (damage / 10.0); break;
+                case CANNON_MECH: pl2.powerMeter += 0.06 * (damage / 10.0); break;
+                case ARTILLERY_MECH: pl2.powerMeter += 0.08 * (damage / 10.0); break;
+                case SUPPORT_MECH: pl2.powerMeter += 0.04 * (damage / 10.0); break;
+                case TELEPORT_MECH: pl2.powerMeter += 0.03 * (damage / 10.0); break;
+                case HQ_BUILDING: pl2.powerMeter += 0.2 * (damage / 10.0); break;
+                case WAR_BUILDING: pl2.powerMeter += 0.15 * (damage / 10.0); break;
+                case CITY_BUILDING: pl2.powerMeter += 0.1 * (damage / 10.0); break;
+                default: break;
+            }
+            if(pl2.powerMeter > 1.0) pl2.powerMeter = 1.0;
+        }
+
         return damage;
     }
 
@@ -882,34 +897,23 @@ class GameMap {
 
     //#endregion
 
+    immediatelyAfterAction() {
+        playSFX(SFX_SELECT);
+        getPlayer().getSelectedMapUnit().actionPointsUsed++;
+        getPlayer().actionPoints--;
+        resetTurnBtn.label.text = "Reset";
+        if(!getPlayer().powered) getPlayer().powerMeter += 0.01;
+        if(getPlayer().powerMeter > 1.0) getPlayer().powerMeter = 1.0;
+    }
+
     event() {
         //Unit Action Event End Point
         if (getPlayer().getSelectedMapUnit().up == 0) { //Move
-            if (this.eventUnitMovement(getPlayer().getSelectedMapUnit())) {
-                playSFX(SFX_SELECT);
-                getPlayer().getSelectedMapUnit().actionPointsUsed++;
-                getPlayer().actionPoints--;
-                if(!getPlayer().powered) getPlayer().powerMeter += 0.02;
-                if(getPlayer().powerMeter > 1.0) getPlayer().powerMeter = 1.0;
-            }
-        }
-        else if (getPlayer().getSelectedMapUnit().right == 0) { //Attack
-            if (this.eventUnitAttack(getPlayer().getSelectedMapUnit())) {
-                playSFX(SFX_SELECT);
-                getPlayer().getSelectedMapUnit().actionPointsUsed++;
-                getPlayer().actionPoints--;
-                if(!getPlayer().powered) getPlayer().powerMeter += 0.02;
-                if(getPlayer().powerMeter > 1.0) getPlayer().powerMeter = 1.0;
-            }
-        }
-        else if (getPlayer().getSelectedMapUnit().left == 0) { //Special
-            if (this.eventUnitSpecial(getPlayer().getSelectedMapUnit())) {
-                playSFX(SFX_SELECT);
-                getPlayer().getSelectedMapUnit().actionPointsUsed++;
-                getPlayer().actionPoints--;
-                if(!getPlayer().powered) getPlayer().powerMeter += 0.02;
-                if(getPlayer().powerMeter > 1.0) getPlayer().powerMeter = 1.0;
-            }
+            if (this.eventUnitMovement(getPlayer().getSelectedMapUnit())) this.immediatelyAfterAction();
+        } else if (getPlayer().getSelectedMapUnit().right == 0) { //Attack
+            if (this.eventUnitAttack(getPlayer().getSelectedMapUnit())) this.immediatelyAfterAction();
+        } else if (getPlayer().getSelectedMapUnit().left == 0) { //Special
+            if (this.eventUnitSpecial(getPlayer().getSelectedMapUnit())) this.immediatelyAfterAction();
         }
 
         //Check Win/Lose Conditions
@@ -940,6 +944,7 @@ class GameMap {
             && getMUnitI(indexPair).unit.type != RUIN_BUILDING
             && getMUnitI(indexPair).unit.type != CITY_BUILDING) {
                 playSFX(SFX_SELECT);
+                stepBackAction();
                 getPlayer().selectedIndex = indexPair[1];
                 updateUnitActionButtons();
                 zoomLock = false;
