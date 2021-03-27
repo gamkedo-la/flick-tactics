@@ -82,7 +82,7 @@ function worldmapDraw(deltaTime) {
 function worldmapUpdate(deltaTime) {
     playBGM(BGM_WORLDMAP);
     if(!dialogueUpdate(deltaTime))
-        if(isTouched) {
+        if(isTouched()) {
             //ui.transitionToState = GAMEPLAY; //When Campaign is Added
             
             ui.transitionToState = STARTSCREEN;
@@ -98,7 +98,7 @@ function worldmapEvent(deltaTime) {
     currentMissionIndex = 0;
 
     //Flag Jumping Code!
-    /*if(isTouched)
+    /*if(isTouched())
     {
         if(!worldmapMissionFocus) worldmapMissionFocus = true;
         else if(currentMissionIndex < missionPoints.length - 1) currentMissionIndex++;

@@ -84,8 +84,8 @@ class Vector2 {
 }
 
 function isVec2InArr(array, vec2) {
-  for(let i = 0; i < array.length; i++)
-    if(array[i].isEqual(vec2)) return true;
+  for (let i = 0; i < array.length; i++)
+    if (array[i].isEqual(vec2)) return true;
   return false;
 }
 
@@ -486,27 +486,25 @@ function downloadString(text, fileType, fileName) {
   setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
 }
 
-function saveFile(textToSave, fileNameToSaveAs)
-{
-    var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
-    var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
- 
-    var downloadLink = document.createElement("a");
-    downloadLink.download = fileNameToSaveAs;
-    downloadLink.innerHTML = "Download File";
-    downloadLink.href = textToSaveAsURL;
-    downloadLink.onclick = destroyClickedElement;
-    downloadLink.style.display = "none";
-    document.body.appendChild(downloadLink);
- 
-    downloadLink.click();
+function saveFile(textToSave, fileNameToSaveAs) {
+  var textToSaveAsBlob = new Blob([textToSave], { type: "text/plain" });
+  var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+
+  var downloadLink = document.createElement("a");
+  downloadLink.download = fileNameToSaveAs;
+  downloadLink.innerHTML = "Download File";
+  downloadLink.href = textToSaveAsURL;
+  downloadLink.onclick = destroyClickedElement;
+  downloadLink.style.display = "none";
+  document.body.appendChild(downloadLink);
+
+  downloadLink.click();
 }
- 
-function destroyClickedElement(e)
-{
-    document.body.removeChild(e.target);
+
+function destroyClickedElement(e) {
+  document.body.removeChild(e.target);
 }
- 
+
 /*
 function writeFile(file, str) {
   if (!file || !file.length || !str || !str.length) return;
@@ -516,7 +514,6 @@ function writeFile(file, str) {
 
 function readFile(file) {
   var text = "";
-
   var rawFile = new XMLHttpRequest();
   rawFile.open("GET", location.href.replace("index.html", "") + file, false);
   rawFile.onreadystatechange = function () {
@@ -526,9 +523,7 @@ function readFile(file) {
       }
     }
   };
-
   rawFile.send(null);
-
   return text;
 }
 

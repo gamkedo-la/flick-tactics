@@ -155,11 +155,11 @@ var UIOUTPUT_SELECT = 2;
 
 function defUIEvent(output, transform, touchId) {
     if (this.enabled) {
-        touchId = touched(transform);
+        touchId = getTouched(transform);
         if (touchId != -1) {
             output = UIOUTPUT_SELECT;
         }
-        else if (hover(transform)) {
+        else if (getHovered(transform)) {
             output = UIOUTPUT_HOVER;
         }
         else {
@@ -301,14 +301,14 @@ class Button extends UIObject {
 
         this.event = function () {
             if (this.enabled) {
-                this.touchId = touched(this.transform);
+                this.touchId = getTouched(this.transform);
 
                 if (this.output != UIOUTPUT_DISABLED && this.touchId != -1 && this.prevTouchId == -1) {
                     this.btnColor = this.selectColor;
                     this.output = UIOUTPUT_SELECT;
-                    isTouched = false;
+                    touched = false;
                 }
-                else if (this.output != UIOUTPUT_DISABLED && hover(this.transform)) {
+                else if (this.output != UIOUTPUT_DISABLED && getHovered(this.transform)) {
                     if(this.output != UIOUTPUT_HOVER && this.btnColor != this.hoverColor)
                     {
                         this.hoverTrigger = true;
@@ -429,7 +429,7 @@ class RadioButton extends UIObject {
             if (this.enabled) {
                 this.transform.position = this.transform.position.subtract(this.transform.scale);
                 this.transform.scale = this.transform.scale.multiply(vec2(2, 2));
-                this.touchId = touched(this.transform);
+                this.touchId = getTouched(this.transform);
                 this.transform.scale = this.transform.scale.divide(vec2(2, 2));
                 this.transform.position = this.transform.position.add(this.transform.scale);
 
@@ -478,7 +478,7 @@ class Panel extends UIObject {
             if (this.enabled) {
                 subState.event();
 
-                this.touchId = touched(this.transform);
+                this.touchId = getTouched(this.transform);
 
                 dragMove(this.transform, 0.7);
 
@@ -487,7 +487,7 @@ class Panel extends UIObject {
                 if (this.touchId != -1) {
                     this.output = UIOUTPUT_SELECT;
                 }
-                else if (hover(this.transform)) {
+                else if (getHovered(this.transform)) {
                     this.offset.y -= wheelScroll;
                     this.output = UIOUTPUT_HOVER;
                 }
@@ -737,7 +737,7 @@ class TextButton extends UIObject {
 
         this.event = function () {
             if (this.enabled) {
-                this.touchId = touched(this.transform);
+                this.touchId = getTouched(this.transform);
 
                 this.button.transform = this.transform;
                 this.label.transform = this.transform;
@@ -792,7 +792,7 @@ class Tab extends UIObject {
 
         this.event = function () {
             if (this.enabled) {
-                this.touchId = touched(this.transform);
+                this.touchId = getTouched(this.transform);
 
                 if (this.touchId != -1 && this.prevTouchId == -1) {
                     this.select();
@@ -874,7 +874,7 @@ class Slider extends UIObject {
                     this.startKnobValueSet--;
                 }
 
-                this.touchId = touched(this.knobTransform);
+                this.touchId = getTouched(this.knobTransform);
 
                 dragMove(this.knobTransform, 1, knobStartPos, knobEndPos);
                 this.knobTransform.position.y = knobStartPos.y;

@@ -132,7 +132,7 @@ function dialogueUpdate(deltaTime)
         dialogueOffsetWhenDisplayingFace = dialogueFaceSize/2;
         dialogueSpeaker.transform.position.x = dialogueLine1.transform.position.x = dialogueLine2.transform.position.x = dialogueLine3.transform.position.x = isMobile() ? ((8 * pixelSize) + dialogueFaceSize) : ((gameWidth/12) + dialogueFaceSize);
 
-        if(isTouched && (!isMobile() || untouch))
+        if(touched && (!isMobile() || untouch))
         {
             untouch = false;
             

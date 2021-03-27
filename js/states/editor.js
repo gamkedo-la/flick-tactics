@@ -225,20 +225,20 @@ function editorOverview() {
 
 function editorUpdate(deltaTime) {
     playBGM(BGM_WORLDMAP);
-
-    if(editorOverviewLock) {
-        editorOverview();
-    }
+    if(editorOverviewLock) editorOverview();
 }
 
 function editorEvent(deltaTime) {
+
+    editorMap.getCursorTile(editorCam);
+
     if(overviewMapBtn.label.text != "IMMERSED")
         for(let i = 0; i < 6; i++) {
             var pos = vec2(gameWidth - (64.0 * pixelSize) - (i * 64.0 * pixelSize), gameHeight - (64.0 * pixelSize));
             var sc = toVec2((pixelSize - (pixelSize/8.0))*64.0);
-
-            if(isTouched && touchPos[0].x >= pos.x && touchPos[0].x < pos.x + sc.x
-            && touchPos[0].y >= pos.y && touchPos[0].y < pos.y + sc.y) {
+            if(touchPos[0].x >= pos.x && touchPos[0].x < pos.x + sc.x
+            && touchPos[0].y >= pos.y && touchPos[0].y < pos.y + sc.y
+            && isTouched()) {
                 editorSelectedIndex = i;
                 break;
             }
@@ -269,7 +269,7 @@ function editorEvent(deltaTime) {
         } else if (overviewMapBtn.label.text == "IMMERSED") {
             overviewMapBtn.label.text = "LOCKED";
         }
-    } else if(isTouched && (overviewMapBtn.label.text == "IMMERSED" || touchPos[0].y < gameHeight - (64.0 * pixelSize))) {
+    } else if((overviewMapBtn.label.text == "IMMERSED" || touchPos[0].y < gameHeight - (64.0 * pixelSize)) && isTouched()) {
 
         switch(editMode) {
             case EDIT_TERRAIN:

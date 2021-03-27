@@ -213,7 +213,7 @@ function playSFX(id) {
 }
 
 function audioPlayOnInput() {
-    if(startscreen[0].enabled) isTouched = false;
+    if(startscreen[0].enabled) touched = false;
     startscreen[0].enabled = false;
     startscreen[1].enabled = true;
 }

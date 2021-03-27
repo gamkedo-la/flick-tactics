@@ -13,7 +13,7 @@ function resizeVec2(v) {
     return v;
 }
 
-var isTouched = false;
+var touched = false;
 var isTouchMoved = false;
 var untouch = false;
 var touchPos = [vec2(0, 0), vec2(0, 0), vec2(0, 0), vec2(0, 0), vec2(0, 0)];
@@ -61,9 +61,17 @@ function isCtrlWithKey(key) {
     return false;
 }
 
+function isTouched() {
+    if(touched) {
+        touched = false;
+        return true;
+    }
+    return false;
+}
+
 function onTouchStart(ev) {
     if (inputTimer <= 0 && untouch) {
-        isTouched = true;
+        touched = true;
         inputTimer = inputDelay;
     }
 
@@ -76,11 +84,11 @@ function onTouchStart(ev) {
 function onTouchMove(ev) {
     isTouchMoved = true;
     for (let i = 0; i < ev.touches.length; i++) {
-        if (isTouched && (touchPos[i].x != 0.0 && touchPos[i].y != 0.0))
-            relTouchPos[i] = vec2(ev.touches[i].clientX, ev.touches[i].clientY).subtract(touchPos[i]);
+        if (touchPos[i].x != 0.0 && touchPos[i].y != 0.0)
+            relTouchPos[i] = (vec2(ev.touches[i].clientX, ev.touches[i].clientY).subtract(touchPos[i])).multiply(toVec2(2.4));
         touchPos[i] = vec2(ev.touches[i].clientX, ev.touches[i].clientY);
     }
-    isTouched = false;
+    touched = false;
 }
 
 function onTouchEnd(ev) {
@@ -93,7 +101,7 @@ function onTouchEnd(ev) {
     }
 
     if (ev.touches.length <= 0) {
-        isTouched = false;
+        touched = false;
         isTouchMoved = false;
         untouch = true;
     }
@@ -105,7 +113,7 @@ function onMouseDown(ev) {
     touchPos[0] = vec2(ev.clientX, ev.clientY);
 
     if (inputTimer <= 0) {
-        isTouched = true;
+        touched = true;
         lastMouseBtn = ev.button;
         inputTimer = inputDelay;
     } else {
@@ -131,7 +139,7 @@ function onMouseMove(ev) {
 }
 
 function onMouseUp(ev) {
-    isTouched = false;
+    touched = false;
 
     userInteracted = true;
 }
@@ -153,7 +161,6 @@ function isPointerLocked() {
 function onKeyDown(ev) {
     if (keysDown.indexOf(ev.key) == -1)
         keysDown.push(ev.key);
-
     if(ev.ctrlKey) ev.preventDefault();
 }
 
@@ -188,16 +195,13 @@ function inputSetup() {
     window.addEventListener("contextmenu", onRightClick, false);
 }
 
-function touched(transform) //or sprite
-{
-    if (isTouched) {
+function getTouched(transform) { //or sprite
+    if (touched) {
         for (let i = 0; i < 5; i++) {
             if (transform.position.x != 0 && transform.position.y != 0
                 && touchPos[i].x - canvasStartX != 0 && touchPos[i].y - canvasStartY != 0) {
                 var p = transform.relPointInside(touchPos[i].subtract(vec2(canvasStartX, canvasStartY)));
-
-                if (p.x != -1 && p.y != -1)
-                    return i;
+                if (p.x != -1 && p.y != -1) return i;
             }
         }
     }
@@ -205,14 +209,11 @@ function touched(transform) //or sprite
     return -1;
 }
 
-function hover(transform) //or sprite
-{
-    if (isTouchMoved && !isTouched) {
+function getHovered(transform) { //or sprite
+    if (isTouchMoved && !touched) {
         for (let i = 0; i < 5; i++) {
             var p = transform.relPointInside(touchPos[i].subtract(vec2(canvasStartX, canvasStartY)));
-
-            if (p.x != -1 && p.y != -1)
-                return true;
+            if (p.x != -1 && p.y != -1) return true;
         }
     }
 
@@ -222,10 +223,9 @@ function hover(transform) //or sprite
 dragMoveObj = null;
 dragMoveRelPos = vec2(-1, -1);
 function dragMove(transform, lerpAmount = 1.0, limitPoint1, limitPoint2) {
-    if (isTouched) {
+    if (touched) {
         if (dragMoveObj == null) {
             var p = transform.relPointInside(touchPos[0].subtract(vec2(canvasStartX, canvasStartY)));
-
             if (p.x != -1 && p.y != -1) {
                 dragMoveObj = transform;
                 dragMoveRelPos = p.invert();
@@ -234,9 +234,7 @@ function dragMove(transform, lerpAmount = 1.0, limitPoint1, limitPoint2) {
         else if (isTouchMoved) {
             if (dragMoveObj == transform) {
                 transform.position = lerpVec2(transform.position, touchPos[0].add(dragMoveRelPos).subtract(vec2(canvasStartX, canvasStartY)), lerpAmount);
-
                 if (!limitPoint1) return;
-
                 if (transform.position.x < limitPoint1.x) transform.position.x = limitPoint1.x;
                 else if (transform.position.x + transform.scale.x > limitPoint2.x) transform.position.x = limitPoint2.x - transform.scale.x;
                 if (transform.position.y < limitPoint1.y) transform.position.y = limitPoint1.y;

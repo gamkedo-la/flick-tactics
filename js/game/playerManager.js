@@ -160,6 +160,9 @@ class PlayerManager {
                 decrementTileParticlesTurns();
             }
         } while ((this.players[this.index].selectedIndex == -1 || this.players[this.index].control == -1) && limit < 10)
+
+        gameplayStatIndex = this.index;
+
         playSFX(SFX_ENDTURN);
 
         updateUnitActionButtons();

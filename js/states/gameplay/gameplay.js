@@ -1,6 +1,7 @@
 const GAMEPLAY = 1;
 var gameplay = [];
 var gameplaySilence = false;
+var gameplayStatIndex = -1;
 
 //#region helper_functions
 //'manager.getActivePlayer()' => 'getPlayer()'
@@ -80,11 +81,12 @@ function gameplayUISetup() {
 function gameplaySetup() {
     gameBottomBarHeight = isMobile() ? (gameHeight / 6) : 140 * pixelSize;
 
-    for(let i = 0; i < 16; i++)
+    for(let i = 0; i < TOTAL_DEFAULT_MAPS; i++)
         maps.push(readFile("maps/map" + i.toString() + ".txt"));
 
     map = new GameMap(maps[currentMapIndex]);
     manager = new PlayerManager(map);
+    gameplayStatIndex = manager.index;
     manager.saveState();
 
     cam = vec2(Math.floor((gameWidth / maxDisplayTilesPerRow) / 2), Math.floor((gameWidth / maxDisplayTilesPerRow) / 2));
@@ -99,16 +101,54 @@ function gameplayResize() {
 }
 
 function gameplayDraw(deltaTime) {
-    map.draw(cam);
-    manager.draw(cam);
-    drawTileParticles(deltaTime, cam);
-    map.drawUnitExtras();
-    if(dialogues.length <= 0) overviewUIDraw(cam);
-    else dialogueDraw();
+    if(isMobile() && maxDisplayTilesPerRow == totalTilesInRow) {
+        map.drawInRect(toVec2((gameWidth/2)/MAP_SIZE.x).add(vec2(0, (pixelSize/4) * 1024)), toVec2(gameWidth));
+        manager.drawInRect(toVec2((gameWidth/2)/MAP_SIZE.x).add(vec2(0, (pixelSize/4) * 1024)), toVec2(gameWidth));
+        if(dialogues.length <= 0) overviewUIDraw(cam);
+        unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
 
-    //Control Bar Black BG
-    if(maxDisplayTilesPerRow == defaultTilesPerRow)
-        drawRect(renderer, vec2(), vec2(gameWidth, (isMobile() ? 80 : 25) * pixelSize), true, "#00000066");
+        var COoffset = isMobile() ? (gameWidth / 4) : (gameWidth / 8);
+        var COheight = isMobile() ? ((pixelSize / 4) * 512) : gameHeight - ((pixelSize / 4) * 512);
+
+        //Dark CO bodies
+        spritesRenderer.globalCompositeOperation = "overlay";
+        for(let i = 0; i < manager.players.length; i++) {
+            if(manager.players[i] != -1 && manager.players[i].control != -1) {
+                bodyNFacesSheet.transform.position = vec2((COoffset/2) + (COoffset * (manager.players[i].CO > HULU ? HULU : manager.players[i].CO)), COheight);
+                bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
+                bodyNFacesSheet.drawScIn(vec2(1024 * manager.players[i].CO), toVec2(1024));
+            }
+        }
+        spritesRenderer.globalCompositeOperation = "source-over";
+
+        drawCircle(renderer, getPlayer().unitGroup.mapUnits[getPlayer().getHQUnitIndex()].unit.position,
+            16.0*pixelSize, false, "white", 4.0*pixelSize);
+        //Selected CO body
+        bodyNFacesSheet.transform.position = vec2((COoffset/2) + (COoffset * (getPlayer().CO > HULU ? HULU : getPlayer().CO)), COheight);
+        bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
+        bodyNFacesSheet.drawScIn(vec2(1024 * getPlayer().CO), toVec2(1024));
+
+        versusCOName.text = COSPECIFICS[getPlayer().CO].name;
+        versusCOPower.text = COSPECIFICS[getPlayer().CO].powerName;
+        versusCODesc.text = COSPECIFICS[getPlayer().CO].powerDesc;
+
+        versusCOName.draw();
+        versusCOPower.draw();
+        versusCODesc.draw();
+    } else {
+        map.draw(cam);
+        manager.draw(cam);
+        drawTileParticles(deltaTime, cam);
+        map.drawUnitExtras();
+        if(dialogues.length <= 0) overviewUIDraw(cam);
+        else dialogueDraw();
+    }
+
+    if(maxDisplayTilesPerRow == defaultTilesPerRow) {
+        drawRect(renderer, vec2(), vec2(gameWidth, (isMobile() ? 80 : 25) * pixelSize), true, "#00000066"); //Control BG Bar
+    } else {
+        unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
+    }
 }
 
 function gameplayUIDisplayUpdate() {
@@ -181,6 +221,7 @@ function gameplayUpdate(deltaTime) {
             }
         } else if(camDetached && isTouchMoved) {
             cam = cam.add(relTouchPos[0]);
+            relTouchPos[0] = relTouchPos[0].multiply(toVec2(0.5));
         }
 
         gameplayUIDisplayUpdate();
@@ -215,6 +256,8 @@ function changeSelectedUnit(val) {
 
 function gameplayEvent(deltaTime) {
     if(dialogues.length > 0) return;
+
+    map.getCursorTile(cam);
 
     if(isRightClick) {
         if(!stepBackAction()

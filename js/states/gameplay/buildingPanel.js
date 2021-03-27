@@ -74,9 +74,8 @@ function buildingPanelDraw() {
 }
 
 function buildingPanelEvent() {
-    if(isTouched) {
+    if(isTouched()) {
         var buildingMUnit = getPlayer().getSelectedMapUnit();
-
         if(buildingMUnit.unit.type == WAR_BUILDING) {
             var pos = buildingMUnit.mapPosition;
             var off = [vec2(0, 1), vec2(1, 0), vec2(0, -1), vec2(-1, 0)];

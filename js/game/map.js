@@ -226,7 +226,12 @@ class GameMap {
                 }
             }
         }
-        //Getting Tile at which the mouse is hovering on (or about to click)
+        drawRect(spritesRenderer, vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
+            Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))),
+            vec2(tileSize, tileSize), true, "#FFFFFF44");
+    }
+
+    getCursorTile(offset) {
         if(!touchPos[0].isEqual(vec2())) {
             this.cursorTile = vec2((touchPos[0].x - offset.x - (tileSize / 2)) / (tileSize + tileGap),
                 (touchPos[0].y - offset.y - (tileSize / 2)) / (tileSize + tileGap));
@@ -235,16 +240,6 @@ class GameMap {
         } else {
             this.cursorTile.x = this.cursorTile.y = -999;
         }
-
-        drawRect(spritesRenderer, vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
-            Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))),
-            vec2(tileSize, tileSize), true, "#FFFFFF44");
-
-        //Tile Position Debug Draw
-        //drawText(spritesRenderer, this.cursorTile.x.toString() + ", " + this.cursorTile.y.toString(), vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
-        //    Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))).add(toVec2(pixelSize)), "black");
-        //drawText(spritesRenderer, this.cursorTile.x.toString() + ", " + this.cursorTile.y.toString(), vec2(Math.floor((offset.x + (this.cursorTile.x * tileSize) + (this.cursorTile.x * tileGap) - (tileSize / 2))),
-        //    Math.floor((offset.y + (this.cursorTile.y * tileSize) + (this.cursorTile.y * tileGap) - (tileSize / 2)))), "white");
     }
 
     drawUnitExtras() {
@@ -414,7 +409,7 @@ class GameMap {
     }
 
     eventUnitMovement(mapUnit) {
-        if (isTouched) {
+        if (isTouched()) {
             var path = this.calculateUnitMovement(mapUnit);
             if(path == -1) return false;
 
@@ -698,8 +693,7 @@ class GameMap {
     }
 
     eventUnitAttack(mapUnit) {
-        if (isTouched) {
-            if(!isMobile()) isTouched = false;
+        if (isTouched()) {
             var skipRange = mapUnit.unit.type == ARTILLERY_MECH ? 2 : 0;
             var range = mapUnit.unit.type == ARTILLERY_MECH ? 4 + (getPlayer().CO == TAJA && getPlayer().powered ? 1 : 0) : 1;
             for (let y = -range; y <= range; y++) {
@@ -832,8 +826,7 @@ class GameMap {
             return true;
         }
 
-        if (isTouched) {
-            if(!isMobile()) isTouched = false;
+        if (isTouched()) {
             var skipRange = mapUnit.unit.type == TELEPORT_MECH ? 1 : 0;
             var range = mapUnit.unit.type == TELEPORT_MECH ? (mapUnit.unit.ammo > Math.ceil(mapUnit.unit.ammoCapacity/2) ? 3 : 2) : 1;
             for (let y = -range; y <= range; y++) {
@@ -906,7 +899,7 @@ class GameMap {
         }
 
         //Select unit on click/touch
-        if (isTouched && (getPlayer().getSelectedMapUnit().unit.type != WAR_BUILDING || touchPos[0].y < panelY)) {
+        if ((getPlayer().getSelectedMapUnit().unit.type != WAR_BUILDING || touchPos[0].y < panelY) && isTouched()) {
             var indexPair = getIndexPair(this.cursorTile);
             if (indexPair[0] != -1
             && getPlayerI(indexPair).unitGroup.teamID == getPlayer().unitGroup.teamID
@@ -917,6 +910,8 @@ class GameMap {
                 getPlayer().selectedIndex = indexPair[1];
                 updateUnitActionButtons();
                 zoomLock = false;
+            } else {
+                touched = true;
             }
         }
     }
