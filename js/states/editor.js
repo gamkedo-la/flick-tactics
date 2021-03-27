@@ -310,92 +310,57 @@ function editorEvent(deltaTime) {
         editorCam.y -= editorCamMove * pixelSize * deltaTime;
     }
 
-    if (keysDown.indexOf(' ') != -1) {
-        if(!isKeyPressed(' ')) {
-            editMode++;
-            if(editMode > EDIT_MECH) editMode = EDIT_TERRAIN;
+    for(let i = 0; i < 6; i++) if(isKey((i+1).toString())) editorSelectedIndex = i;
 
-            switch(editMode) {
-                case EDIT_TERRAIN:
-                    mapBuildingUnitToggleBtn.label.text = "TERRAIN";
-                    break;
-                case EDIT_BUILDING:
-                    mapBuildingUnitToggleBtn.label.text = "BUILDING";
-                    break;
-                case EDIT_MECH:
-                    mapBuildingUnitToggleBtn.label.text = "MECH";
-                    break;
-            }
+    if(isKey('t')) {
+        switch(editorTeamID) {
+            case BLACK_TEAM:
+                editorTeamID = RED_TEAM;
+                editorTeamBtn.label.text = "RED";
+                editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#FFBBBBBB";
+                break;
+
+            case RED_TEAM:
+                editorTeamID = BLUE_TEAM;
+                editorTeamBtn.label.text = "BLUE";
+                editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#BBBBFFBB";
+                break;
+
+            case BLUE_TEAM:
+                editorTeamID = GREEN_TEAM;
+                editorTeamBtn.label.text = "GREEN";
+                editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#BBFFBBBB";
+                break;
+
+            case GREEN_TEAM:
+                editorTeamID = BLACK_TEAM;
+                editorTeamBtn.label.text = "BLACK";
+                editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#BBBBBBBB";
+                break;
         }
     }
-    else removeKeyPressed(' ');
 
-    if (keysDown.indexOf('1') != -1) {
-        if(isKeyPressed('1')) editorSelectedIndex = 0;
-    } else removeKeyPressed('1');
-    if (keysDown.indexOf('2') != -1) {
-        if(isKeyPressed('2')) editorSelectedIndex = 1;
-    } else removeKeyPressed('2');
-    if (keysDown.indexOf('3') != -1) {
-        if(isKeyPressed('3')) editorSelectedIndex = 2;
-    } else removeKeyPressed('3');
-    if (keysDown.indexOf('4') != -1) {
-        if(isKeyPressed('4')) editorSelectedIndex = 3;
-    } else removeKeyPressed('4');
-    if (keysDown.indexOf('5') != -1) {
-        if(isKeyPressed('5')) editorSelectedIndex = 4;
-    } else removeKeyPressed('5');
-    if (keysDown.indexOf('6') != -1) {
-        if(isKeyPressed('6')) editorSelectedIndex = 5;
-    } else removeKeyPressed('6');
+    if(isKey('e')) {
+        switch(editMode) {
+            case EDIT_MECH:
+                editMode = EDIT_TERRAIN;
+                mapBuildingUnitToggleBtn.label.text = "TERRAIN";
+                break;
+            case EDIT_TERRAIN:
+                editMode = EDIT_BUILDING;
+                mapBuildingUnitToggleBtn.label.text = "BUILDING";
+                break;
+            case EDIT_BUILDING:
+                editMode = EDIT_MECH;
+                mapBuildingUnitToggleBtn.label.text = "MECH";
+                break;
+        }
+    }
 
-    if (keysDown.indexOf('a') != -1) {
-        if(isKeyPressed('a')) {
-            editorTeamID = RED_TEAM;
-            editorTeamBtn.label.text = "RED";
-            editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#FFBBBBBB";
-        }
-    } else removeKeyPressed('a');
-    if (keysDown.indexOf('s') != -1) {
-        if(isKeyPressed('s')) {
-            editorTeamID = BLUE_TEAM;
-            editorTeamBtn.label.text = "BLUE";
-            editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#BBBBFFBB";
-        }
-    } else removeKeyPressed('s');
-    if (keysDown.indexOf('d') != -1) {
-        if(isKeyPressed('d')) {
-            editorTeamID = GREEN_TEAM;
-            editorTeamBtn.label.text = "GREEN";
-            editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#BBFFBBBB";
-        }
-    } else removeKeyPressed('d');
-    if (keysDown.indexOf('f') != -1) {
-        if(isKeyPressed('f')) {
-            editorTeamID = BLACK_TEAM;
-            editorTeamBtn.label.text = "BLACK";
-            editorTeamBtn.button.btnColor = editorTeamBtn.button.defColor = "#BBBBBBBB";
-        }
-    } else removeKeyPressed('f');
-
-    if (keysDown.indexOf('q') != -1) {
-        if(isKeyPressed('q')) {
-            editMode = EDIT_TERRAIN;
-            mapBuildingUnitToggleBtn.label.text = "TERRAIN";
-        }
-    } else removeKeyPressed('q');
-    if (keysDown.indexOf('w') != -1) {
-        if(isKeyPressed('w')) {
-            editMode = EDIT_BUILDING;
-            mapBuildingUnitToggleBtn.label.text = "BUILDING";
-        }
-    } else removeKeyPressed('w');
-    if (keysDown.indexOf('e') != -1) {
-        if(isKeyPressed('e')) {
-            editMode = EDIT_MECH;
-            mapBuildingUnitToggleBtn.label.text = "MECH";
-        }
-    } else removeKeyPressed('e');
+    if(isCtrlWithKey('s')) {
+        playSFX(SFX_BUTTON_CLICK);
+        editorSaveMap();
+    }
 
     switch (editorToMenuBtn.button.output) {
         case UIOUTPUT_HOVER:

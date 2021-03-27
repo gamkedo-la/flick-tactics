@@ -28,20 +28,38 @@ var inputTimer = 0;
 var inputDelay = 200;
 
 function isKeyPressed(key) {
-    for (let i = 0; i < keysPressed.length; i++)
-        if (keysPressed[i] == key) return true;
-    //keysPressed.push(key);
+    if (keysPressed.indexOf(key) != -1) return true;
     return false;
 }
 function removeKeyPressed(key) {
     for (let i = 0; i < keysPressed.length; i++) {
         if (keysPressed[i] == key) {
             keysPressed.splice(i, 1);
-            break;
         }
     }
 }
-function resetKeyPressed() { keysPressed = []; }
+
+function isKey(key) {
+    var i = keysDown.indexOf(key);
+    if (i != -1) {
+        keysDown.splice(i, 1);
+        return true;
+    }
+    return false;
+}
+
+function isCtrlWithKey(key) {
+    var ctrlI = keysDown.indexOf("Control");
+    if(ctrlI != -1) {
+        var i = keysDown.indexOf(key);
+        if (i != -1) {
+            keysDown.splice(i, 1);
+            keysDown.splice(ctrlI > i ? --ctrlI : ctrlI, 1);
+            return true;
+        }
+    }
+    return false;
+}
 
 function onTouchStart(ev) {
     if (inputTimer <= 0 && untouch) {
@@ -135,6 +153,8 @@ function isPointerLocked() {
 function onKeyDown(ev) {
     if (keysDown.indexOf(ev.key) == -1)
         keysDown.push(ev.key);
+
+    if(ev.ctrlKey) ev.preventDefault();
 }
 
 function onKeyPress(ev) {

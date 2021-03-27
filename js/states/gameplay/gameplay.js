@@ -61,7 +61,7 @@ function gameplayReset() {
 }
 
 function gameplayUISetup() {
-    var fontSize = (isMobile() ? 26 : 16) * pixelSize;
+    var fontSize = (isMobile() ? 26 : 14) * pixelSize;
     controlBarUISetup(fontSize);
     var leftRightBtnSize = isMobile() ? 80 * pixelSize : 50 * pixelSize;
     var ypos = isMobile() ? (gameHeight - leftRightBtnSize - gameBottomBarHeight) : (gameHeight / 2);
@@ -227,6 +227,9 @@ function gameplayEvent(deltaTime) {
 
     controlBarUIEvents();
     overviewUIEvents();
+
+    if (isKey('ArrowLeft')) changeSelectedUnit(-1);
+    if (isKey('ArrowRight')) changeSelectedUnit(1);
 
     //Gameplay UI Button Events
     if (leftUnitChangeBtn.button.output == UIOUTPUT_SELECT) {
