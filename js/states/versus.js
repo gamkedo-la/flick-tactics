@@ -433,7 +433,8 @@ function versusEvent(deltaTime) {
             switch(versusAP) {
                 case 3: versusAP = 5; break;
                 case 5: versusAP = 10; break;
-                case 10: versusAP = 3; break;
+                case 10: versusAP = 15; break;
+                case 15: versusAP = 3; break;
                 default: versusAP = 5;
             }
             versusAPBtn.label.text = "AP PER TURN: " + versusAP.toString();

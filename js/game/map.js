@@ -249,7 +249,7 @@ class GameMap {
 
     drawUnitExtras() {
         if(getPlayer().selectedIndex == -1) {
-            lose(getPlayer().CO);
+            if(dialogues.length <= 0) lose(getPlayer().CO);
             getPlayer().control = -1;
             manager.endTurn(true);
         }
@@ -313,30 +313,13 @@ class GameMap {
             var totalMovement = limited ? mapUnit.unit.movement + (getPlayer().CO == ZAREEM && mapUnit.unit.type == RIFLE_MECH && getPlayer().powered ? 1 : 0) : 200;
             do {
                 var adjacentTiles = [];
-
-                var adjaTile1 = path[path.length - 1];
-                var adjaTile2 = path[path.length - 1];
-                var adjaTile3 = path[path.length - 1];
-                var adjaTile4 = path[path.length - 1];
-
-                adjaTile1 = adjaTile1.add(vec2(-1, 0));
-                adjaTile2 = adjaTile2.add(vec2(0, -1));
-                adjaTile3 = adjaTile3.add(vec2(1, 0));
-                adjaTile4 = adjaTile4.add(vec2(0, 1));
-
-                if(!this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile1)
-                && !isVec2InArr(path, adjaTile1))
-                    adjacentTiles.push(adjaTile1);
-                if(!this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile2)
-                && !isVec2InArr(path, adjaTile2))
-                    adjacentTiles.push(adjaTile2);
-                if(!this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile3)
-                && !isVec2InArr(path, adjaTile3))
-                    adjacentTiles.push(adjaTile3);
-                if(!this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile4)
-                && !isVec2InArr(path, adjaTile4))
-                    adjacentTiles.push(adjaTile4);
-
+                var offsets = [vec2(-1, 0), vec2(0, -1), vec2(1, 0), vec2(0, 1)];
+                for(let i = 0; i < offsets.length; i++) {
+                    var adjaTile = path[path.length - 1].add(offsets[i]);
+                    if(!this.isTileMovementObstacleToMapUnit(mapUnit, adjaTile)
+                    && !isVec2InArr(path, adjaTile))
+                        adjacentTiles.push(adjaTile);
+                }
                 if(adjacentTiles.length <= 0) break;
 
                 //method 0 = go for shortest
@@ -384,35 +367,21 @@ class GameMap {
     }
 
     canUnitReachAdjacentTile(mapUnit, tilePosition) {
-        var down = this.calculateUnitMovement(mapUnit, tilePosition.add(vec2(1,0)));
-        var right = this.calculateUnitMovement(mapUnit, tilePosition.add(vec2(0,1)));
-        var up = this.calculateUnitMovement(mapUnit, tilePosition.add(vec2(-1,0)));
-        var left = this.calculateUnitMovement(mapUnit, tilePosition.add(vec2(0,-1)));
-
-        if(down != -1
-        && ((right != -1 && down.length <= right.length) || (right == -1))
-        && ((up != -1 && down.length <= up.length) || (up == -1))
-        && ((left != -1 && down.length <= left.length) || (left == -1)))
-            return down;
-
-        if(right != -1
-        && ((down != -1 && right.length <= down.length) || (down == -1))
-        && ((up != -1 && right.length <= up.length) || (up == -1))
-        && ((left != -1 && right.length <= left.length) || (left == -1)))
-            return right;
-
-        if(up != -1
-        && ((right != -1 && up.length <= right.length) || (right == -1))
-        && ((down != -1 && up.length <= down.length) || (down == -1))
-        && ((left != -1 && up.length <= left.length) || (left == -1)))
-            return up;
-
-        if(left != -1
-        && ((right != -1 && left.length <= right.length) || (right == -1))
-        && ((up != -1 && left.length <= up.length) || (up == -1))
-        && ((down != -1 && left.length <= down.length) || (down == -1)))
-            return left;
-
+        var offsets = [vec2(1, 0), vec2(0, 1), vec2(-1, 0), vec2(0, -1)];
+        for(let i = 0; i < offsets.length; i++) {
+            var dir = this.calculateUnitMovement(mapUnit, tilePosition.add(offsets[i]));
+            var otherDirCanReach = false;
+            for(let o = 0; o < offsets.length; o++) {
+                if (o != i) {
+                    var otherDir = this.calculateUnitMovement(mapUnit, tilePosition.add(offsets[o]));
+                    if (otherDir != -1 && dir.length > otherDir.length) {
+                        otherDirCanReach = true;
+                        break;
+                    }
+                }
+            }
+            if(!otherDirCanReach) return dir;
+        }
         return -1;
     }
 
@@ -922,7 +891,7 @@ class GameMap {
         for(let i = 0; i < manager.players.length; i++) {
             var HQi = manager.players[i].getHQUnitIndex();
             if((HQi == -1 || manager.players[i].unitGroup.mapUnits[HQi].hp <= 0) && manager.players[i].control != -1) {
-                lose(manager.players[i].CO);
+                if(dialogues.length <= 0) lose(manager.players[i].CO);
                 manager.players[i].control = -1;
                 total--;
             } else if(manager.players[i].control == -1) {

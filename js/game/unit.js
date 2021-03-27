@@ -448,7 +448,7 @@ class MapUnit {
                             if(getPlayer().selectedIndex > i) getPlayer().selectedIndex--;
                             else if(getPlayer().selectedIndex == i) getPlayer().selectedIndex = getPlayer().getHQUnitIndex();
                             if(getPlayer().selectedIndex <= -1) {
-                                lose(getPlayer().CO);
+                                if(dialogues.length <= 0) lose(getPlayer().CO);
                                 getPlayer().control = -1;
                                 getPlayer().selectedIndex = -1;
                                 manager.endTurn(true);

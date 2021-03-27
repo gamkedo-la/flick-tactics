@@ -51,7 +51,7 @@ var teleportSequence = [
     {index: 48, duration: 120}
 ];
 
-const FOREST_FIRE_TURNS = 4;
+const FOREST_FIRE_TURNS = 3;
 const AFTER_FOREST_SMOKE_TURNS = 3;
 const MECH_FIRE_TURNS = 2;
 const SAND_SMOKE_TURNS = 2;
