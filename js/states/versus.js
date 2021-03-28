@@ -131,8 +131,7 @@ function versusDraw(deltaTime) {
     //drawPerspectiveUnitsBG(RUIN_BUILDING, TELEPORT_MECH, ARTILLERY_MECH, BLACK_TEAM);
     drawRect(renderer, vec2(), vec2(gameWidth, gameHeight), true, "#00000088");
 
-    if(ui.transitionToState != GAMEPLAY)
-    {
+    if(ui.transitionToState != GAMEPLAY) {
         if(isMobile()) {
             versusMap.drawInRect(toVec2((gameWidth/2)/MAP_SIZE.x).add(vec2(0, (pixelSize/4) * 1024)), toVec2(gameWidth));
             versusManager.drawInRect(toVec2((gameWidth/2)/MAP_SIZE.x).add(vec2(0, (pixelSize/4) * 1024)), toVec2(gameWidth));
@@ -221,11 +220,9 @@ function editorToVersus( mapString ) {
 
 function versusEvent(deltaTime) {
 
-    switch (versusLoadMapBtn.button.output)
-    {
+    switch (versusLoadMapBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(versusLoadMapBtn.button.hoverTrigger)
-            {
+            if(versusLoadMapBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 versusLoadMapBtn.button.hoverTrigger = false;
             }
@@ -241,11 +238,9 @@ function versusEvent(deltaTime) {
             versusLoadMapBtn.button.resetOutput();
     }
 
-    switch (versusChangeMapBtn.button.output)
-    {
+    switch (versusChangeMapBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(versusChangeMapBtn.button.hoverTrigger)
-            {
+            if(versusChangeMapBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 versusChangeMapBtn.button.hoverTrigger = false;
             }
@@ -266,11 +261,9 @@ function versusEvent(deltaTime) {
             versusChangeMapBtn.button.resetOutput();
     }
 
-    switch (versusTeamBtn.button.output)
-    {
+    switch (versusTeamBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(versusTeamBtn.button.hoverTrigger)
-            {
+            if(versusTeamBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 versusTeamBtn.button.hoverTrigger = false;
             }
@@ -286,8 +279,7 @@ function versusEvent(deltaTime) {
             limit--;
             } while(pl == -1 && limit > 0);
 
-            switch(versusTeamID)
-            {
+            switch(versusTeamID) {
                 case RED_TEAM:
                     versusTeamBtn.label.text = "RED";
                     versusTeamBtn.button.btnColor = versusTeamBtn.button.defColor = "#660000BB";
@@ -318,8 +310,7 @@ function versusEvent(deltaTime) {
                     break;
             }
 
-            switch(pl.control)
-            {
+            switch(pl.control) {
                 case 0:
                     versusUserAIToggleBtn.label.text = "USER";
                     versusUserAIToggleBtn.button.btnColor = versusUserAIToggleBtn.button.defColor = "#66660066";
@@ -337,11 +328,9 @@ function versusEvent(deltaTime) {
             versusTeamBtn.button.resetOutput();
     }
 
-    switch (versusUserAIToggleBtn.button.output)
-    {
+    switch (versusUserAIToggleBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(versusUserAIToggleBtn.button.hoverTrigger)
-            {
+            if(versusUserAIToggleBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 versusUserAIToggleBtn.button.hoverTrigger = false;
             }
@@ -351,8 +340,7 @@ function versusEvent(deltaTime) {
             var pl = versusManager.getPlayerOfTeamID(versusTeamID);
             if(pl == -1) break;
 
-            switch(pl.control)
-            {
+            switch(pl.control) {
                 case -1:
                     pl.control = 0;
                     versusUserAIToggleBtn.label.text = "USER";
@@ -373,11 +361,9 @@ function versusEvent(deltaTime) {
             versusUserAIToggleBtn.button.resetOutput();
     }
 
-    switch (versusMoneyBtn.button.output)
-    {
+    switch (versusMoneyBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(versusMoneyBtn.button.hoverTrigger)
-            {
+            if(versusMoneyBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 versusMoneyBtn.button.hoverTrigger = false;
             }
@@ -397,11 +383,9 @@ function versusEvent(deltaTime) {
             versusMoneyBtn.button.resetOutput();
     }
 
-    switch (versusDeployDelayBtn.button.output)
-    {
+    switch (versusDeployDelayBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(versusDeployDelayBtn.button.hoverTrigger)
-            {
+            if(versusDeployDelayBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 versusDeployDelayBtn.button.hoverTrigger = false;
             }
@@ -419,11 +403,9 @@ function versusEvent(deltaTime) {
             versusDeployDelayBtn.button.resetOutput();
     }
 
-    switch (versusAPBtn.button.output)
-    {
+    switch (versusAPBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(versusAPBtn.button.hoverTrigger)
-            {
+            if(versusAPBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 versusAPBtn.button.hoverTrigger = false;
             }
@@ -442,11 +424,9 @@ function versusEvent(deltaTime) {
             versusAPBtn.button.resetOutput();
     }
 
-    switch (versusToMenuBtn.button.output)
-    {
+    switch (versusToMenuBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(versusToMenuBtn.button.hoverTrigger)
-            {
+            if(versusToMenuBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 versusToMenuBtn.button.hoverTrigger = false;
             }
@@ -460,11 +440,9 @@ function versusEvent(deltaTime) {
             versusToMenuBtn.button.resetOutput();
     }
 
-    switch (versusPlayMapBtn.button.output)
-    {
+    switch (versusPlayMapBtn.button.output) {
         case UIOUTPUT_HOVER:
-            if(versusPlayMapBtn.button.hoverTrigger)
-            {
+            if(versusPlayMapBtn.button.hoverTrigger) {
                 playSFX(SFX_BUTTON_HOVER);
                 versusPlayMapBtn.button.hoverTrigger = false;
             }

@@ -59,10 +59,6 @@ function overviewUIDraw(offset) {
             renderer.globalAlpha = 1.0;
         }
     }
-
-    var oPos = vec2(offset.x, offset.y).subtract(vec2(tileSize / 2, tileSize / 2));
-    var oSize = vec2((tileSize * 28) + (tileGap * 28) + (gridBlackLinesFixFactor * 28),
-        (tileSize * 16) + (tileGap * 16) + (gridBlackLinesFixFactor * 16));
 }
 
 function enableOverview() {
@@ -96,11 +92,10 @@ function overviewUIEvents() {
     }
     
     if (keysDown.indexOf('q') != -1) {
-        if (isKeyPressed('q')) {
-            enableOverview();
-        }
-    } else {
-        removeKeyPressed('q');
+        enableOverview();
+    } else if(!zoomLock) {
+        statsDisplayBtn.label.text = "^";
+        gameplayStatIndex = manager.index;
     }
 
     if (maxDisplayTilesPerRow == totalTilesInRow && !camDetached) {

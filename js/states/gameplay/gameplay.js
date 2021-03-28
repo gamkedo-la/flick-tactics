@@ -1,7 +1,6 @@
 const GAMEPLAY = 1;
 var gameplay = [];
 var gameplaySilence = false;
-var gameplayStatIndex = -1;
 
 //#region helper_functions
 //'manager.getActivePlayer()' => 'getPlayer()'
@@ -55,6 +54,7 @@ function gameplayReset() {
     continueBtn.enabled = false;
     versusBtn.label.text = "PLAY";
     gameplaySilence = false;
+    gameplayStatIndex = 0;
     map = undefined;
     manager = undefined;
     particles = [];
@@ -75,6 +75,7 @@ function gameplayUISetup() {
     quickStatsUISetup(fontSize);
     unitActionUISetup(fontSize);
     overviewUISetup(fontSize);
+    statsUISetup(fontSize);
     buildingPanelSetup();
 }
 
@@ -101,53 +102,28 @@ function gameplayResize() {
 }
 
 function gameplayDraw(deltaTime) {
-    if(isMobile() && maxDisplayTilesPerRow == totalTilesInRow) {
-        map.drawInRect(toVec2((gameWidth/2)/MAP_SIZE.x).add(vec2(0, (pixelSize/4) * 1024)), toVec2(gameWidth));
-        manager.drawInRect(toVec2((gameWidth/2)/MAP_SIZE.x).add(vec2(0, (pixelSize/4) * 1024)), toVec2(gameWidth));
+    if(maxDisplayTilesPerRow == totalTilesInRow && isMobile()) {
+        statsMobileDraw();
         if(dialogues.length <= 0) overviewUIDraw(cam);
         unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
-
-        var COoffset = isMobile() ? (gameWidth / 4) : (gameWidth / 8);
-        var COheight = isMobile() ? ((pixelSize / 4) * 512) : gameHeight - ((pixelSize / 4) * 512);
-
-        //Dark CO bodies
-        spritesRenderer.globalCompositeOperation = "overlay";
-        for(let i = 0; i < manager.players.length; i++) {
-            if(manager.players[i] != -1 && manager.players[i].control != -1) {
-                bodyNFacesSheet.transform.position = vec2((COoffset/2) + (COoffset * (manager.players[i].CO > HULU ? HULU : manager.players[i].CO)), COheight);
-                bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
-                bodyNFacesSheet.drawScIn(vec2(1024 * manager.players[i].CO), toVec2(1024));
-            }
-        }
-        spritesRenderer.globalCompositeOperation = "source-over";
-
-        drawCircle(renderer, getPlayer().unitGroup.mapUnits[getPlayer().getHQUnitIndex()].unit.position,
-            16.0*pixelSize, false, "white", 4.0*pixelSize);
-        //Selected CO body
-        bodyNFacesSheet.transform.position = vec2((COoffset/2) + (COoffset * (getPlayer().CO > HULU ? HULU : getPlayer().CO)), COheight);
-        bodyNFacesSheet.transform.scale = toVec2(pixelSize / 4);
-        bodyNFacesSheet.drawScIn(vec2(1024 * getPlayer().CO), toVec2(1024));
-
-        versusCOName.text = COSPECIFICS[getPlayer().CO].name;
-        versusCOPower.text = COSPECIFICS[getPlayer().CO].powerName;
-        versusCODesc.text = COSPECIFICS[getPlayer().CO].powerDesc;
-
-        versusCOName.draw();
-        versusCOPower.draw();
-        versusCODesc.draw();
     } else {
         map.draw(cam);
         manager.draw(cam);
         drawTileParticles(deltaTime, cam);
         map.drawUnitExtras();
+
+        if(maxDisplayTilesPerRow == totalTilesInRow) {
+            statsDraw();
+        } else {
+            drawRect(renderer, vec2(), vec2(gameWidth, (isMobile() ? 80 : 25) * pixelSize), true, "#00000066");
+
+            for(let i = 0; i < statsGroup.length; i++) statsGroup[i].enabled = false;
+            statsCOName.enabled = statsCOPower.enabled = statsCODesc.enabled = false;
+            statsDisplayBtn.enabled = false;
+        }
+
         if(dialogues.length <= 0) overviewUIDraw(cam);
         else dialogueDraw();
-    }
-
-    if(maxDisplayTilesPerRow == defaultTilesPerRow) {
-        drawRect(renderer, vec2(), vec2(gameWidth, (isMobile() ? 80 : 25) * pixelSize), true, "#00000066"); //Control BG Bar
-    } else {
-        unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
     }
 }
 
@@ -158,45 +134,13 @@ function gameplayUIDisplayUpdate() {
                 (cam.distance(getPlayer().getCameraPosition()) < 2.5 * pixelSize
                 && getPlayer().getSelectedMapUnit().mapPathIndex <= -1);
 
-            if (getPlayer().getSelectedMapUnit().up == 0
-            || getPlayer().getSelectedMapUnit().left == 0
-            || getPlayer().getSelectedMapUnit().right == 0)
-                leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled =
-                unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
-            else if (controlBar[0].enabled)
-                leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
-        } else {
-            unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
-        }
-    } else
-        buildingPanelUpdate(getPlayer().getSelectedMapUnit());
+            if (getPlayer().getSelectedMapUnit().up == 0 || getPlayer().getSelectedMapUnit().left == 0 || getPlayer().getSelectedMapUnit().right == 0)
+                leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
+            else if (controlBar[0].enabled) leftUnitChangeBtn.enabled = rightUnitChangeBtn.enabled = true;
+        } else unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
+    } else buildingPanelUpdate(getPlayer().getSelectedMapUnit());
 
-    if (unitUpBtn.button.output != UIOUTPUT_SELECT) unitUpBtn.button.output = getPlayer().getSelectedMapUnit().up == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (unitLeftBtn.button.output != UIOUTPUT_SELECT) unitLeftBtn.button.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    if (unitRightBtn.button.output != UIOUTPUT_SELECT) unitRightBtn.button.output = getPlayer().getSelectedMapUnit().right == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
-    
-    if (getPlayer().actionPoints <= 0
-    && getPlayer().getSelectedMapUnit().unit.type != HQ_BUILDING)
-        unitUpBtn.button.output = unitLeftBtn.button.output
-        = unitRightBtn.button.output = UIOUTPUT_DISABLED;
-
-    if (getPlayer().getSelectedMapUnit().unit.type == HQ_BUILDING
-    && getPlayer().powerMeter < 0.999) {
-        unitUpBtn.button.output = UIOUTPUT_DISABLED;
-    }
-    
-    if (getPlayer().getSelectedMapUnit().unit.ammo == 0
-    || isTileOnSmoke(getPlayer().getSelectedMapUnit().mapPosition)) {
-        if(getPlayer().getSelectedMapUnit().unit.type == TELEPORT_MECH) unitLeftBtn.button.output = UIOUTPUT_DISABLED;
-        else unitRightBtn.button.output = UIOUTPUT_DISABLED;
-    }
-    
-    if (((getPlayer().getSelectedMapUnit().unit.type == RIFLE_MECH
-    || getPlayer().getSelectedMapUnit().unit.type == ARTILLERY_MECH)
-    && getPlayer().getSelectedMapUnit().unit.smokeAmmo == 0)
-    || (getPlayer().getSelectedMapUnit().unit.type == CANNON_MECH
-    && getPlayer().getSelectedMapUnit().unit.boost < 0))
-        unitLeftBtn.button.output = UIOUTPUT_DISABLED;
+    unitActionUIUpdate();
 }
 
 function gameplayUpdate(deltaTime) {
@@ -320,6 +264,7 @@ function gameplayEvent(deltaTime) {
         }
         unitRightBtn.button.resetOutput();
     }
+    statsEvent();
 
     if(lastMouseBtn != 2) map.event();
     buildingPanelEvent();

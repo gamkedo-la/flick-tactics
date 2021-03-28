@@ -22,6 +22,41 @@ function unitActionUISetup(fontSize) {
     unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
 }
 
+function unitActionUIUpdate() {
+    if (maxDisplayTilesPerRow == totalTilesInRow)
+        unitUpBtn.enabled = unitLeftBtn.enabled = unitRightBtn.enabled = false;
+
+    if (unitUpBtn.button.output != UIOUTPUT_SELECT)
+        unitUpBtn.button.output = getPlayer().getSelectedMapUnit().up == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (unitLeftBtn.button.output != UIOUTPUT_SELECT)
+        unitLeftBtn.button.output = getPlayer().getSelectedMapUnit().left == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    if (unitRightBtn.button.output != UIOUTPUT_SELECT)
+        unitRightBtn.button.output = getPlayer().getSelectedMapUnit().right == -1 ? UIOUTPUT_DISABLED : UIOUTPUT_RUNNING;
+    
+    if (getPlayer().actionPoints <= 0
+    && getPlayer().getSelectedMapUnit().unit.type != HQ_BUILDING)
+        unitUpBtn.button.output = unitLeftBtn.button.output
+        = unitRightBtn.button.output = UIOUTPUT_DISABLED;
+
+    if (getPlayer().getSelectedMapUnit().unit.type == HQ_BUILDING
+    && getPlayer().powerMeter < 0.999) {
+        unitUpBtn.button.output = UIOUTPUT_DISABLED;
+    }
+    
+    if (getPlayer().getSelectedMapUnit().unit.ammo == 0
+    || isTileOnSmoke(getPlayer().getSelectedMapUnit().mapPosition)) {
+        if(getPlayer().getSelectedMapUnit().unit.type == TELEPORT_MECH) unitLeftBtn.button.output = UIOUTPUT_DISABLED;
+        else unitRightBtn.button.output = UIOUTPUT_DISABLED;
+    }
+    
+    if (((getPlayer().getSelectedMapUnit().unit.type == RIFLE_MECH
+    || getPlayer().getSelectedMapUnit().unit.type == ARTILLERY_MECH)
+    && getPlayer().getSelectedMapUnit().unit.smokeAmmo == 0)
+    || (getPlayer().getSelectedMapUnit().unit.type == CANNON_MECH
+    && getPlayer().getSelectedMapUnit().unit.boost < 0))
+        unitLeftBtn.button.output = UIOUTPUT_DISABLED;
+}
+
 function updateUnitActionButtons() {
     resetTurnBtn.label.text = "Reset";
     switch (getPlayer().getSelectedMapUnit().unit.type) {

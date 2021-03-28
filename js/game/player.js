@@ -179,7 +179,7 @@ class Player {
         for(let i = 0; i < this.unitGroup.mapUnits.length; i++)
             if(this.unitGroup.mapUnits[i].unit.isBuilding
             && typeof this.unitGroup.mapUnits[i].unit.incomePerHp != "undefined")
-                income += ((afterRepair ? 10 : Math.ceil(this.unitGroup.mapUnits[i].hp)) * (this.unitGroup.mapUnits[i].unit.incomePerHp + (this.unitGroup.mapUnits[i].unit.incomePerHp * this.unitGroup.mapUnits[i].unit.incomeRankMultiplier * this.unitGroup.mapUnits[i].unit.rank))) * (this.unitGroup.mapUnits[i].unit.boost == 1 ? 2 : 1);
+                income += (afterRepair ? 10 : Math.ceil(this.unitGroup.mapUnits[i].hp)) * this.unitGroup.mapUnits[i].unit.incomePerHp;
         return income;
     }
 

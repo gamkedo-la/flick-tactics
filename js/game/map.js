@@ -1,11 +1,10 @@
-
 var tileSize;
 var tileGap;
 var tileGapFactor = 16.0;
 
-var defaultTilesPerRow = 15.0;
+var defaultTilesPerRow = 16.0;
 var zoomLock = false;
-var maxDisplayTilesPerRow = 15.0;
+var maxDisplayTilesPerRow = 16.0;
 var totalTilesInRow = 28.0;
 var tilePixels = 16.0;
 var gridBlackLinesFixFactor = 0.0;
@@ -87,7 +86,7 @@ class GameMap {
         this.greenData = [];
         this.blackData = [];
 
-        defaultTilesPerRow = isMobile() ? 6 : 15;
+        defaultTilesPerRow = isMobile() ? 6 : 16;
         maxDisplayTilesPerRow = defaultTilesPerRow;
 
         var tindexes = mapString.split('.');
@@ -519,7 +518,7 @@ class GameMap {
                     drawText(renderer, "~" + Math.floor((Math.ceil(munit.hp) / 10.0) * munit.unit.repair[attmunit.unit.isBuilding ? 5 : attmunit.unit.type]).toString(),
                         offset.add(attmunit.unit.position), "white");
                 } else {
-                    drawText(renderer, "~" + Math.floor(this.calculateDamage(munit, attmunit, 0)).toString(),
+                    drawText(renderer, "~" + Math.floor(this.calculateDamage(munit, attmunit, false, 0)).toString(),
                         offset.add(attmunit.unit.position), "yellow");
                 }
             }
@@ -535,7 +534,7 @@ class GameMap {
         passiveMUnit = munit2;
     }
 
-    calculateDamage(munit1, munit2, randMult = 1.0) {
+    calculateDamage(munit1, munit2, incPow = true, randMult = 1.0) {
         //Damage Calculation Sequence
         //First all ATT is added: Terrain -> Rank -> CO
         //Then, all DEF is subtracted: Terrain -> Rank -> CO -> Building
@@ -587,7 +586,7 @@ class GameMap {
         damage += ((damage / 100.0) * (((Math.random() - 0.5) * 2.0) * 5.0)) * randMult;
 
         //Increase Power Meter upon receiving damage
-        if(!pl2.powered) {
+        if(incPow && !pl2.powered) {
             switch(munit2.unit.type) {
                 case RIFLE_MECH: pl2.powerMeter += 0.02 * (damage / 10.0); break;
                 case CANNON_MECH: pl2.powerMeter += 0.06 * (damage / 10.0); break;
