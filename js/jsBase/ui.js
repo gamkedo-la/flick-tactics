@@ -206,6 +206,7 @@ class SubState extends UIObject {
     constructor(transform, uiObjects) {
         super(transform);
         this.uiObjects = uiObjects;
+        console.log(this.uiObjects);
 
         this.event = function () {
             defUIEvent(this.output, this.transform, this.touchId);
@@ -280,6 +281,28 @@ class Label extends UIObject {
                 uiContext.renderer.fillText(this.text, this.transform.position.x + posAlignFactor,
                     this.transform.position.y + (this.transform.scale.y / 2) + (lineHeight / 2),
                     this.transform.scale.x);
+            }
+        }
+    }
+}
+
+class ImageUI extends UIObject {
+    constructor(transform, image, inPos, inSize) {
+        super(transform);
+        this.image = image;
+        this.inPos = inPos;
+        this.inSize = inSize;
+    }
+
+    draw() {
+        if (this.enabled) {
+            if (this.visible && this.image != undefined) {
+                var pos = this.transform.position;
+                var scale = this.transform.scale;
+
+                uiContext.renderer.drawImage(this.image,
+                    this.inPos.x, this.inPos.y, this.inSize.x, this.inSize.y,
+                    pos.x, pos.y, scale.x, scale.y);
             }
         }
     }
