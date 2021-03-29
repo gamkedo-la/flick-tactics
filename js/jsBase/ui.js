@@ -206,7 +206,6 @@ class SubState extends UIObject {
     constructor(transform, uiObjects) {
         super(transform);
         this.uiObjects = uiObjects;
-        console.log(this.uiObjects);
 
         this.event = function () {
             defUIEvent(this.output, this.transform, this.touchId);
@@ -267,20 +266,91 @@ class Label extends UIObject {
             if (this.visible && this.text != undefined) {
                 uiContext.renderer.font = this.font;
                 var lineHeight = uiContext.renderer.measureText('M').width;
-
                 var posAlignFactor = 0;
-
-                if (this.align == 0) {
-                    posAlignFactor = (this.transform.scale.x / 2) - (uiContext.renderer.measureText(this.text).width / 2);
-                }
-                else if (this.align == 1) {
-                    posAlignFactor = this.transform.scale.x - uiContext.renderer.measureText(this.text).width;
-                }
-
+                if (this.align == 0) posAlignFactor = (this.transform.scale.x / 2) - (uiContext.renderer.measureText(this.text).width / 2);
+                else if (this.align == 1) posAlignFactor = this.transform.scale.x - uiContext.renderer.measureText(this.text).width;
+                
                 uiContext.renderer.fillStyle = this.textColor;
                 uiContext.renderer.fillText(this.text, this.transform.position.x + posAlignFactor,
                     this.transform.position.y + (this.transform.scale.y / 2) + (lineHeight / 2),
                     this.transform.scale.x);
+            }
+        }
+    }
+}
+
+class Paragraph extends UIObject {
+    constructor(transform, text, newLineChar, font, textColor = uiContext.textColor, lineHeightScale = 1, lineScale = 1) {
+        super(transform);
+
+        this.text = text;
+
+        this.newLineChar = newLineChar;
+
+        this.font = font;
+
+        this.font = typeof font === "undefined" ? uiContext.fontSize.toString() + "px " + uiContext.fontFamily : font;
+
+        this.textColor = textColor;
+
+        this.lines = [];
+        this.lineHeightScale = lineHeightScale;
+        this.lineScale = lineScale;
+    }
+
+    calculate() {
+        var textIndex = 0
+        var line = "";
+        var toBeContinued = false;
+        while(textIndex < this.text.length) {
+            while(this.text[textIndex] == this.newLineChar) {
+                this.lines.push(line);
+                line = "";
+                textIndex++;
+            }
+            uiContext.renderer.font = this.font;
+            if(uiContext.renderer.measureText(line).width * this.lineScale < this.transform.position.x + this.transform.scale.x) {
+                if(line.length <= 0) {
+                    if(this.text[textIndex] == " ") {
+                        textIndex++;
+                    } else if(toBeContinued) {
+                        line += "-";
+                        toBeContinued = false;
+                    }
+                }
+                line += this.text[textIndex];
+                textIndex++;
+            } else {
+                if(this.text[textIndex] == " ") {
+                    textIndex++;
+                } else if(this.text[textIndex - 1] == " ") {
+                    textIndex--;
+                } else {
+                    line += "-";
+                    toBeContinued = true;
+                }
+                this.lines.push(line);
+                line = "";
+            }
+        }
+        if(line != "") this.lines.push(line);
+    }
+
+    reset() {
+        this.lines = [];
+    }
+
+    draw() {
+        if (this.enabled) {
+            if (this.visible && this.text != undefined) {
+                if(this.lines.length <= 0) this.calculate();
+                uiContext.renderer.font = this.font;
+                var lineHeight = uiContext.renderer.measureText('M').width * this.lineHeightScale;
+                uiContext.renderer.fillStyle = this.textColor;
+                for(let i = 0; i < this.lines.length; i++) {
+                    uiContext.renderer.fillText(this.lines[i], this.transform.position.x,
+                        this.transform.position.y + ((i + 1) * lineHeight));
+                }
             }
         }
     }
