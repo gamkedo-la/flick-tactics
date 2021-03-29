@@ -40,7 +40,6 @@ function init() {
     prevGameWidth = gameWidth;
     prevGameHeight = gameHeight;
     gameOptions = { SFXEnabled: true, BGMEnabled: true }
-    titleSprite = new Sprite(tr(), new ImageObject("images/title.png"));
     gameSheet = new Sprite(tr(), new ImageObject("images/sheet.png"));
     bodyNFacesSheet = new Sprite(tr(), new ImageObject("images/bodyNFacesSheet.png"));
     uiInit();

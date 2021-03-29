@@ -1,4 +1,3 @@
-
 var gameTime = 0;
 
 window.onload = function () {
@@ -66,9 +65,21 @@ function draw(deltaTime) {
     //ui.debugDraw("green");
 }
 
+var loaded = false;
+function isLoaded() {
+    if (loaded) return true;
+    renderer.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    drawRect(renderer, vec2(0, 0), vec2(window.innerWidth, window.innerHeight), true, "black");
+    var percentage = (((BGM.length + SFX.length - isAudioReady()) / (BGM.length + SFX.length)) * 0.5) + ((imagesLoadingLeft / totalImagesToLoad) * 0.5);
+    drawRect(renderer, vec2(gameWidth/4, (gameHeight/2) - 6), vec2((gameWidth/2), 12), true, "gray");
+    drawRect(renderer, vec2(gameWidth/4, (gameHeight/2) - 6), vec2((gameWidth/2) * (1.0 - percentage), 12), true, "white");
+    if(ImageObject.areAllLoaded() && isAudioReady() == 0) loaded = true;
+    return loaded;
+}
+
 function frame() {
     var deltaTime = getDeltaTime();
-    if (ImageObject.areAllLoaded()) {
+    if (isLoaded()) {
         event(deltaTime);
         update(deltaTime);
         draw(deltaTime);

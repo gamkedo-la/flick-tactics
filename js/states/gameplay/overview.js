@@ -1,4 +1,3 @@
-
 var camDetached = false;
 
 function overviewUISetup(fontSize) {

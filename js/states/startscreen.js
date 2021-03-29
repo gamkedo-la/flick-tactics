@@ -8,6 +8,7 @@ var startscreenCOAltSide = false;
 function startscreenSetup() {
     var fontSize = isMobile() ? 40.0 * pixelSize : 16.0 * pixelSize;
 
+    titleSprite = new Sprite(tr(), new ImageObject("images/title.png"));
     if(isMobile()) {
         titleSprite.transform.scale = vec2(sizeFactor / titleSprite.imageObject.image.width, (sizeFactor / 2.4) / titleSprite.imageObject.image.height);
         titleSprite.transform.position = vec2(gameWidth / 2, gameHeight / 6);
@@ -89,9 +90,6 @@ function startscreenSetup() {
 function startscreenResize() {
     var fontSize = isMobile() ? 32.0 * pixelSize : 16.0 * pixelSize;
 
-    titleSprite.transform.scale = vec2((sizeFactor / 1.8) / titleSprite.imageObject.image.width, (sizeFactor / 4) / titleSprite.imageObject.image.height);
-    titleSprite.transform.position = vec2(gameWidth / 2, gameHeight / 4);
-
     //playButton.label.font = aboutBtn.label.font = fontSize.toString() + "px " + uiContext.fontFamily;
 
     startscreen[1].transform.position = vec2((gameWidth / 2) - (gameWidth / 6), gameHeight / 2.25);
@@ -100,8 +98,7 @@ function startscreenResize() {
     startscreen[1].updateCellSize();
 }
 
-function drawWorldMapBG(tint = "#441111DD")
-{
+function drawWorldMapBG(tint = "#441111DD") {
     drawRect(renderer, vec2(), vec2(gameWidth, gameHeight), true, "#4fa4ed");
     worldmapSprite.transform.position = moveToVec2(worldmapSprite.transform.position, worldmapAnimationPoints[worldmapPositionIndex].pos, 1.5);
     worldmapSprite.transform.scale = lerpVec2(worldmapSprite.transform.scale, toVec2(worldmapAnimationPoints[worldmapPositionIndex].sc), 0.005);
@@ -113,8 +110,7 @@ function drawWorldMapBG(tint = "#441111DD")
     drawRect(renderer, vec2(), vec2(gameWidth, gameHeight), true, tint);
 }
 
-function drawPerspectiveUnitsBG(unit1, unit2, unit3, team = RED_TEAM)
-{
+function drawPerspectiveUnitsBG(unit1, unit2, unit3, team = RED_TEAM) {
     startscreenUnit.type = unit1;
     startscreenUnit.setupUnitProperties();
     startscreenUnit.draw(team, vec2(-gameWidth/4.0), toVec2(pixelSize/1.25));
@@ -141,7 +137,6 @@ function drawPerspectiveUnitsBG(unit1, unit2, unit3, team = RED_TEAM)
 function startscreenDraw(deltaTime) {
     if(startscreen[1].enabled) {
         drawWorldMapBG();
-        
         if(!isMobile()) {
             drawPerspectiveUnitsBG(HQ_BUILDING, RIFLE_MECH, CANNON_MECH);
             var ratio = (gameTime % 4000) / 800;
@@ -165,12 +160,12 @@ function startscreenDraw(deltaTime) {
             bodyNFacesSheet.drawScIn(vec2(1024 * startscreenCO), toVec2(1024));
             spritesRenderer.globalAlpha = 1.0;
         }
-
-        titleSprite.drawSc();
     }
     else {
         drawRect(renderer, vec2(), vec2(window.innerWidth, window.innerHeight), true, "black");
     }
+
+    titleSprite.drawSc();
 }
 
 function startscreenUpdate(deltaTime) {

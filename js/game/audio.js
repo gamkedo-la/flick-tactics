@@ -7,32 +7,32 @@ const BGM_GAMEPLAY = 2;
 const BGM_GOODPOWER = 3;
 const BGM_BADPOWER = 4;
 var BGM = [
-        {
-            content: document.createElement('audio'),
-            state: false,
-            path: 'music/FT_MainMenu_Loop.webm'
-        },
-        {
-            content: document.createElement('audio'),
-            state: false,
-            path: 'music/FT_WorldMap_Loop.webm'
-        },
-        {
-            content: document.createElement('audio'),
-            state: false,
-            path: 'music/FT_Gameplay_Loop.webm'
-        },
-        {
-            content: document.createElement('audio'),
-            state: false,
-            path: 'music/FT_PlayerCO_Loop.webm'
-        },
-        {
-            content: document.createElement('audio'),
-            state: false,
-            path: 'music/FT_EnemyCO_Loop.webm'
-        },
-    ];
+    {
+        content: document.createElement('audio'),
+        state: false,
+        path: 'music/FT_MainMenu_Loop.webm'
+    },
+    {
+        content: document.createElement('audio'),
+        state: false,
+        path: 'music/FT_WorldMap_Loop.webm'
+    },
+    {
+        content: document.createElement('audio'),
+        state: false,
+        path: 'music/FT_Gameplay_Loop.webm'
+    },
+    {
+        content: document.createElement('audio'),
+        state: false,
+        path: 'music/FT_PlayerCO_Loop.webm'
+    },
+    {
+        content: document.createElement('audio'),
+        state: false,
+        path: 'music/FT_EnemyCO_Loop.webm'
+    },
+];
 
 const SFX_BUTTON_CANCEL = 0;
 const SFX_BUTTON_CLICK = 1;
@@ -171,9 +171,25 @@ function audioSetup() {
     }
 
     for(let i = 0; i < SFX.length; i++) {
-        for(let n = 0; n < SFX[i].content.length; n++)
+        for(let n = 0; n < SFX[i].content.length; n++) {
             SFX[i].content[n].setAttribute('src', SFX[i].path);
+        }
     }
+}
+
+var audioReady = false;
+function isAudioReady() {
+    if(audioReady) return 0;
+    for(let i = 0; i < BGM.length; i++) {
+        if(BGM[i].content.readyState != 4) return i;
+    }
+    for(let i = 0; i < SFX.length; i++) {
+        for(let n = 0; n < SFX[i].content.length; n++) {
+            if(SFX[i].content[n].readyState != 4) return BGM.length + i;
+        }
+    }
+    audioReady = true;
+    return 0;
 }
 
 function playBGM(id) {
