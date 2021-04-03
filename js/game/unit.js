@@ -89,7 +89,7 @@ class Unit {
                 this.movementObstacles = [SEA_TILE, MOUNTAIN_TILE];
                 this.movementReducers = [FOREST_TILE, SAND_TILE];
 
-                this.attack = [12.0, 8.0, 16.0, 8.0, 7.5, 4.0];
+                this.attack = [10.0, 6.0, 14.0, 8.0, 6.0, 4.0];
                 this.ammoCapacity = 3;
                 this.ammo = this.ammoCapacity;
                 this.deployTime = 0;
